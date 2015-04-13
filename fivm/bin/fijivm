@@ -1,0 +1,279 @@
+#!/usr/bin/env ruby
+#
+# fijivm -- harness that runs a VM.
+# Copyright 2008, 2009, 2010, 2011, 2012, 2013 Fiji Systems Inc.
+# This file is part of the FIJI VM Software licensed under the FIJI PUBLIC
+# LICENSE Version 3 or any later version.  A copy of the FIJI PUBLIC LICENSE is
+# available at fivm/LEGAL and can also be found at
+# http://www.fiji-systems.com/FPL3.txt
+# 
+# By installing, reproducing, distributing, and/or using the FIJI VM Software
+# you agree to the terms of the FIJI PUBLIC LICENSE.  You may exercise the
+# rights granted under the FIJI PUBLIC LICENSE subject to the conditions and
+# restrictions stated therein.  Among other conditions and restrictions, the
+# FIJI PUBLIC LICENSE states that:
+# 
+# a. You may only make non-commercial use of the FIJI VM Software.
+# 
+# b. Any adaptation you make must be licensed under the same terms 
+# of the FIJI PUBLIC LICENSE.
+# 
+# c. You must include a copy of the FIJI PUBLIC LICENSE in every copy of any
+# file, adaptation or output code that you distribute and cause the output code
+# to provide a notice of the FIJI PUBLIC LICENSE. 
+# 
+# d. You must not impose any additional conditions.
+# 
+# e. You must not assert or imply any connection, sponsorship or endorsement by
+# the author of the FIJI VM Software
+# 
+# f. You must take no derogatory action in relation to the FIJI VM Software
+# which would be prejudicial to the FIJI VM Software author's honor or
+# reputation.
+# 
+# 
+# The FIJI VM Software is provided as-is.  FIJI SYSTEMS INC does not make any
+# representation and provides no warranty of any kind concerning the software.
+# 
+# The FIJI PUBLIC LICENSE and any rights granted therein terminate
+# automatically upon any breach by you of the terms of the FIJI PUBLIC LICENSE.
+#
+#
+
+$verbosity=0
+
+require 'pathname'
+require 'getoptlong'
+
+meUnresolved=Pathname.new($0)
+me=meUnresolved.realpath
+bindir=me.dirname.realpath
+$homedir=bindir.parent
+$libdir=$homedir+"lib"
+
+require ($libdir+"config.rb")
+require ($libdir+"fijiconfig.rb")
+
+def headingImpl(outp)
+  outp.puts "Fiji VM #{$version} #{$copyright}, All Rights Reserved"
+end
+
+def heading
+  headingImpl($stderr)
+end
+
+def smallUsage
+  $stderr.puts "Use the -help option to get basic usage information."
+end
+
+def fail(reason)
+  $stderr.puts "Error: #{reason}"
+  if reason.respond_to? :backtrace and $verbosity>=1
+    $stderr.puts "COMPILATION FAILED: #{reason}"
+    $stderr.puts "Stack trace:"
+    $stderr.puts reason.backtrace.join("\n")
+  end
+  if $printSmallUsageOnError
+    smallUsage
+  end
+  exit 1
+end
+
+$printSmallUsageOnError=true
+
+begin
+  def usage
+    headingImpl($stdout)
+    puts
+    puts "Usage: fijivm [options] <class name> <arguments>"
+    puts
+    puts "-classpath <path>    Set the paths from which to load classes."
+    puts "-cp <path>           Short for -classpath."
+    puts "-jnipath <path>      Set the paths from which JNI libraries are loaded."
+    puts "-D<name>=<value>     Set a system property."
+    puts "-Xmx<size>           Set the maximum heap size (default: 200m)."
+    puts "-Xms<size>           Ignored (for compatibility only)."
+    puts "-Xtrig<size>         Set the GC trigger (default: 1/2 heap size)."
+    puts "-Xcmrgc              Use CMR soft-RT garbage collector (default)."
+    puts "-Xhfgc               Use Schism/cmr level C hard-RT garbage collector."
+    puts "-Xhfagc              Use Schism/cmr level A hard-RT garbage collector."
+    puts "-Xloggc              Log GC activity."
+    puts "-Xlogsyncgc          Log synchronous GC activity only."
+    puts "-Xgcprio:<priority>  Set the GC thread priority."
+    puts "-Xlogjit             Log JIT compiler activity."
+    puts "-Xnobias             Disable biased locking."
+    puts "-Xpip                Enable PIP locking (implies -Xnobias)."
+    puts "-Xv<amount>          Set the VM verbosity level (default: 0)."
+    puts "-Xlog:<filename>     Append all VM log messages to the given file."
+    puts "-Xfakert             Use 'fake' real-time priorities."
+    puts "-Xprofile            Run the profiler."
+    puts "-Xnosysgc            Ignore System.gc requests."
+    puts
+    puts "-version             Print version."
+    puts "-help                Print this message."
+    exit 0
+  end
+  
+  def sizeArg(argName,arg)
+    mult=1
+    if arg=~/K$/i
+      mult=2**10
+      arg=arg.chop
+    elsif arg=~/M$/i
+      mult=2**20
+      arg=arg.chop
+    elsif arg=~/G$/i
+      mult=2**30
+      arg=arg.chop
+    end
+    result=arg.to_i
+    unless result.to_s == arg
+      $stderr.puts "Expected a size value for #{argName}."
+      $stderr.puts
+      $stderr.puts "A size value is a non-negative integer, which may be suffixed by K, M, or"
+      $stderr.puts "G to indicate kilobytes, megabytes, or gigabytes, respectively."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+    if result<0
+      $stderr.puts "Argument for #{argName} cannot be negative."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+    result*mult
+  end
+
+  $gc="cmr"
+  $lock="biased"
+  $opt="small"
+  $manualCmd=nil
+  if ENV["FIVMR_SYS_PROPS"]
+    $sysProps=FijiConfig::parse(ENV["FIVMR_SYS_PROPS"])
+    unless $sysProps.is_a? Hash
+      $sysProps={}
+    end
+  else
+    $sysProps={}
+  end
+  
+  def vmCmd
+    if $manualCmd
+      $manualCmd
+    elsif $opt=="debug" or $opt=="noopt"
+      ($homedir+"bin"+("fijivm-"+$gc+"-"+$opt)).to_s
+    else
+      ($homedir+"bin"+("fijivm-"+$gc+"-"+$lock+"-"+$opt)).to_s
+    end
+  end
+  
+  loop {
+    break if ARGV.empty?
+    break if ARGV[0]!~/^-/
+    
+    opt=ARGV.shift
+    
+    case opt
+    when '-classpath', '-cp'
+      if ARGV.empty?
+        fail("The -classpath option requires an argument.")
+      end
+      ENV['CLASSPATH']=ARGV.shift
+    when '-jnipath'
+      if ARGV.empty?
+        fail("The -jnipath option requires an argument.")
+      end
+      ENV['JAVA_JNI_PATH']=ARGV.shift
+    when /^-D/
+      prop=$~.post_match
+      if prop=~/=/
+        $sysProps[$~.pre_match]=$~.post_match
+      else
+        fail("The -D option needs an argument of the form <name>=<value>")
+      end
+    when /^-Xmx/
+      ENV['FIVMR_GC_MAX_MEM']=sizeArg('-Xmx',$~.post_match).to_s
+    when /^-Xms/
+      # nothing
+    when /^-Xtrig/
+      ENV['FIVMR_GC_TRIGGER']=sizeArg('-Xtrig',$~.post_match).to_s
+    when '-Xcmrgc'
+      $gc="cmr"
+    when '-Xhfgc'
+      $gc="hf"
+    when '-Xhfagc'
+      $gc="hfa"
+    when '-Xloggc'
+      ENV['FIVMR_LOG_GC']='true'
+      ENV['FIVMR_LOG_ALLOC_EXEC']='true'
+    when '-Xlogsyncgc'
+      ENV['FIVMR_LOG_SYNC_GC']='true'
+    when '-Xlogjit'
+      ENV['FIVMR_LOG_MACHINE_CODE']='true'
+    when /^-Xgcprio:/
+      # FIXME: parse and validate this!
+      ENV['FIVMR_GC_THREAD_PRIORITY']=$~.post_match
+    when /^-Xlog:/
+      # FIXME: parse and validate this!
+      ENV['FIVMR_LOG_FILE']=$~.post_match
+    when '-Xnobias'
+      $lock="fast"
+    when '-Xpip'
+      $lock="pip"
+    when /^-Xv/
+      $verbosity=$~.post_match.to_i
+      ENV['FIVMR_LOG_LEVEL']=$~.post_match
+    when '-Xfakert'
+      ENV['FIVMR_FAKE_RT_PRIORITIES']='true'
+    when '-Xprofile'
+      ENV['FIVMR_PROFILER']='true'
+    when '-Xnosysgc'
+      ENV['FIVMR_IGNORE_SYS_GC']='true'
+    when '-XXdebugvm'
+      $opt="debug"
+    when '-XXnooptvm'
+      $opt="noopt"
+    when '-XXverboseExceptions'
+      ENV['FIVMR_VERBOSE_EXCEPTIONS']='true'
+    when '-XXforceJitSlowpath'
+      ENV['FIVMR_FORCE_JIT_SLOWPATH']='true'
+    when /^-XXvm:/
+      $manualCmd=$~.post_match
+    when '-version'
+      $printSmallUsageOnError=false
+      headingImpl($stdout)
+      ENV['FIVMR_SHOW_VERSION']='true'
+      print "#{vmCmd}: "
+      unless system(vmCmd)
+        fail("Could not run #{vmCmd}")
+      end
+      exit 0
+    when '-help'
+      $printSmallUsageOnError=false
+      usage
+    when '--'
+      break
+    else
+      fail("Invalid option: #{opt}")
+    end
+  }
+  
+  if ARGV.empty?
+    fail("Must specify a class to run.")
+  end
+  
+  ENV["FIVMR_SYS_PROPS"]=FijiConfig::dump($sysProps)
+  
+  $printSmallUsageOnError=false
+  
+  begin
+    exec(vmCmd,*ARGV)
+  rescue => e
+    $stderr.puts "Could not start virtual machine."
+    fail(e)
+  end
+
+rescue => e
+  fail(e)
+end
+
+

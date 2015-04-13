@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G hf --no-opt configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-hf-noopt . -m SpecApplication -G hf --no-opt --no-cat-rt-code
+
+$localbindir/runspec ./SPECjvm98-hf-noopt
+$localbindir/runspec-gctorture ./SPECjvm98-hf-noopt
+

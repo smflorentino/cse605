@@ -1,0 +1,7 @@
+FIVMDIR=../../..
+
+check: treetest1
+
+treetest1:
+	./treetest1
+

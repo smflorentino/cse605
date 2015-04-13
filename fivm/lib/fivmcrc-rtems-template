@@ -1,0 +1,29 @@
+--sys-arch		ia32
+--sys-os		rtems
+--sys-osflavor		rtems
+--sys-ptrsize		4
+--sys-cc		i386-rtems4.9-gcc
+--sys-make		make
+--sys-debug-cflags	"-g"
+--sys-opt-cflags	"-O3 -fno-strict-aliasing -fno-optimize-sibling-calls -ffloat-store -fomit-frame-pointer -falign-loops -fno-pic"
+--sys-arch-cflags	"-m32"
+--sys-warn-cflags	"-W"
+--sys-nowarn-cflags	"-w"
+--sys-cppflags		"-B/home/lziarek/RTEMS/i386/i386-rtems4.9/pc486/lib -I /home/lziarek/RTEMS/i386/i386-rtems4.9/pc486/lib/include -I /home/lziarek/RTEMS/i386/i386-rtems4.9/lib/include -specs bsp_specs -qrtems -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -D_REENTRANT -D_GNU_SOURCE -DHAVE_STDARG_H -DHAVE_ERRNO_H -DHAVE_STDIO_H -DHAVE_FCNTL_H=1 -DHAVE_FCNTL=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STAT=1 -DHAVE_STATFS=1 -DHAVE_SYS_IOCTL_H=1 -DHAVE_IOCTL=1"
+--sys-ldflags		"-B/home/lziarek/RTEMS/i386/i386-rtems4.9/pc486/lib   -I /home/lziarek/RTEMS/i386/i386-rtems4.9/pc486/lib/include  -I /home/lziarek/RTEMS/i386/i386-rtems4.9/lib -specs bsp_specs -qrtems /home/lziarek/SPEC/RTEMS_FS.o -lm -m32 -Wl,-Ttext,0x00100000"
+--sys-libs		"-lm"
+--sys-noinline-attr	"__attribute__((noinline))"
+
+--host-vm-cmd		java
+
+--arith-helper          int_div
+--arith-helper          int_mod
+--arith-helper          long_div
+--arith-helper          long_mod
+
+--no-dyn-loading
+
+--g-self-man-mem
+
+--cmacro-file           cmacros-rtems.properties
+--jni-on-load  RTEMS_OnLoad

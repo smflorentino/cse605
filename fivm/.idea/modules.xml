@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/RTSJ/RTSJ.iml" filepath="$PROJECT_DIR$/RTSJ/RTSJ.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/adapt/adapt.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/adapt/adapt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/analysis/analysis.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/analysis/analysis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/annotations/annotations.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/annotations/annotations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/attributes/attributes.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/attributes/attributes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bottomup/bottomup.iml" filepath="$PROJECT_DIR$/bottomup/bottomup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/spec/common/common.iml" filepath="$PROJECT_DIR$/scj/oSCJ/scj/ri/spec/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common1.iml" filepath="$PROJECT_DIR$/common/common1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/common/common2.iml" filepath="$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/common/common2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/compile/compile.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/compile/compile.iml" />
+      <module fileurl="file://$PROJECT_DIR$/compiler/compiler.iml" filepath="$PROJECT_DIR$/compiler/compiler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cpopt/cpopt.iml" filepath="$PROJECT_DIR$/cpopt/cpopt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cpruntime/cpruntime.iml" filepath="$PROJECT_DIR$/cpruntime/cpruntime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/dependencies/dependencies.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/dependencies/dependencies.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fast-md5/fast-md5.iml" filepath="$PROJECT_DIR$/fast-md5/fast-md5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/fiji/fiji.iml" filepath="$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/fiji/fiji.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/fiji-asm.iml" filepath="$PROJECT_DIR$/fiji-asm/fiji-asm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/spec/fiji/fiji1.iml" filepath="$PROJECT_DIR$/scj/oSCJ/scj/ri/spec/fiji/fiji1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fijicore/fijicore.iml" filepath="$PROJECT_DIR$/fijicore/fijicore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fijirt/fijirt.iml" filepath="$PROJECT_DIR$/fijirt/fijirt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fivm.iml" filepath="$PROJECT_DIR$/fivm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hardrtj/hardrtj.iml" filepath="$PROJECT_DIR$/hardrtj/hardrtj.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/helloworld/helloworld.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/helloworld/helloworld.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/examples/jbfc/jbfc.iml" filepath="$PROJECT_DIR$/fiji-asm/examples/jbfc/jbfc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jdk/java/jdk.iml" filepath="$PROJECT_DIR$/jdk/java/jdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/ovm/ovm.iml" filepath="$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/ovm/ovm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runner/runner.iml" filepath="$PROJECT_DIR$/runner/runner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/runtimej/runtimej.iml" filepath="$PROJECT_DIR$/runtimej/runtimej.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scjruntime/scjruntime.iml" filepath="$PROJECT_DIR$/scjruntime/scjruntime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fiji-asm/test/test.iml" filepath="$PROJECT_DIR$/fiji-asm/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test/java/test1.iml" filepath="$PROJECT_DIR$/test/java/test1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/util/java/util.iml" filepath="$PROJECT_DIR$/util/java/util.iml" />
+    </modules>
+  </component>
+</project>

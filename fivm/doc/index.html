@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Fiji VM Evaluation Distribution v0.9.1 - Documentation</title>
+</head>
+<body>
+
+<h1>Fiji VM Evaluation Distribution v0.9.1 - Documentation</h1>
+<h2>Copyright (c) 2008, 2009 Fiji Systems LLC</h2>
+
+<h3>Quick Start Guide</h3>
+To build Fiji VM, simply do:
+
+<pre>
+./configure
+make
+sudo make install
+</pre>
+
+Now you should have the <code>fivmc</code> executable in <code>/usr/local/bin</code>,
+which should be in your path.  To compile Java bytecode to native code, simply do:
+
+<pre>
+fivmc -o myProgram -m myMainClass &lt;list of classes&gt;
+</pre>
+
+For example:
+
+<pre>
+fivmc -o myProgram -m myMainClass .
+</pre>
+
+This will compile all of the classes found in the current directory, under the
+assumption that myMainClass is the name of the class with the main method.  The
+result will be an executable program called "myProgram".
+
+<h3>More information:</h3>
+<ul>
+<li><a href="README.txt">README</a> - <i>see here for the complete installation and usage guide</i></li>
+<li><a href="LEGAL.txt">LEGAL</a></li>
+<li><a href="fivmc_usage.txt">fivmc usage</a></li>
+<li><a href="../fijicore/javadoc/index.html">FijiCore API Documentation</a></li>
+</ul>
+
+</body>

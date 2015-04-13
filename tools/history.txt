@@ -1,0 +1,849 @@
+    1  cd /mie
+    2  ls
+    3  cd /media/
+    4  ls
+    5  cd scottflo/
+    6  ls
+    7  cd CDROM/
+    8  ls
+    9  cd ..
+   10  ls
+   11  cd .
+   12  ls
+   13  cd Parallels\ Tools/
+   14  ls
+   15  sudo ./install
+   16  sudo passwd scottflo
+   17  sudo ./install
+   18  sudo apt-get install openssh-server
+   19  ifconfig
+   20  cd re
+   21  ls
+   22  mkdir repos
+   23  ls
+   24  cd repos/
+   25  ls
+   26  git
+   27  sudo apt-get install git
+   28  git clone https://github.com/jjspaulding/cse556_project1.git
+   29  ls
+   30  cd cse556_project1/
+   31  ls
+   32  exit
+   33  gedit &
+   34  exit
+   35  gedit
+   36  ls
+   37  cd repos/
+   38  ls
+   39  cd cse556_project1/
+   40  ls
+   41  vim parse.py
+   42  python parse.py 
+   43  sudo shutdown -h 0
+   44  gedit &
+   45  cd /media/
+   46  ls
+   47  cd scottflo/
+   48  ls
+   49  cd Parallels\ Tools/
+   50  ls
+   51  cd installer/
+   52  ls
+   53  cd ..
+   54  sudo ./install-gui 
+   55  ls
+   56  sudo ./install
+   57  cd /media/
+   58  ls
+   59  cd scottflo/
+   60  ls
+   61  cd Parallels\ Tools/
+   62  ls
+   63  sudo ./install
+   64  sudo shutdown -h 0
+   65  cd /m
+   66  ls
+   67  cd /media/
+   68  ls
+   69  cd scottflo/
+   70  ls
+   71  cd VMware\ Tools/
+   72  ls
+   73  sudo ./vmware-tools-upgrader-32 
+   74  ls
+   75  cp VMwareTools-9.8.3-2075148.tar.gz ~/DOw
+   76  ls
+   77  cp VMwareTools-9.8.3-2075148.tar.gz ~/Downloads/
+   78  cd ~/DOw
+   79  cd ~/Downloads/
+   80  ls
+   81  tar -xvf VMwareTools-9.8.3-2075148.tar.gz 
+   82  ls
+   83  cd  vmware-tools-distrib/
+   84  ls
+   85  sudo ./vmware-install.pl 
+   86  sudo reboot -t 0
+   87  sudo reboot 0
+   88  mkdir /opt/sublime
+   89  sudo mkdir /opt/sublime
+   90  ls
+   91  cd /opt/sublime/
+   92  ls
+   93  ll
+   94  sudo chmod -775 .
+   95  ll
+   96  sudo ll
+   97  sudo ls
+   98  ll
+   99  sudo ll
+  100  sudo ls -l
+  101  dc ..
+  102  cd ..
+  103  sudo ls -l
+  104  sudo chmod sublime/ 755
+  105  sudo chmod 755 sublime/
+  106  ll
+  107  cd sublime/
+  108  ls
+  109  cd ~/Downloads/
+  110  ls
+  111  cd ..
+  112  ls
+  113  mv Sublime\ Text\ 2/ sublime
+  114  ls
+  115  sudo mv sublime/ /opt/sublime/
+  116  ll
+  117  cd /opt/
+  118  ls
+  119  cd sublime/
+  120  ls
+  121  mv sublime/ ..
+  122  sudo mv sublime/ ..
+  123  ls
+  124  cd sublime/
+  125  ls
+  126  pwd
+  127  vim /etc/profile
+  128  vi ~/.bashrc
+  129  sudo apt-get install vim
+  130  vim ~/.bash
+  131  vim ~/.bashrc 
+  132  source ~/.bashrc 
+  133  sublime_text 
+  134  java
+  135  java -version
+  136  javac --version
+  137  cd ~/fivm/
+  138  ls
+  139  cd test
+  140  ls
+  141  cd java/
+  142  ls
+  143  cd build/
+  144  ls
+  145  ll
+  146  cd com/fiji/fivm/test/
+  147  lls
+  148  ls
+  149  cd ../../../../
+  150  ll
+  151  cd ..
+  152  ls
+  153  cd ~
+  154  mkdir scratch
+  155  cd scratch/
+  156  ls
+  157  fivm 
+  158  vim ~/.bashrc 
+  159  source ~/.bashrc 
+  160  cd ~/fivm/
+  161  cd t
+  162  ls
+  163  cd test
+  164  ls
+  165  cd java/
+  166  ls
+  167  cd build/
+  168  ls
+  169  cd com/
+  170  ls
+  171  cd fiji/fivm/test/
+  172  ls
+  173  ll
+  174  fivmc 
+  175  cd ..
+  176  ls
+  177  fivmc -o myprog . -m test/
+  178  cd ../../../
+  179  ls
+  180  ;s
+  181  ls
+  182  fivmc . -m com/fiji/fivm/test/
+  183  fivmc -o myprog . -m com/fiji/fivm/test/
+  184  ls
+  185  myprog.build/
+  186  ls
+  187  cd myprog.build/
+  188  ls
+  189  cd ..
+  190  ls
+  191  rm myprog.build/
+  192  rm -r myprog.build/
+  193  ls
+  194  fivmc -o myprog com/fiji/fivm/test/RawScopedMemoryTest.class 
+  195  ls
+  196  ./myprog
+  197  cd te
+  198  cd test
+  199  ls
+  200  cd com/
+  201  s
+  202  cd fiji/fivm/test/
+  203  ls
+  204  ls Thr*
+  205  ll
+  206  ls Thr*
+  207  cd ../../../
+  208  cd ../
+  209  fivmc -o myprog com/fiji/fivm/test/RawScopedMemoryTest.class 
+  210  mkdir -p javax/realtime/ThrowBoundaryError.class
+  211  ll
+  212  cp com/fiji/fivm/test/ThrowBoundaryError.class javax/realtime/ThrowBoundaryError.class
+  213  ls
+  214  rm -r myprog*
+  215  ll
+  216  cd ..
+  217  ls
+  218  cd geq
+  219  cd generated/
+  220  ls
+  221  cd com/fiji/fivm/test/
+  222  ls
+  223  cd ..
+  224  ls
+  225  cd ..
+  226  ls
+  227  cd ..
+  228  ls
+  229  ant
+  230  cd it
+  231  cd util/
+  232  ls
+  233  cd java/
+  234  ls
+  235  cd build/com/fiji/fivm/util/
+  236  ls
+  237  cd ../../../../../
+  238  ls
+  239  cd ../
+  240  cd ..
+  241  fivmc --more-help
+  242  fivmc --more-help > more-help.txt
+  243  cd test
+  244  ls
+  245  cd java/
+  246  sl
+  247  ls
+  248  cd build/
+  249  ls
+  250  rm -r javax
+  251  fivmc -o myprog com/fiji/fivm/test/RawScopedMemoryTest.class --rt-library SCJ
+  252  ll
+  253  cd ..
+  254  make checkl
+  255  make check
+  256  cd test
+  257  fivmc -o myprog com/fiji/fivm/test/RawScopedMemoryTest.class --rt-library RTSJ
+  258  cd java/
+  259  ls
+  260  cd build/
+  261  fivmc -o myprog com/fiji/fivm/test/RawScopedMemoryTest.class --rt-library RTSJ
+  262  ls
+  263  ./myprog
+  264  fivmc -o myprog com/fiji/fivm/test/GetLongFieldTest.class 
+  265  fivmc -o myprog com/fiji/fivm/test/GetLongFieldTcd com/fiji/fivm/
+  266  cd com/fiji/fivm/
+  267  ls
+  268  rm -rf myprog.build/
+  269  cd test/
+  270  ls
+  271  fivmc -o myprog LongFieldTest.class
+  272  ll
+  273  fivmc -o myprog GetIntFieldTest.class
+  274  fivmc -o myprog GetIntFieldTest.class --verbose
+  275  fivmc --verbose -o myprog GetIntFieldTest.class 
+  276  fivmc --verbosity 2 -o myprog GetIntFieldTest.class
+  277  ./myprog
+  278  ll
+  279  ll Helllo*
+  280  ls *.java
+  281  ll
+  282  ls Has*
+  283  ll
+  284  ls Hello*
+  285  javac Hello.java 
+  286  ll
+  287  ls Hello*
+  288  history | grep gfivm
+  289  history | grep fivm
+  290  fivmc -o myprog Hello.class
+  291  ./myprog
+  292  ll
+  293  vim myprog
+  294  fivmc -o myprog GetIntFieldTest.class
+  295  history | grep fivmc
+  296  fivmc --verbosity 1 -o myprog GetIntFieldTest.class
+  297  ./myprog
+  298  fivmc --verbosity 1 -o myprog GetIntFieldTest.class > myprog.log
+  299  fivmc --verbosity 1 -o myprog GetIntFieldTest.class 2>&1 myprog.log
+  300  fivmc --verbosity 1 -o myprog GetIntFieldTest.class &> myprog.log
+  301  clear
+  302  ls
+  303  rm -r myprog
+  304  fivmc --verbosity 1 -o myprog GetIntFieldTest.class > myprog.log2>&1
+  305  fivmc --verbosity 1 -o myprog GetIntFieldTest.class > myprog.log 2>&1
+  306  gedit myprog
+  307  gedit myprog.log &
+  308  ls Some*
+  309  fivmc  -o myprog GetIntFieldTest.class /home/scottflo/fivm/lib/fivmtest.jar
+  310  fivmc  -o myprog -m GetIntFieldTest.class GetIntFieldTest.class /home/scottflo/fivm/lib/fivmtest.jar
+  311  fivmc  -o myprog -m GetIntFieldTest.class 
+  312  fivmc  -o myprog -m GetIntFieldTest.class GetIntFieldTest.class
+  313  fivmc  -o myprog -m GetIntFieldTest.class
+  314  fivmc  -o myprog -m GetIntFieldTest.class /home/scottflo/fivm/lib/fivmtest.jar
+  315  fivmc  -o myprog -m com/fiji/fivm/test/GetIntFieldTest  GetIntFieldTest.class
+  316  fivmc  -o myprog -m com/fiji/fivm/test/GetIntFieldTest GetIntFieldTest.class SomeClass.class
+  317  ./myprog
+  318  fivmc -o myprog -m com/fiji/fivm/test/RawScopedMemoryTest $HOME/fivm/lib/fivmtest.jar
+  319  cd ~/scratch/
+  320  ls
+  321  chmod +x tester 
+  322  ./tester 
+  323  ./myprog
+  324  ./tester 
+  325  ./myprog
+  326  ls
+  327  history | grep GetInt
+  328  ./tester 
+  329  cp ~/fivm/test/java/build/com/fiji/fivm/test/Hello.class ~/scratch/
+  330  ./tester 
+  331  cp ~/fivm/test/java/build/com/fiji/fivm/test/Hello.java ~/scratch/
+  332  vim Hello.java 
+  333  javac Hello.java 
+  334  fivmc -o hello Hello.class 
+  335  grep . 456 -R
+  336  grep . asd
+  337  grep 456 . -R
+  338  grep 456Kaymar . -R
+  339  grep Kaymar . -R
+  340  ls
+  341  cd hello.build/
+  342  ls
+  343  grep Kaymar . -R
+  344  grep Kaymar
+  345  grep Kaymar .
+  346  grep Kaymar *.*
+  347  vim ~/.gdbinit
+  348  sudo shutdown -h 0
+  349  ls
+  350  cd ..
+  351  ls
+  352  cd ..
+  353  cd ~
+  354  ls
+  355  cd f
+  356  ls
+  357  cd fivm/
+  358  ls
+  359  fivm
+  360  cd b
+  361  ls
+  362  cd bin/
+  363  ls
+  364  fivmc
+  365  ./fivmc
+  366  pwd 
+  367  vim ~/.bashrc
+  368  source ~/.bashrc 
+  369  cd ~/scratch/
+  370  ls
+  371  fivmc -o myprog . -m ../fivm/test/java/build/com
+  372  fivmc -o myprog . -m ../fivm/test/java/build/com/fiji/fivm/test/
+  373  cd ~/fivm/scjruntime/build/javax/
+  374  ls
+  375  cd realtime/
+  376  ls
+  377  cp ThrowBoundaryError.class ~/fivm/test/java/build/com/fiji/fivm/test/
+  378  ls
+  379  cd ..
+  380  ls
+  381  cd lib/
+  382  ls
+  383  cd ..
+  384  grep ClassWeDelete
+  385  grep jar
+  386  grep jar -R
+  387  grep ClassWeDelete -R
+  388  htop
+  389  too
+  390  top
+  391  sudo apt-get install htop
+  392  htop
+  393  gdb
+  394  gdb --tui
+  395  cd ~/scratch/
+  396  ls
+  397  gdb --tui myprog
+  398  ls
+  399  cd mt
+  400  cd myprog.build/
+  401  ls
+  402  remake
+  403  ./remake
+  404  cd ..
+  405  s
+  406  ls
+  407  gdb --tui myprog
+  408  gdb --tui hello
+  409  ls
+  410  htop
+  411  sudo shutdown -h 0
+  412  cd scratch/
+  413  ls
+  414  gdb --tui hello
+  415  vim Hello.java 
+  416  javac Hello.java 
+  417  ./tester 
+  418  gdb --tui hello
+  419  javac Hello.java 
+  420  ./tester 
+  421  gdb --tui hello
+  422  javac Hello.java 
+  423  ./tester 
+  424  gdb --tui hello
+  425  exit
+  426  htop
+  427  ls
+  428  cd f
+  429  s
+  430  cd scratch/
+  431  ls
+  432  sublime_text &
+  433  ifconfig
+  434  htop
+  435  cd re
+  436  cd ~?re
+  437  cd ~/repos/
+  438  ls
+  439  cd spring2015/
+  440  ls
+  441  git status
+  442  cd scratch/
+  443  ls
+  444  vim tester 
+  445  vim ~/.gdbinit
+  446  make --version
+  447  cd ..
+  448  cd fivm/
+  449  ls
+  450  vim RealMakefile
+  451  make
+  452  rm test/java/src/com/fiji/fivm/test/HelloWorldTest.java 
+  453  make
+  454  clear
+  455  make
+  456  make > makeoutput.txt
+  457  vim makeoutput.txt 
+  458  ll
+  459  vim RealMakefile
+  460  rm makeoutput.txt 
+  461  make > makeoutput.txt
+  462  vim makeoutput.txt 
+  463  vim RealMakefile
+  464  ./test
+  465  cd ~/scratch/
+  466  ls
+  467  ./tester
+  468  vim tester 
+  469  ./tester
+  470  ls
+  471  mkdir src/
+  472  mv Hello.java src/
+  473  ./tester
+  474  ls
+  475  cd src/
+  476  ls
+  477  rm Hello.java 
+  478  ls
+  479  cd src
+  480  ls
+  481  cd ..
+  482  ls
+  483  rm Hello.class 
+  484  cd src/
+  485  vim Hello.java
+  486  cd ..
+  487  cd hardrtj/
+  488  ls
+  489  cd b
+  490  cls
+  491  cd build/
+  492  ls
+  493  cd test/
+  494  ls
+  495  cd ..
+  496  ls
+  497  cd ..
+  498  rm -r hardrtj/
+  499  ls
+  500  cd src/
+  501  ls
+  502  ./tes
+  503  cd ..
+  504  ./tester
+  505  ls
+  506  cd srcs/
+  507  ls
+  508  rm -r srcs
+  509  cd .
+  510  cd ..
+  511  rm -r srcs
+  512  ./tester
+  513  ls
+  514  cd src/
+  515  ls
+  516  cd build/
+  517  ls
+  518  cd tes
+  519  ls
+  520  cd ..
+  521  ls
+  522  cd ..
+  523  ls
+  524  ./tester
+  525  cd re
+  526  ls
+  527  cd ..
+  528  mkdir repos
+  529  cd repos/
+  530  ls
+  531  git clone https://github.com/smflorentino/spring2015.git
+  532  ls
+  533  cd spring2015/
+  534  ls
+  535  mkdir cse605
+  536  ls
+  537  rm cse605
+  538  rmdir cs605
+  539  rm -r cse605
+  540  cd ..
+  541  ks
+  542  cd scratch/
+  543  ls
+  544  cd ..
+  545  cp -r scratch ~/repos/cse605
+  546  cd ~/repos/
+  547  ls
+  548  cd cse605
+  549  ls
+  550  ./tester
+  551  ls
+  552  ./hello
+  553  git status
+  554  cd ..
+  555  git status
+  556  ll
+  557  mv cse605 spring2015/
+  558  cd spring2015/
+  559  ls
+  560  git add cse605
+  561  git status
+  562  vim .gitignore
+  563  git status
+  564  git add .gitigore
+  565  git add .gitignore
+  566  git status
+  567  vim .gitignore
+  568  git status
+  569  git add .gitignore
+  570  git status
+  571  git rm cse605/hello.build/
+  572  git rm -r cse605/hello.build/
+  573  git rm -r cse605/hello.build/ -f
+  574  git status
+  575  vim .gitignore
+  576  git status
+  577  git rm -r cse605/myprog.build/
+  578  git rm -r cse605/myprog.build/ -f
+  579  git status
+  580  git add .gitignore
+  581  git status
+  582  git commit -m "add 605"
+  583  git config --global user.email = "smflorentino@email.fake"
+  584  git config --glboal user.name "Scott Florentino"
+  585  git config --global user.name "Scott Florentino"
+  586  git status
+  587  git commit 
+  588  git commit -m "Add 605"
+  589  git push
+  590  git status
+  591  git push
+  592  sudo shutdown -h 0
+  593  cd sc
+  594  ls
+  595  cd scratch/
+  596  ls
+  597  gdb --tui hello
+  598  q
+  599  clear
+  600  ls
+  601  gdb --tui hello
+  602  cd ~/fivm/
+  603  ls
+  604  cd make
+  605  cd Ma
+  606  cat Makefile | grep ClassWeDelete
+  607  grep ClassWeDelete
+  608  grep ClassWeDelete -R
+  609  vim RealMakefile
+  610  vim README 
+  611  vim RealMakefile
+  612  rm makeoutput.txt 
+  613  make > make.out
+  614  vim make.out 
+  615  ls
+  616  cd Downloads/
+  617  ls
+  618  tar -xvf ideaIC-14.0.3.tar.gz 
+  619  ls
+  620  cd ..
+  621  ls
+  622  cd repos/
+  623  ls
+  624  cd spring2015/
+  625  ;s
+  626  ls
+  627  cd cse605/
+  628  ls
+  629  cd src/
+  630  ls
+  631  mcd .
+  632  cd ..
+  633  ls
+  634  ll
+  635  sll
+  636  ls
+  637  mv tester tester.sh
+  638  ls
+  639  ./tester
+  640  rm tester~
+  641  ./tester.sh
+  642  ls
+  643  ./hello
+  644  ./tester.sh
+  645  htop
+  646  ls
+  647  cd src/
+  648  ls
+  649  cd b
+  650  bu
+  651  cd build/
+  652  ls
+  653  cd test/
+  654  ls
+  655  cd ..
+  656  ls
+  657  rm Memory.java~
+  658  ls
+  659  ./te
+  660  cd ..
+  661  ./tester.sh
+  662  ls
+  663  cd src/
+  664  ls
+  665  mv Hello.java ..
+  666  cd ..
+  667  ./tester.sh
+  668  cd src/build/
+  669  ls
+  670  cd t
+  671  cd test/
+  672  ls
+  673  rm Hello.class 
+  674  cd .
+  675  cd ..
+  676  ls
+  677  ll
+  678  cd ..
+  679  ls
+  680  ./tester.sh
+  681  mv Hello.java src/
+  682  ./tester.sh
+  683  ls src/build/test/
+  684  ./tester.sh
+  685  mv src/Hello.java .
+  686  mv src/Memory.java Hello.java
+  687  rm src/build/test/Hello.class 
+  688  ./tester.sh
+  689  rm src/build/test/Hello.class 
+  690  ./tester.sh
+  691  ls
+  692  cd src/
+  693  ls
+  694  cd ..
+  695  ls
+  696  vim Hello.java 
+  697  mv Hello.java src/
+  698  ./tester.sh
+  699  rm src/build/test/Hello.class 
+  700  ./tester.sh
+  701  mv src/Hello.java src/Memory.java
+  702  ./tester.sh
+  703  ls
+  704  ./tester.sh
+  705  ./myprog
+  706  ./tester.sh
+  707  fivm --help
+  708  fivmc --help
+  709  lclear
+  710  clear
+  711  ./tester.sh
+  712  clear
+  713  ls
+  714  ./tester.sh
+  715  ./myprog
+  716  ./tester.sh
+  717  ./myprog
+  718  ./tester.sh
+  719  clear
+  720  ls
+  721  history | grep gdb
+  722  ls
+  723  gdb --tui myprog
+  724  ifconfig
+  725  ./tester.sh
+  726  ls
+  727  cd myprog.build/
+  728  ls
+  729  grep -r Memory.java
+  730  grep -r Memory.java .
+  731  cd ..
+  732  cd myprog.build/
+  733  grep -r Memory.java .
+  734  grep -r Memory.java:23 .
+  735  grep -r Memory.java:25 .
+  736  grep -r Memory.java:26 .
+  737  cd ..
+  738  cd myprog.build/
+  739  ls
+  740  grep -r Memory.java:26 .
+  741  ls
+  742  grep -r Memory.java .
+  743  grep -r Memory.java:24 .
+  744  grep -r Memory.java:23 .
+  745  grep -r Memory.java:26 .
+  746  grep -r Memory.java:27 .
+  747  grep -r Memory.java:28 .
+  748  grep -r Memory.java:25 .
+  749  grep -r Memory.java:24 .
+  750  grep -r Memory.java .
+  751  grep -r Memory.java
+  752  grep -r Memory.java .
+  753  cd ..
+  754  ./tester.sh
+  755  cd myprog.build/
+  756  ls
+  757  grep -r Memory.java .
+  758  grep -r Memory.java:23 .
+  759  grep -r Memory.java:26 .
+  760  grep -r Memory.java:23 .
+  761  cd ..
+  762  ./tester.sh
+  763  cd myprog.build/
+  764  ls
+  765  grep Memory.java .
+  766  history grep
+  767  history | grep grep
+  768  grep -r Memory.java .
+  769  grep -r Memory.java:we .
+  770  grep -r Memory.java:23 .
+  771  grep -r Memory.java:24 .
+  772  grep -r Memory.java:25 .
+  773  grep -r Memory.java:26 .
+  774  grep -r Memory.java:27 .
+  775  grep -r fivmr_arrayAlloc .
+  776  grep -r fivmr .
+  777  cd ..
+  778  ./tester.sh
+  779  cd myprog.build/
+  780  ls
+  781  grep -r fivmr .
+  782  grep fivmr_arrayAlloc
+  783  grep -r fivmr_arrayAlloc .
+  784  grep -r Alloc .
+  785  grep -r array .
+  786  grep -r Arraay .
+  787  grep -r Array .
+  788  grep -r 128 .
+  789  grep -r 238 .
+  790  grep -r 138 .
+  791  grep -r 5234 .
+  792  grep -r 5235 .
+  793  grep -r 5215 .
+  794  grep -r 17 .
+  795  grep -r 171 .
+  796  grep -r 6124 .
+  797  s
+  798  ls
+  799  grep cd ..
+  800  ./tr
+  801  cd ..
+  802  ./tester.sh
+  803  cd myprog.build/
+  804  ls
+  805  grep -r Memory.java:31 .
+  806  sudo shutdown -h 0
+  807  ls
+  808  clear
+  809  ls
+  810  cd repos/
+  811  ls
+  812  cd spring2015/
+  813  ls
+  814  cd cse605/
+  815  ls
+  816  history | grep gdb
+  817  gdb --tui myprog
+  818  ls
+  819  vim ~/.gdbinit 
+  820  gdb --tui myprog
+  821  history | grep gdb
+  822  ls
+  823  cd fivm/
+  824  ls
+  825  cd test
+  826  ls
+  827  cd java/
+  828  ls
+  829  cd src/
+  830  ls
+  831  cd com/fiji/fivm/test/
+  832  ls
+  833  ll
+  834  history
+  835  history | grep fivmc
+  836  history | grep cd
+  837  cd ~/scratch/
+  838  ls
+  839  cd src/
+  840  ls
+  841  vim Hello.java 
+  842  ls
+  843  cd ..
+  844  ls
+  845  vim tester 
+  846  ./tester 
+  847  ./hello
+  848  ls
+  849  history > history.txt

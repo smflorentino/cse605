@@ -1,0 +1,434 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'getoptlong'
+
+meUnresolved=Pathname.new($0)
+me=meUnresolved.realpath
+bindir=me.dirname.realpath
+$homedir=bindir.parent
+$libdir=$homedir+"lib"
+$testBindir=$homedir+"bin"
+
+$dollarZero=$0
+
+require ($libdir+"config.rb")
+require ($libdir+"fijiconfig.rb")
+require ($libdir+"testlib.rb")
+
+opts=GetoptLong.new([ '--help', GetoptLong::NO_ARGUMENT ],
+                    [ '--output', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--only', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--file', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--config', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--quiet', GetoptLong::NO_ARGUMENT ],
+                    [ '--batch', GetoptLong::NO_ARGUMENT ],
+                    [ '--verbose', GetoptLong::NO_ARGUMENT ])
+
+def help
+  puts "testmake -- run a bunch of tests"
+  puts
+  puts "Unless told otherwise via options, testmake reads Makefile.Test and"
+  puts "Makefile.Test.conf (if it exists), and executes the tests.  Results"
+  puts "are stored in tester-output.conf.  Unless a target list is given,"
+  puts "the first target in the file is executed."
+  puts
+  puts "Usage: testmake [options] [<target1> [<target2> ...]]"
+  puts
+  puts "--output <file>         store results in <file> instead"
+  puts "--only <pattern>        only execute targets matching <pattern>"
+  puts "--file <file>           read <file> instead of Makefile.Test"
+  puts "--config <file>         read configuration from <file> instead of"
+  puts "                        Makefile.Test.conf"
+  puts "--quiet                 print less output"
+  puts "--verbose               print more output"
+  puts "--batch                 do not delete tester-output.conf, and do not"
+  puts "                        print a summary at the end"
+end
+
+if ENV['TESTER_OUTPUT_FILE']
+  $output=ENV['TESTER_OUTPUT_FILE']
+else
+  $output='tester-output.conf'
+end
+
+$dotsOnly=false
+$verbose=false
+$runPattern=//
+$file="Makefile.Test"
+$config=nil
+$batch=false
+
+opts.each {
+  | opt, arg |
+  case opt
+  when '--help'
+    help
+    exit 0
+  when '--file'
+    $file=arg
+  when '--config'
+    $config=arg
+  when '--only'
+    # FIXME: not sure if this is wise.
+    $runPattern=Regexp.compile(arg)
+  when '--verbose'
+    $verbose=true
+  when '--quiet'
+    $dotsOnly=true
+  when '--output'
+    $output=arg
+  when '--batch'
+    $batch=true
+  end
+}
+
+$configSet=false
+
+if $config
+  $configSet=true
+else
+  $config=$file+".conf"
+end
+
+$vars={
+  "RUBY"=>$ruby,
+  "MAKE"=>"make",
+  "TESTMAKE"=>"#{$ruby} #{me}"
+}
+
+if $configSet or FileTest.exist? $config
+  conf=FijiConfig::parse(IO::read($config))
+  conf.each_pair {
+    | key, val |
+    $vars[key]=val
+  }
+end
+
+$targsToRun=[]
+
+ARGV.each {
+  | arg |
+  if arg=~/=/
+    $vars[$`]=$'
+  else
+    $targsToRun << arg
+  end
+}
+
+class TestTarget
+  attr_reader :dependencies
+  attr_reader :test
+  attr_accessor :alreadyRun
+  attr_accessor :alreadyFailed
+  
+  def initialize(name,dependencies)
+    @test=Test.new(name)
+    @dependencies=dependencies
+    @alreadyRun=false
+    @alreadyFailed=false
+  end
+  
+  def name
+    @test.name
+  end
+  
+  def commands
+    @test.commands
+  end
+end
+
+class LineParser
+  def initialize(inp)
+    @inp=inp
+    @curLine=nil
+    @eof=false
+  end
+  
+  def currentLine
+    if @eof
+      return nil
+    elsif @curLine
+      @curLine
+    else
+      advance
+    end
+  end
+  
+  def consumeLine
+    result=currentLine
+    @curLine=nil
+    result
+  end
+  
+  def advance
+    if @eof
+      return nil
+    end
+    @curLine=nil
+    begin
+      @curLine=@inp.readline
+    rescue EOFError
+      @eof=true
+      return nil
+    end
+    @curLine
+  end
+end
+
+def varSub(str,&proc)
+  idx=0
+  result=''
+  while idx<str.size
+    if str[idx]==?$
+      idx+=1
+      if str[idx]==?$
+        result << ?$
+      elsif str[idx]==?(
+        varName=''
+        idx+=1
+        while idx<str.size and str[idx]!=?)
+          varName << str[idx]
+          idx+=1
+        end
+        if $vars[varName]
+          if proc
+            proc.call(varName)
+          end
+          result << $vars[varName]
+        end
+      else
+        # FIXME: this looks wrong, but it may be compatible with what
+        # make does.  or not.
+        result << ?$
+      end
+    else
+      result << str[idx]
+    end
+    idx+=1
+  end
+  result
+end
+
+$targs={}
+$targOrder=[]
+
+File.open($file) {
+  | inp |
+  
+  p=LineParser.new(inp)
+  
+  loop {
+    cmd=p.consumeLine
+    break unless cmd
+    
+    if cmd=~/^#/ or cmd.strip.empty?
+      # ignore
+    elsif cmd=~/=/
+      $vars[$`.strip]=varSub(FijiConfig::parse($').to_s)
+    elsif cmd=~/:/
+      name=$`
+      deps=$'
+      tt=TestTarget.new(name,
+                        deps.split.collect{|dep| varSub(dep)})
+      loop {
+        command=p.advance
+        break unless command
+        command.chomp!
+        if command.strip.empty? or command=~/^#/
+          # ignore
+        elsif command=~/^\t/
+          cmd=$'
+          wholeCmd=''
+          subTest=false
+          loop {
+            if cmd=~/\\\s*$/
+              wholeCmd << $`
+              wholeCmd << "\n"
+              cmd=p.advance
+              break unless cmd
+              cmd.chomp!
+            else
+              wholeCmd << cmd
+              wholeCmd << "\n"
+              break
+            end
+          }
+          wholeCmd=varSub(wholeCmd) {
+            | var |
+            if var=='TESTMAKE'
+              subTest=true
+            end
+          }
+          
+          env={}
+          
+          origWholeCmd=wholeCmd
+          loop {
+            if wholeCmd=~/^(\s*)([a-zA-Z0-9_]+)(\s*)=/
+              varName=$2
+              theRest=$~.post_match
+              ep=FijiConfig::Parser.new(theRest,0)
+              ep.proceedThroughWS
+              value=ep.parseNode
+              raise "Bad environment variable setting in #{origWholeCmd}" unless value.is_a? String
+              env[varName]=value
+              wholeCmd=theRest[ep.idx..-1]
+            else
+              break
+            end
+          }
+          
+          tt.test.command(wholeCmd.chomp,
+                          :subTest=>subTest,
+                          :env=>env)
+          p.consumeLine
+        elsif command=~/^--/
+          options=FijiConfig::parse("{"+varSub($')+"}")
+
+          if options['exitStatus']
+            tt.commands.last.exitStatus=options['exitStatus'].to_i
+            options.delete 'exitStatus'
+          end
+          
+          if options['timeout']
+            tt.commands.last.timeout=options['timeout'].to_i
+            options.delete 'timeout'
+          end
+          
+          if options['subTest']
+            tt.commands.last.subTest=(options['subTest'].upcase=="TRUE")
+            options.delete 'subTest'
+          end
+          
+          if options['env']
+            options['env'].each_pair {
+              | key, val |
+              tt.test.env[key]=val
+            }
+            options.delete 'env'
+          end
+          
+          def eachHack(value)
+            raise unless Array
+            if value.is_a? Array
+              value.each {
+                | subValue |
+                yield subValue
+              }
+            else
+              yield value
+            end
+          end
+          
+          if options['successLine']
+            eachHack(options['successLine']) {
+              | value |
+              tt.test.successLine(value)
+            }
+            options.delete 'successLine'
+          end
+          if options['successPattern']
+            eachHack(options['successPattern']) {
+              | value |
+              tt.test.successPattern(value)
+            }
+            options.delete 'successPattern'
+          end
+          if options['failPattern']
+            eachHack(options['failPattern']) {
+              | value |
+              tt.test.failPattern(value)
+            }
+            options.delete 'failPattern'
+          end
+          
+          unless options.empty?
+            options.keys.each {
+              | key |
+              $stderr.puts "Warning: Ignoring option: #{key}"
+            }
+          end
+          
+          p.consumeLine
+        else
+          break
+        end
+      }
+      $targs[tt.name]=tt
+      $targOrder << tt
+    else
+      raise "Parse error at: #{cmd}"
+    end
+  }
+}
+
+if $targOrder.empty?
+  raise "#{$file} contains no targets"
+end
+
+if $targsToRun.empty?
+  $targsToRun << $targOrder[0].name
+end
+
+#unless $verbose or $dotsOnly
+#  puts "#{subSpaces}Running #{$file} in #{Dir.pwd}:"
+#end
+
+def runTarg(targName)
+  tt=$targs[targName]
+  raise "Could not find target #{targName}" unless tt
+  unless tt.alreadyRun
+    allGood=true
+    tt.dependencies.each {
+      | dep |
+      allGood&=runTarg(dep)
+    }
+    unless tt.commands.empty?
+      if allGood
+        tt.test.runTest
+      else
+        tt.test.report("FAIL: deps failed","")
+      end
+    end
+    unless allGood
+      tt.alreadyFailed=true
+    end
+    tt.alreadyRun=true
+  end
+  return !tt.alreadyFailed
+end
+
+unless $batch or subSpaces!=''
+  resetDB($output)
+end
+
+ENV['TESTER_OUTPUT_FILE']=Pathname.new($output).realpath.to_s
+
+if $dotsOnly and not $verbose
+  $stdout.print "Running tests in #{$file} "
+  $stdout.flush
+end
+
+$targsToRun.each {
+  | targName |
+  runTarg(targName)
+}
+
+unless $verbose or subSpaces!=''
+  if $dotsOnly
+    $stdout.puts
+  else
+    puts "#{subSpaces}Finished at #{niceTime}"
+  end
+end
+
+unless $batch or subSpaces!=''
+  puts
+  unless summarize($output,false)
+    exit 1
+  end
+end
+
+
+

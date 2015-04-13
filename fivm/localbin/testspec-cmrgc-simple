@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G cmr configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc . -m SpecApplication -G cmr
+
+$localbindir/runspec ./SPECjvm98-cmrgc
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc
+

@@ -1,0 +1,28 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/fijiscj.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fijicore.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fivmr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fast-md5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fivmutil.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/scj.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/hardrtj.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fiji-asm.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jasmin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fivmrunner.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/rtsj.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fivmtest.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fivmcommon.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bottomup.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fivmc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/fijirt.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/fijicore/src" />
+      <root url="file://$PROJECT_DIR$/runtimej/src" />
+    </SOURCES>
+  </library>
+</component>

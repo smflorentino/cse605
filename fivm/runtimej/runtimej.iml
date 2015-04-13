@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="scj" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="module" module-name="scjruntime" />
+    <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="fiji-asm" />
+    <orderEntry type="module" module-name="ovm" />
+    <orderEntry type="module" module-name="fijirt" />
+    <orderEntry type="module" module-name="fiji1" />
+    <orderEntry type="module" module-name="fijicore" />
+    <orderEntry type="module" module-name="fiji" />
+    <orderEntry type="module" module-name="common2" />
+    <orderEntry type="module" module-name="common1" />
+    <orderEntry type="module" module-name="RTSJ" />
+  </component>
+</module>

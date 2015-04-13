@@ -1,0 +1,147 @@
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z accessed Lgnu/classpath/Pointer32;/data/I
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z dynamically called Lgnu/classpath/Pointer32;/<init>(I)V
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V accessed Ljava/nio/Buffer;/address/Lgnu/classpath/Pointer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/position()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/position(I)Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/limit()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/limit(I)Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/hasArray()Z
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/array()[B
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/arrayOffset()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Lgnu/java/nio/VMChannel;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Lgnu/java/nio/VMChannel;/isThreadInterrupted()Z
+fivmr reflect log: Lspec/jbb/Company;/<clinit>()V used Lspec/jbb/Company;
+fivmr reflect log: Lspec/jbb/infra/Factory/ExpandingContainer;/<clinit>()V used Ljava/lang/Object;
+fivmr reflect log: Lspec/jbb/infra/Factory/ExpandingContainer;/<clinit>()V used Lspec/jbb/infra/Factory/Heap;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newPermInstance(Ljava/lang/String;)Ljava/lang/Object; used Lspec/jbb/infra/Factory/ExpandingContainer;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/permInstance(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Factory/ExpandingContainer;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/permInstance(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Factory/ExpandingContainer;/<init>(Ljava/lang/Class;)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/permInstance(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/infra/Factory/ExpandingContainer;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/initClassRef()V used Ljava/lang/Object;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/initClassRef()V used Ljava/lang/String;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/initClassRef()V used Lspec/jbb/infra/Factory/Container;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceIn(Ljava/lang/String;Lspec/jbb/infra/Factory/Container;)Ljava/lang/Object; used Lspec/jbb/infra/Finder;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/permInstance(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Factory/Heap;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/permInstance(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Factory/Heap;/<init>(Lspec/jbb/infra/Factory/Container;)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/permInstance(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/infra/Factory/Heap;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Finder;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/infra/Finder;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Company;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/Company;
+fivmr reflect log: Lspec/jbb/infra/Collections/longStaticBTree;/createLongBTree(Lspec/jbb/infra/Base;Lspec/jbb/infra/AccessMode;)Lspec/jbb/infra/Collections/longStaticBTree; used Lspec/jbb/infra/Collections/longStaticBTree;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Collections/longStaticBTree;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; alloced Lspec/jbb/infra/Collections/longStaticBTree;
+fivmr reflect log: Lspec/jbb/infra/Collections/StringStaticBTree;/<clinit>()V used Lspec/jbb/infra/Collections/StringStaticBTree;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Collections/StringStaticBTree;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; alloced Lspec/jbb/infra/Collections/StringStaticBTree;
+fivmr reflect log: Lspec/jbb/TimerData;/<clinit>()V used Lspec/jbb/TimerData;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; dynamically called Lspec/jbb/TimerData;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; alloced Lspec/jbb/TimerData;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; used Lgnu/java/net/protocol/file/Handler;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; dynamically called Lgnu/java/net/protocol/file/Handler;/<init>()V
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; alloced Lgnu/java/net/protocol/file/Handler;
+fivmr reflect log: Ljava/io/VMFile;/list(Ljava/lang/String;)[Ljava/lang/String; used Ljava/lang/String;
+fivmr reflect log: Ljava/io/VMFile;/list(Ljava/lang/String;)[Ljava/lang/String; alloced [Ljava/lang/String;
+fivmr reflect log: Ljava/net/URLClassLoader;/addURLImpl(Ljava/net/URL;)V used Lgnu/java/net/loader/Load_file;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; used Lgnu/java/net/protocol/jar/Handler;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; dynamically called Lgnu/java/net/protocol/jar/Handler;/<init>()V
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; alloced Lgnu/java/net/protocol/jar/Handler;
+fivmr reflect log: Ljava/util/logging/LogManager;/locateClass(Ljava/lang/String;)Ljava/lang/Class; used Ljava/util/logging/ConsoleHandler;
+fivmr reflect log: Ljava/util/logging/LogManager;/createInstance(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Object; dynamically called Ljava/util/logging/ConsoleHandler;/<init>()V
+fivmr reflect log: Ljava/util/logging/LogManager;/createInstance(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Object; alloced Ljava/util/logging/ConsoleHandler;
+fivmr reflect log: Ljava/util/logging/LogManager;/getInstanceProperty(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object; dynamically called Ljava/util/logging/SimpleFormatter;/<init>()V
+fivmr reflect log: Ljava/util/logging/LogManager;/getInstanceProperty(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object; alloced Ljava/util/logging/SimpleFormatter;
+fivmr reflect log: Ljava/util/logging/LogManager;/getInstanceProperty(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object; used Ljava/util/logging/Formatter;
+fivmr reflect log: Lspec/jbb/Item;/<clinit>()V used Lspec/jbb/Item;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Item;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/Item;
+fivmr reflect log: Lspec/jbb/infra/Collections/longBTreeNode;/createlongBTreeNode(Lspec/jbb/infra/Base;Lspec/jbb/infra/AccessMode;)Lspec/jbb/infra/Collections/longBTreeNode; used Lspec/jbb/infra/Collections/longBTreeNode;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Collections/longBTreeNode;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; alloced Lspec/jbb/infra/Collections/longBTreeNode;
+fivmr reflect log: Lspec/jbb/Warehouse;/<clinit>()V used Lspec/jbb/Warehouse;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Warehouse;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Warehouse;/<init>(Lspec/jbb/Company;Lspec/jbb/infra/Collections/longStaticBTree;)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/Warehouse;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/infra/Collections/longStaticBTree;
+fivmr reflect log: Lspec/jbb/Address;/<clinit>()V used Lspec/jbb/Address;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObjectNear(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object; dynamically called Lspec/jbb/Address;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObjectNear(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object; alloced Lspec/jbb/Address;
+fivmr reflect log: Lspec/jbb/infra/Collections/longBTree;/createLongBTree(Lspec/jbb/infra/Base;Lspec/jbb/infra/AccessMode;)Lspec/jbb/infra/Collections/longBTree; used Lspec/jbb/infra/Collections/longBTree;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Collections/longBTree;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/infra/Collections/longBTree;
+fivmr reflect log: Lspec/jbb/Stock;/<clinit>()V used Lspec/jbb/Stock;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Stock;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Stock;/<init>(Lspec/jbb/Company;IS)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/Stock;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/infra/Collections/longBTreeNode;
+fivmr reflect log: Lspec/jbb/District;/<clinit>()V used Lspec/jbb/District;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/District;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/District;/<init>(SB)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/District;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/TimerData;
+fivmr reflect log: Lspec/jbb/Customer;/<clinit>()V used Lspec/jbb/Customer;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Customer;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/Customer;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceNear(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; alloced Lspec/jbb/Address;
+fivmr reflect log: Lspec/jbb/infra/Collections/StringBTreeNode;/<clinit>()V used Lspec/jbb/infra/Collections/StringBTreeNode;
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; dynamically called Lspec/jbb/infra/Collections/StringBTreeNode;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Factory;/newInstanceWith(Ljava/lang/Class;Lspec/jbb/infra/Base;)Ljava/lang/Object; alloced Lspec/jbb/infra/Collections/StringBTreeNode;
+fivmr reflect log: Lspec/jbb/History;/<clinit>()V used Lspec/jbb/History;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/History;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/History;/<init>(SBSBSLjava/util/Date;FLjava/lang/String;)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/History;
+fivmr reflect log: Lspec/jbb/Order;/<clinit>()V used Lspec/jbb/Order;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Order;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/Order;/<init>(Lspec/jbb/Company;IBSSLspec/jbb/Customer;FFF)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/Order;
+fivmr reflect log: Lspec/jbb/Orderline;/<clinit>()V used Lspec/jbb/Orderline;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObjectNear(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object; dynamically called Lspec/jbb/Orderline;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObjectNear(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object; dynamically called Lspec/jbb/Orderline;/<init>(Lspec/jbb/Company;IBSSSZ)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObjectNear(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Object; alloced Lspec/jbb/Orderline;
+fivmr reflect log: Lspec/jbb/NewOrder;/<clinit>()V used Lspec/jbb/NewOrder;
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/NewOrder;/<init>()V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; dynamically called Lspec/jbb/NewOrder;/<init>(Lspec/jbb/Order;IBS)V
+fivmr reflect log: Lspec/jbb/infra/Factory/Container;/allocObject(Ljava/lang/Class;)Ljava/lang/Object; alloced Lspec/jbb/NewOrder;
+fivmr reflect log: Ljava/lang/VMSystem;/setOut(Ljava/io/PrintStream;)V used Ljava/lang/System;
+fivmr reflect log: Ljava/lang/VMSystem;/setOut(Ljava/io/PrintStream;)V accessed Ljava/lang/System;/out/Ljava/io/PrintStream;
+fivmr reflect log: Ljava/lang/VMSystem;/setErr(Ljava/io/PrintStream;)V used Ljava/lang/System;
+fivmr reflect log: Ljava/lang/VMSystem;/setErr(Ljava/io/PrintStream;)V accessed Ljava/lang/System;/err/Ljava/io/PrintStream;
+fivmr reflect log: Ljava/util/Calendar;/getInstance(Ljava/util/TimeZone;Ljava/util/Locale;)Ljava/util/Calendar; used Ljava/util/GregorianCalendar;
+fivmr reflect log: Lspec/reporter/Metrics;/tableAndGraph(Ljava/lang/String;ZLjava/lang/String;)Ljava/lang/String; used Ljava/awt/image/BufferedImage;
+fivmr reflect log: Ljava/awt/Toolkit;/getDefaultToolkit()Ljava/awt/Toolkit; used Lgnu/java/awt/peer/gtk/GtkToolkit;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/open(Ljava/lang/String;I)I used Ljava/io/IOException;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/open(Ljava/lang/String;I)I dynamically called Ljava/io/IOException;/<init>(Ljava/lang/String;)V
+fivmr reflect log: Lgnu/java/nio/VMChannel;/open(Ljava/lang/String;I)I alloced Ljava/io/IOException;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z used Lgnu/java/security/provider/Gnu;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z dynamically called Lgnu/java/security/provider/Gnu;/<init>()V
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z alloced Lgnu/java/security/provider/Gnu;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z used Lgnu/javax/crypto/jce/GnuCrypto;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z dynamically called Lgnu/javax/crypto/jce/GnuCrypto;/<init>()V
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z alloced Lgnu/javax/crypto/jce/GnuCrypto;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z used Lgnu/javax/crypto/jce/GnuSasl;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z dynamically called Lgnu/javax/crypto/jce/GnuSasl;/<init>()V
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z alloced Lgnu/javax/crypto/jce/GnuSasl;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z used Lgnu/javax/net/ssl/provider/Jessie;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z dynamically called Lgnu/javax/net/ssl/provider/Jessie;/<init>()V
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z alloced Lgnu/javax/net/ssl/provider/Jessie;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z used Lgnu/javax/security/auth/callback/GnuCallbacks;
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z dynamically called Lgnu/javax/security/auth/callback/GnuCallbacks;/<init>()V
+fivmr reflect log: Ljava/security/Security;/loadProviders(Ljava/lang/String;Ljava/lang/String;)Z alloced Lgnu/javax/security/auth/callback/GnuCallbacks;
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; used Lgnu/java/security/provider/X509CertificateFactory;
+fivmr reflect log: Lgnu/java/security/Engine;/getCompatibleConstructor(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/reflect/Constructor; dynamically called Lgnu/java/security/provider/X509CertificateFactory;/<init>()V
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; alloced Lgnu/java/security/provider/X509CertificateFactory;
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; used Lgnu/java/security/jce/sig/EncodedKeyFactory;
+fivmr reflect log: Lgnu/java/security/Engine;/getCompatibleConstructor(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/reflect/Constructor; dynamically called Lgnu/java/security/jce/sig/EncodedKeyFactory;/<init>()V
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; alloced Lgnu/java/security/jce/sig/EncodedKeyFactory;
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; used Lgnu/java/security/jce/sig/DSSParameters;
+fivmr reflect log: Lgnu/java/security/Engine;/getCompatibleConstructor(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/reflect/Constructor; dynamically called Lgnu/java/security/jce/sig/DSSParameters;/<init>()V
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; alloced Lgnu/java/security/jce/sig/DSSParameters;
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; used Lgnu/java/security/jce/sig/SHA160withDSS;
+fivmr reflect log: Lgnu/java/security/Engine;/getCompatibleConstructor(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/reflect/Constructor; dynamically called Lgnu/java/security/jce/sig/SHA160withDSS;/<init>()V
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; alloced Lgnu/java/security/jce/sig/SHA160withDSS;
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; used Lgnu/java/security/jce/hash/Sha160Spi;
+fivmr reflect log: Lgnu/java/security/Engine;/getCompatibleConstructor(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/reflect/Constructor; dynamically called Lgnu/java/security/jce/hash/Sha160Spi;/<init>()V
+fivmr reflect log: Lgnu/java/security/Engine;/getInstance(Ljava/lang/String;Ljava/lang/String;Ljava/security/Provider;[Ljava/lang/Object;)Ljava/lang/Object; alloced Lgnu/java/security/jce/hash/Sha160Spi;

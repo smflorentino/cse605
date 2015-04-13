@@ -1,0 +1,301 @@
+Fiji VM Evaluation Distribution v0.9.1
+Copyright (C) 2008, 2009, 2010 Fiji Systems Inc.
+
+
+Contents
+1.  Introduction
+2.  Supported Systems
+3.  Installation
+4.  Basic Use
+5.  Legal
+
+
+1.  INTRODUCTION
+
+  Thank you for evaluating the Fiji VM.  This distribution contains 
+  everything you need to use the Fiji VM to compile Java programs to 
+  high-performance native executables.
+  
+  With Fiji VM, Java software runs quickly, predictably, and with a small 
+  footprint.  Supported features include:
+  
+  - Real time garbage collection, which leads to nearly imperceptible 
+  garbage collection pauses.
+  
+  - High performance compilation.  The Fiji VM generates fast native code.
+  
+  - High performance threading and synchronization.
+  
+  - Small footprint.
+  
+  This distribution contains everything you need to build Fiji VM for
+  either desktop or server class systems, or for embedded systems using
+  the RTEMS operating system.
+
+
+2.  SUPPORTED SYSTEMS
+
+  The following platforms are known to be stable in this release:
+  
+  Linux     x86, x86_64, PowerPC
+  Mac OS X  x86, x86_64, PowerPC
+  RTEMS     x86, PowerPC, SPARC (ERC32 and LEON)
+  
+  Note that Fiji VM requires the following software installed:
+ 
+  Java 1.5 or later
+  Ruby 1.8 or later
+  GCC, preferably version 4.0 or later
+  C library with pthread support (if targetting Linux or Mac)
+
+
+3.  INSTALLATION
+
+  To install the Fiji VM, start by running the configure script, which
+  detects features of your operating system.  Once you are in the
+  Fiji VM's home directory (same directory as this README file), run
+  the following command:
+  
+  $ ./configure --prefix=<where to install>
+  
+  A common choice for the prefix is /usr/local; for example:
+  
+  $ ./configure --prefix=/usr/local
+  
+  Note that if the --prefix option is not given, /usr/local will be
+  used as the default.  Next, compile the Fiji VM code by running:
+  
+  $ make
+  
+  This should only take a minute or two.  After it finishes, log in as
+  root and run the following command to install Fiji VM on your system:
+  
+  # make install
+  
+  This will place the fivmc compiler in /usr/local/bin (or whatever 
+  location you specified to the configure script).  At this point, Fiji
+  VM should be ready to use.  The remainder of this section discusses
+  optional steps that you can take to verify and optimize your
+  installation; if you're in a hurry you may skip to section 4.
+
+
+3.1  VERIFY YOUR INSTALLATION
+
+  It is recommended that you run the compiler and VM test suite before
+  using the Fiji VM.  To do this, just run the following command from
+  the same directory as this README file:
+  
+  $ make check
+  
+  This can take an hour or more, even on a fast machine.  If the
+  verification completes successfully, you should see the message "ALL
+  TESTS PASSED".
+
+
+3.2  OPTIMIZE YOUR INSTALLATION
+
+  By default, the Fiji VM compiler is configured to use a single
+  processor, and to run using the default Java virtual machine
+  installed on your system.  The options are read from the following
+  two files:
+  
+  /usr/local/share/fivm-v0.9.1/lib/fivmcrc
+  ~/.fivmcrc
+  
+  Note that if you requested a prefix other that /usr/local, then the 
+  directory of the fivmcrc file changes appropriately.  The ~/.fivmcrc 
+  file is a per-user set of configuration overrides. By default, this file 
+  does not exist; you need to create it if you'd like to have your own, 
+  per-user set of configuration overrides.  This is the recommended 
+  mechanism of optimizing your installation, as performing an upgrade will 
+  overwrite your system-global fivmcrc file.  The remainder of this 
+  section assumes that you will optimize your installation by editing 
+  ~/.fivmcrc.
+
+
+3.2.1  PICK YOUR JAVA HOST VM
+
+  The Fiji VM compiler is itself written in Java, and thus requires a 
+  "host VM" to run.  In order to change the Java virtual machine used for 
+  running the Fiji VM compiler, append the following line to ~/.fivmcrc:
+  
+  --host-vm-cmd  <path to java program>
+  
+  For example, on Linux systems it is common to have the 1.5 JDK installed 
+  in /opt/jdk1.5.0_18; in that case you would append:
+  
+  --host-vm-cmd  /opt/jdk1.5.0_18/bin/java
+  
+  On Mac OS X systems, the 1.5 JDK is the default; however if you wish to 
+  ensure that Fiji VM uses it, you may append the following to ~/.fivmcrc:
+  
+  --host-vm-cmd  /System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/java
+  
+  We recommend using the Java 1.5.0 HotSpot Client VM.  You can verify 
+  that this is the VM you are using by running:
+  
+  $ java -version
+  
+  You should see something like:
+  
+  java version "1.5.0_19"
+  Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_19-b02-304)
+  Java HotSpot(TM) Client VM (build 1.5.0_19-137, mixed mode, sharing)
+  
+  Note, however, that if your application is compiled with Java 1.6, you 
+  will want to use a 1.6 host VM!
+
+  If your VM reports that it is a Server VM, you may be able to select
+  the Client VM with the -client option.  If so, adding -client to the
+  --host-vm-args option in your ~/.fivmcrc will improve performance, as
+  follows:
+
+  --host-vm-args -client
+
+
+3.2.2  SELECT THE NUMBER OF PROCESSORS
+
+  The Fiji VM will by default use only one processor for compilation.  If 
+  you have a multi-core machine, you can get significant speed-ups by using 
+  more cores.  To specify the number of cores, add the following line to 
+  ~/.fivmcrc:
+  
+  --jobs <number of cores>
+  
+  For example, if you have a dual-core machine, add:
+  
+  --jobs 2
+  
+  We find that for machines with more than two cores, it is best NOT to 
+  use all available cores for compilation.  Here is a handy table of the 
+  number of cores to use, given the size of the machine:
+  
+  # of CORES in MACHINE      ARGUMENT to --jobs
+           1                         1
+           2                         2
+           4                         2
+           8                         4
+      more than 8                    4
+  
+  For example, on our 8-core machine, we use:
+  
+  --jobs 4
+
+
+3.2.3  INCREASE THE JAVA VM ALLOCATION POOL SIZE
+
+  The host Java VM will, by default, use a rather small allocation
+  pool.  You can improve the performance of fivmc by telling it to use a
+  larger pool.  Select a pool size which is somewhat smaller than the
+  effective amount of available memory you have on your machine.  To
+  configure this pool size, pass memory management options to the Java
+  VM with the following line in your ~/.fivmcrc (this example assumes
+  you wish to give 1500MB of memory to the VM):
+
+  --host-vm-args -Xms1500m -Xmx1500m
+
+  If you are using -client, as well, put all three options on this line:
+
+  --host-vm-args -client -Xms1500m -Xmx1500m
+
+  Note that this option affects the Java VM used to execute the Fiji VM
+  compiler, not the executable produced by the Fiji VM compiler.
+
+
+3.3  CONFIGURING FOR RTEMS
+
+  These instructions assume that you have a working C compiler capable
+  of producing RTEMS executables, and that you have built an appropriate
+  RTEMS for your target platform.  They also assume that the
+  aforementioned C compiler is in your path, and that it and your RTEMS
+  install agree on the name of their target platform (this is the normal
+  state of affairs).
+
+  In order to configure fivmc to produce RTEMS images, you must tell it
+  the platform you wish to build for, where to find an RTEMS build for
+  that platform, and the board support package (BSP) your image is to be
+  built from.
+
+  The platform you wish to build for is specified as --target, and
+  normally it is the same as the target prefix on your C compiler
+  executable.  For example, if you use sparc-rtems4.9-gcc to build
+  RTEMS, your target is probably sparc-rtems4.9.
+
+  The location of an RTEMS build is specified with --with-rtems.  This
+  argument should point to the root of an RTEMS install.  The board
+  support package you wish to use is specified with --with-rtems-bsp.
+
+  An example configuration is:
+
+  ./configure --target=sparc-rtems4.9 \
+              --with-rtems=/opt/local/rtems-4.9.2-sparc \
+              --with-rtems-bsp=leon3
+
+  Together with the target, the two --with-rtems options specify the
+  final location of a number of RTEMS files which are required for
+  build.  If your RTEMS build target does not match your compiler
+  prefix, your install directory layout is nonstandard, or there are
+  other deviations in your install from the default RTEMS tool/install
+  setup, you may have to make some changes.  In particular, --with-rtems
+  can specify a complete path to a BSP directory, if your filesystem
+  layout differs from that which Fiji VM understands.  The above command
+  line is equivalent to:
+
+  ./configure --target=sparc-rtems4.9 \
+              --with-rtems=/opt/local/rtems-4.9.2-sparc/sparc-rtems4.9/leon3
+
+
+4.  BASIC USE
+
+  Fiji VM is an ahead-of-time compiler.  It converts Java bytecodes (i.e.
+  .class or .jar files) into a stand-alone executable.  The resulting
+  executable will then only rely on the standard C library, and, depending
+  on your platform, possibly libpthread, libdl, libm, and/or libiconv.  To
+  compile a Java program using Fiji VM, first make sure that you have
+  compiled your Java source (.java files) to Java bytecode (.class files)
+  using javac, or whatever Java source-to-bytecode compiler you prefer.
+  Once you have Java bytecode, the Fiji VM compiler may be invoked with the 
+  command 'fivmc'.  Typical use of fivmc looks like:
+  
+  $ fivmc -o myProgram . -m foo/bar/Main
+  
+  This will compile all classes found recursively from the current 
+  directory, starting with the foo.bar.Main class (which is expected to be 
+  found in ./foo/bar/Main.class).  The resulting executable will be placed 
+  in ./myProgram.  Note that auxiliary build data used by the compiler 
+  will be placed in ./myProgram.build/; you may choose to delete this 
+  directory as it can contain hundreds of megabytes of data.
+  
+  fivmc will also accept class, Jar, and zip files on the command line.  
+  For example:
+  
+  $ fivmc -o hello hello.class
+  
+  will compile the code contained in hello.class to produce an executable 
+  called ./hello.
+  
+  You may wish to adjust the optimization settings used by Fiji VM.  The 
+  default is to do modest performance optimizations while retaining full 
+  debug information.  This may produce a large executable with suboptimal 
+  performance.  The following options are provided to adjust the 
+  optimization settings of Fiji VM:
+  
+  --more-opt-size   Aggressively optimize for size.
+  --opt-size        Same optimizations as the default, but drop all
+                    debugging support.
+  --more-opt        Aggressively optimize for speed.
+  
+  To see the full list of options provided by fivmc, do:
+  
+  $ fivmc --more-help
+
+  Additional documentation is also provided in doc/index.html.
+
+
+5. LEGAL
+
+  Fiji VM includes both free software (notably, FijiCore) and non-free 
+  software made available for evaluation (namely, the Fiji VM compiler and 
+  runtime).  For full legal documentation, see the LEGAL file in this 
+  directory.
+

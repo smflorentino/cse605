@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+set -x
+
+make
+time bin/fivmc -o measuretimegaps-rtems -b payload lib/fivmtest.jar -m com.fiji.fivm.test.MeasureTimeGaps --g-def-max-mem 600k --g-def-trigger 600k --opt-size
+time bin/fivmc -o mtsg-1ms lib/fivmtest.jar -m com.fiji.fivm.test.MTSGLong_1ms --link-payload measuretimegaps-rtems --g-def-max-mem 600k --g-def-trigger 600k --opt-size
+time bin/fivmc -o mtsg-10ms lib/fivmtest.jar -m com.fiji.fivm.test.MTSGLong_10ms --link-payload measuretimegaps-rtems --g-def-max-mem 600k --g-def-trigger 600k --opt-size
+
+../makeBootImage/bin/makeBootImage mtsg-1ms
+../makeBootImage/bin/makeBootImage mtsg-10ms

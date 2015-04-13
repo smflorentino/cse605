@@ -1,0 +1,87 @@
+/*
+ * SharedScopeSingleThreadTest.java
+ * Copyright 2008, 2009, 2010, 2011, 2012, 2013 Fiji Systems Inc.
+ * This file is part of the FIJI VM Software licensed under the FIJI PUBLIC
+ * LICENSE Version 3 or any later version.  A copy of the FIJI PUBLIC LICENSE is
+ * available at fivm/LEGAL and can also be found at
+ * http://www.fiji-systems.com/FPL3.txt
+ * 
+ * By installing, reproducing, distributing, and/or using the FIJI VM Software
+ * you agree to the terms of the FIJI PUBLIC LICENSE.  You may exercise the
+ * rights granted under the FIJI PUBLIC LICENSE subject to the conditions and
+ * restrictions stated therein.  Among other conditions and restrictions, the
+ * FIJI PUBLIC LICENSE states that:
+ * 
+ * a. You may only make non-commercial use of the FIJI VM Software.
+ * 
+ * b. Any adaptation you make must be licensed under the same terms 
+ * of the FIJI PUBLIC LICENSE.
+ * 
+ * c. You must include a copy of the FIJI PUBLIC LICENSE in every copy of any
+ * file, adaptation or output code that you distribute and cause the output code
+ * to provide a notice of the FIJI PUBLIC LICENSE. 
+ * 
+ * d. You must not impose any additional conditions.
+ * 
+ * e. You must not assert or imply any connection, sponsorship or endorsement by
+ * the author of the FIJI VM Software
+ * 
+ * f. You must take no derogatory action in relation to the FIJI VM Software
+ * which would be prejudicial to the FIJI VM Software author's honor or
+ * reputation.
+ * 
+ * 
+ * The FIJI VM Software is provided as-is.  FIJI SYSTEMS INC does not make any
+ * representation and provides no warranty of any kind concerning the software.
+ * 
+ * The FIJI PUBLIC LICENSE and any rights granted therein terminate
+ * automatically upon any breach by you of the terms of the FIJI PUBLIC LICENSE.
+ */
+
+package com.fiji.fivm.test;
+
+import edu.purdue.scj.VMSupport;
+import edu.purdue.scj.BackingStoreID;
+
+import com.fiji.fivm.test.Util;
+
+public class SharedScopeSingleThreadTest {
+    public static void main(String[] args) {
+	if (args.length != 2) {
+	    System.out.println("This test requires two arguments: <iterations> <array length>");
+	    System.exit(1);
+	}
+
+	final int iterations = Integer.parseInt(args[0]);
+	final int arrayLength = Integer.parseInt(args[1]);
+
+	System.out.println("iterations = "+iterations);
+	System.out.println("arrayLength = "+arrayLength);
+
+	long size = (VMSupport.sizeOfReferenceArray(arrayLength)
+		     + VMSupport.sizeOf(Integer.class) * arrayLength * 2) * 2;
+
+	VMSupport.setTotalBackingStore(Thread.currentThread(), size + 1024);
+        VMSupport.allocBackingStoreNow();
+
+	for (int j = 0; iterations < 0 || j < iterations; j++) {
+	    System.out.println("Executing iteration #" + j);
+	    BackingStoreID bsid = VMSupport.pushScope(size, true);
+	    VMSupport.enter(bsid, new Runnable() {
+		    public void run() {
+			Integer[] array = new Integer[arrayLength];
+			for (int i = 0; i < arrayLength; i++) {
+			    array[i] = new Integer(i);
+			}
+			System.out.println("    Array populated.");
+			for (int i = 0; i < arrayLength; i++) {
+			    Util.ensureEqual(array[i], new Integer(i));
+			}
+			System.out.println("    Array verified.");
+		    }
+		});
+	    VMSupport.popScope();
+	}
+	System.out.println("That seems to have worked.");
+    }
+};

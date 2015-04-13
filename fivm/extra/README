@@ -1,0 +1,2 @@
+External dependencies which are handled by the fivm build process will
+be fetched and built under this directory.

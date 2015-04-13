@@ -1,0 +1,171 @@
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z accessed Lgnu/classpath/Pointer32;/data/I
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z dynamically called Lgnu/classpath/Pointer32;/<init>(I)V
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V accessed Ljava/nio/Buffer;/address/Lgnu/classpath/Pointer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/position()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/position(I)Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/limit()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/limit(I)Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/hasArray()Z
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/array()[B
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/arrayOffset()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Lgnu/java/nio/VMChannel;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Lgnu/java/nio/VMChannel;/isThreadInterrupted()Z
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z accessed Lgnu/classpath/Pointer32;/data/I
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z dynamically called Lgnu/classpath/Pointer32;/<init>(I)V
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z accessed Lgnu/classpath/Pointer32;/data/I
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z dynamically called Lgnu/classpath/Pointer32;/<init>(I)V
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Ljava/io/ByteArrayInputStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Lspec/io/FileInputStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Lspec/io/PrintStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Lspec/io/ValidityCheckOutputStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/runBenchmark2()Ljava/util/Properties; used Lspec/benchmarks/_202_jess/Main;
+fivmr reflect log: Lspec/harness/ProgramRunner;/runBenchmark2()Ljava/util/Properties; dynamically called Lspec/benchmarks/_202_jess/Main;/<init>()V
+fivmr reflect log: Lspec/harness/ProgramRunner;/runBenchmark2()Ljava/util/Properties; alloced Lspec/benchmarks/_202_jess/Main;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_return;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_return;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_return;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_assert;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_assert;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_assert;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_retract;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_retract;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_retract;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_printout;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_printout;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_printout;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_read;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_read;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_read;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_readline;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_readline;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_readline;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_gensym_star;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_gensym_star;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_gensym_star;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_while;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_while;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_while;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_if;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_if;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_if;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_bind;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_bind;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_bind;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_modify;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_modify;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_modify;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_and;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_and;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_and;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_or;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_or;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_or;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_not;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_not;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_not;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_eq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_eq;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_eq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_equals;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_equals;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_equals;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_not_equals;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_not_equals;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_not_equals;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_gt;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_gt;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_gt;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_lt;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_lt;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_lt;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_gt_or_eq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_gt_or_eq;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_gt_or_eq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_lt_or_eq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_lt_or_eq;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_lt_or_eq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_neq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_neq;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_neq;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_mod;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_mod;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_mod;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_plus;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_plus;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_plus;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_times;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_times;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_times;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_minus;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_minus;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_minus;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_divide;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_divide;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_divide;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_sym_cat;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_sym_cat;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_sym_cat;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_reset;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_reset;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_reset;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_run;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_run;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_run;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_facts;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_facts;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_facts;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_rules;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_rules;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_rules;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_halt;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_halt;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_halt;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_exit;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_exit;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_exit;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_clear;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_clear;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_clear;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_watch;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_watch;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_watch;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_unwatch;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_unwatch;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_unwatch;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_jess_version_string;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_jess_version_string;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_jess_version_string;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_jess_version_number;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_jess_version_number;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_jess_version_number;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_load_facts;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_load_facts;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_load_facts;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_save_facts;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_save_facts;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_save_facts;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_assert_string;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_assert_string;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_assert_string;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V used Lspec/benchmarks/_202_jess/jess/_undefrule;
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V dynamically called Lspec/benchmarks/_202_jess/jess/_undefrule;/<init>()V
+fivmr reflect log: Lspec/benchmarks/_202_jess/jess/Funcall;/<clinit>()V alloced Lspec/benchmarks/_202_jess/jess/_undefrule;

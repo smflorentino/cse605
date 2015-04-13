@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G cmr --itable-compression no configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-noifacecomp . -m SpecApplication -G cmr --itable-compression no
+
+$localbindir/runspec ./SPECjvm98-cmrgc-noifacecomp
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-noifacecomp
+

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G cmr -A cha --code-repo disk configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-cha . -m SpecApplication -G cmr -A cha --code-repo disk
+
+$localbindir/runspec ./SPECjvm98-cmrgc-cha
+

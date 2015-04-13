@@ -1,0 +1,3 @@
+--host-vm-cmd  @JAVA@
+--host-jar-cmd @JAR@
+--0-preload-internal lib/codeRepo.log

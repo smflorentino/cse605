@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -x
+set -e
+
+# FIXME
+RUBY=ruby
+
+for x in 1 2 3 4 5; do
+    time $RUBY bin/fivmc -o root-print$x -p lib/fivmtest.jar -m com.fiji.fivm.test.Print$x --g-def-max-mem 10m --g-def-trigger 5m --more-opt-size --rt-assertions yes
+done
+time $RUBY bin/fivmc -o root-sliceprint3 lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --link-payload root-print1 --link-payload root-print2 --link-payload root-print3
+time $RUBY bin/fivmc -o root-sliceprint5 lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --link-payload root-print1 --link-payload root-print2 --link-payload root-print3 --link-payload root-print4 --link-payload root-print5
+./root-sliceprint3 100000000 20000
+./root-sliceprint5 100000000 20000
+
+time $RUBY bin/fivmc -o root-piptest lib/fivmtest.jar -m com.fiji.fivm.test.PIPTest --lock-mode pip --sanity-check 1 -G cmr
+./root-piptest
+FIVMR_THREAD_AFFINITY=1 ./root-piptest
+
+time $RUBY bin/fivmc -o root-hello -b payload lib/hello.class --sanity-check 1
+time $RUBY bin/fivmc -o root-timeslicehello --link-payload root-hello lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --sanity-check 1
+./root-timeslicehello 10000000 10000
+
+time $RUBY bin/fivmc -o root-ticker -b payload lib/fivmtest.jar -m com.fiji.fivm.test.Ticker --sanity-check 1
+time $RUBY bin/fivmc -o root-slicetickerhello --link-payload root-hello --link-payload root-ticker lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --sanity-check 1
+./root-slicetickerhello 100000000 10000
+
+time $RUBY bin/fivmc -o root-recordtimestamp lib/fivmtest.jar --sanity-check 1 -m com.fiji.fivm.test.RecordTimestamp
+./root-recordtimestamp 10000000
+
+time $RUBY bin/fivmc -o root-measuretimegaps -b payload lib/fivmtest.jar -m com.fiji.fivm.test.MeasureTimeGaps --sanity-check 1
+time $RUBY bin/fivmc -o root-measuretimeslicinggaps lib/fivmtest.jar -m com.fiji.fivm.test.MeasureTimeSlicingGaps --link-payload root-measuretimegaps --sanity-check 1
+./root-measuretimeslicinggaps 10000000 100000 2 1000000
+

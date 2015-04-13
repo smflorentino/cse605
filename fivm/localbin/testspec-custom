@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling $@ configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-custom . -m SpecApplication "$@"
+
+$localbindir/runspec ./SPECjvm98-custom
+$localbindir/runspec-gctorture ./SPECjvm98-custom
+

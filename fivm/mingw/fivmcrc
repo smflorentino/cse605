@@ -1,0 +1,42 @@
+# FIXME: we should use some other quoting style, since the @foo@ thingies may
+# have quotes in them...
+
+--target		"Win32"
+--sys-arch		"x86"
+--sys-sync-type		"x86-gcc"
+--sys-os		"Win32"
+--sys-osflavor		"Win32"
+--sys-ptrsize		"4"
+--sys-endianness        "little"
+--sys-cc		"gcc"
+--sys-make		make
+--sys-debug-cflags	" -g"
+--sys-opt-cflags	" -O3 -fno-strict-aliasing -fno-optimize-sibling-calls -msse2 -mfpmath=sse -fomit-frame-pointer -momit-leaf-frame-pointer -falign-loops -fwrapv -fno-pic"
+--sys-arch-cflags	" -m32 -m32 -march=i686"
+--sys-warn-cflags	" -W -Werror"
+--sys-nowarn-cflags	" -w"
+--sys-cppflags		"-DHAVE_CONFIG_H  -D_REENTRANT -D_GNU_SOURCE -D_WIN32"
+--sys-ldflags		"  -m32 -m32 -march=i686"
+--sys-libs		" "
+--sys-noinline-attr	"__attribute__((noinline))"
+--sys-log-pagesize      12
+
+--arith-helper          int_div
+--arith-helper          int_mod
+--arith-helper          long_div
+--arith-helper          long_mod
+
+--cmacro-file		targets/Win32/cmacros.properties
+
+--pollcheck-mode        portable
+
+# we believe that the grey stack and ref map optimizations are correct,
+# so we do not need to use these options to turn them off.
+#--g-black-stack
+#--no-ref-map-opt
+
+
+
+
+
+

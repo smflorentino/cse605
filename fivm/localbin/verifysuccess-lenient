@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+success=false
+failure=false
+
+$stdin.each_line {
+  | line |
+  if line.chomp == ARGV[0].chomp
+    success=true
+  elsif line.chomp == ARGV[1].chomp
+    failure=true
+  end
+}
+
+if (not success) or failure
+  $stderr.puts "The given log indicates that the test failed."
+  exit 1
+else
+  $stderr.puts "The given log indicates that we succeeded."
+  exit 0
+end
+
+

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G cmr --no-opt configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-noopt . -m SpecApplication -G cmr --no-opt
+
+$localbindir/runspec ./SPECjvm98-cmrgc-noopt
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-noopt
+

@@ -1,0 +1,865 @@
+fivmc v0.9.1-rexported (c) 2009, 2010, 2011, 2012, 2013, 2014 Fiji Systems Inc., All Rights Reserved
+
+Usage: fivmc [<options>] -o <output> <list of paths...>
+
+Mandatory arguments:
+  --output     (or -o)  Set the name of the resulting executable file.
+  <list of paths...>    Set the paths from which we load Java bytecode.  Three
+                        possible types of paths are supported:
+                        Path to a Jar or zip file: in this case the compiler
+                           will treat the Jar or zip file the same way that
+                           any VM would, loading all .class files whose
+                           directory name and package name match.
+                        Path to a class file: in this case the class file is
+                           loaded regardless (its directory name is ignored).
+                        Path to a directory: in this case we search
+                           recursively, loading any classes whose directory
+                           name relative to the one given matches the package
+                           name.
+
+Commonly used options:
+  --main       (or -m)  Set the main class.  Use either of these formats:
+                           com/foo/MyClass
+                        or:
+                           com.foo.MyClass
+                        The default is to infer the main class from the classes
+                        found in the list of Jar files.  If exactly one main
+                        method is found, its class is used as an entrypoint;
+                        otherwise, you will be asked to use this option to
+                        manually specify the entrypoint.
+  --library    (or -L)  Set the library.  The possible arguments are FIJICORE
+                        or GLIBJ.  FIJICORE is a smaller library, and is
+                        included with fivm.  GLIBJ is GNU Classpath, and
+                        requires a separate installation; GLIBJ provides full
+                        Java 5 support but tends to result in larger
+                        executable.  The default is FIJICORE.
+  --build      (or -b)  Sets the build type.  The possible arguments are:
+                          EXE      Build a monolothic stand-alone executable.
+                                   This is the default.
+                          PAYLOAD  Build a linkable payload, which can then
+                                   be linked against a runtime and potentially
+                                   other payloads.
+                        The default is EXE; PAYLOAD is still experimental.
+  --payload    (or -p)  Equivalent to --build PAYLOAD.
+  --analysis   (or -A)  Set the analysis.  The possible arguments are:
+                          OPEN   Enable class loading and don't do any
+                                 analysis.
+                          O0CFA  Enable class loading, but use 0CFA to reduce
+                                 the code size.
+                          CHA    This implements a class hierarchy analysis,
+                                 which assumes that any method in the code
+                                 provided may be invoked (for example via
+                                 reflection), but that new code cannot be
+                                 introduced at runtime.
+                          0CFA   Implements a monomorphic (0) control-flow
+                                 analysis (CFA).  This assumes that a method
+                                 may only be invoked if the presence of that
+                                 invocation can be proven by examining both
+                                 the given code and assumptions about the
+                                 entrypoints (the main method and reflection
+                                 logs, cf. --reflect, below).
+                          E0CFA  An extended 0CFA analysis, which does a
+                                 post-processing pass over the code to limit
+                                 the set of methods after inlining is
+                                 performed.  This will kill methods that are
+                                 invoked, but always inlined.
+                        E0CFA is the default.  CHA is the safest, but produces
+                        larger executables that tend to run slower.  O0CFA is
+                        the best choice if you want class loading, though OPEN
+                        may be appropriate if you want all of your code
+                        compiled ahead-of-time.
+  --cl                  Enable class loading.  This is equivalent to -A o0cfa.
+  --gc         (or -G)  Set the garbage collector.  The possible arguments are:
+                          NONE   Turn off garbage collection.  All memory is
+                                 immortal except if scoped (SCJ or RTSJ) or
+                                 stacked (internal Fiji VM construct)
+                                 allocation is used.
+                          CMR    Concurrent Mark-Region garbage collector.
+                                 This collector gives excellent throughput and
+                                 nearly imperceptible pauses, but is not
+                                 fragmentation-tolerant.
+                          HF     Schism/cmr garbage collector, also known as
+                                 the Hybrid Fragmenting garbage collector.
+                                 This collector gives throughput that is almost
+                                 as good as CMR, even smaller pauses, and
+                                 guaranteed fragmentation-tolerance.  It is
+                                 also highly configurable; see --g-pred-level
+                                 below.
+                        The default is CMR.
+  --32                  Build in 32-bit mode.
+  --64                  Build in 64-bit mode.
+  --rt-library          Select the realtime Java library to link against.  The
+                        possible arguments are:
+                          NONE   Use only the realtime Java features provided
+                                 by Fiji VM to all Java applications.
+                          SCJ    Build an SCJ Safelet instead of a Java
+                                 application.  This option causes the compiler
+                                 to identify a class identifying the
+                                 javax.safetycritical.Safelet interface as the
+                                 application, rather than searching for a main
+                                 method.
+                                 Implies: --gc NONE --g-scoped-memory
+                                          --primordial-realtime
+                          RTSJ   Build an RTSJ application.
+                                 Implies: --g-scoped-memory
+                        This option can affect the default libraries included
+                        at compile time, some VM features available to the
+                        application, and the default entry point.  The default
+                        is NONE.
+  --scj-safelet         Safelet to be used as the primary SCJ Safelet.  The
+                        default is to infer the safelet to be used from the
+                        classes found in the list of Jar files.  If exactly one
+                        class implementing the javax.safetycritical.Safelet
+                        interface is found, it will be used.  Otherwise, you
+                        will be asked to specify one using this option.
+  --link-payload        Link the given payload into the current one.  This will
+                        make that payload available for discovery at run-time.
+  --reflect    (or -R)  Parse the given file for information about reflective
+                        and JNI invocations, accesses, and allocations.  The
+                        file can be the log generated by passing
+                        FIVMR_LOG_REFLECT=true to the runtime.
+  --jobs       (or -j)  Set the number of processors to attempt to use during
+                        compilation.  By default, this value is auto-detected,
+                        and should be set to the number of logical processors
+                        on your system.
+  --no-opt              Turn off optimizations.  This is equivalent to the
+                        following options:
+                          --c-opt none   (turn off C compiler optimizations)
+                          --no-inline  (turn off inlining)
+                          --rce no   (no redundant code elimination)
+                          --nb-reg-alloc LLS (simple register allocation)
+                        This is great for speeding up compilation; it also has
+                        the benefit of improving debugging with gdb.  But, it
+                        makes everything run a lot slower.
+  --no-inline           Disable all inlining.  Note that this even disables
+                        the inlining of methods whose body size is less than
+                        or equal to the amount of code required at a callsite.
+                        If you'd like to only disable the inlining of large
+                        methods, use --no-big-inline.
+  --no-implicit-inline  Disable all inlining except for methods explicitly
+                        marked with the @Inline attribute.  This is
+                        equivalent to --i-max-fixpoint 0 --i-max-size 0.
+  --no-big-inline       Disable inlining of large methods only; methods whose
+                        bodies are smaller than a callsite will still be
+                        inlined.  This is equivalent to --i-max-fixpoint 0.
+  --more-opt   (or -O)  Turn on more optimizations.  This will increase
+                        compilation time and code size, but will typically
+                        result in a nice performance increase.  It also
+                        disables debug support in the runtime.  This is the
+                        equivalent of the following options:
+                          --i-max-fixpoint 3  (do more inlining passes)
+                          --i-max-size 100    (inline larger methods)
+                          --rce yes           (redundant code elimination)
+                          --rt-assertions no  (disable runtime assertions)
+                          --rt-verbosity-limit 1  (disable almost all logging)
+                          --c-debug no        (disable C debug info)
+                          --unroll-budget 30  (more loop unrolling)
+  --opt-size            Optimize for size.  This turns off debugging support
+                        for the runtime and generated C code.  Equivalent to
+                        the following options:
+                          --rt-assertions no  (disable runtime assertions)
+                          --rt-verbosity-limit 1  (disable almost all logging)
+                          --c-debug no        (disable C debug info)
+  --more-opt-size       Optimize for size more aggressively.  This is
+                        equivalent to:
+                          --rt-assertions no  (disable runtime assertions)
+                          --rt-verbosity-limit 1  (disable almost all logging)
+                          --c-debug no        (disable C debug info)
+                          --no-big-inline    (disable big method inlining)
+                          --exclude-profiler (exclude sampling profiler)
+                          --unroll-budget 0  (deactivate loop unrolling)
+                          --peel-budget 40   (reduce loop peeling)
+                          --c-opt size      (tell C compiler to optimize for
+                                             size)
+  --quickly             Optimize for quick compilation while still getting
+                        reasonably good code with debug information.  This is
+                        equivalent to:
+                          --c-opt size    (use size optimizations in the C
+                                           compiler)
+                          --no-big-inline  (disable inlining of large
+                                            methods)
+                          --unroll-budget 0  (no loop unrolling)
+                          --peel-budget 40   (reduce loop peeling)
+                          --rce no        (no redundant code elimination)
+                        Note that --quickly will actually be slower than
+                        --more-opt-size in many cases; but unlike that option
+                        it will retain debug information.
+  --default-opt         Revert to default optimization flags.
+  --lock-mode           Set the locking implementation used by Fiji VM to
+                        implement 'synchronized' statements (in source code)
+                        or monitorenter/monitorexit statements (in bytecode).
+                        Possibilities are:
+                          BIASED  Highest throughput lock implementation.  All
+                                  locks are opportunistically presumed to be
+                                  thread-local, which turns out to be true
+                                  with surprisingly high probability.  In the
+                                  case that this presumption fails a fast
+                                  fallback is automatically provided.
+                          FAST    High throughput locks that don't presume
+                                  thread-locality.  In practice this will
+                                  almost never be faster than BIASED but is
+                                  somewhat more predictable.
+                          PIP     Same as FAST but adds support for Priority
+                                  Inheritance Protocol (PIP).  This is
+                                  slightly slower than FAST but prevents
+                                  priority inversion for code that uses Java
+                                  locks.
+                        Default is FAST.
+  --g-pred-level        Set the GC predictability level.  This is currently
+                        only used for --gc HF.  The possible values are:
+                          C   Highest throughput.  Allocate contiguous objects
+                              more opportunistically, and predict a lack of
+                              arraylets in array accesses.
+                          B1  Like C but don't predict a lack of arraylets.
+                          B2  Like C but allocate fewer contiguous arrays,
+                              which reduces fragmentation a bit.
+                          A   Allocate all arrays as arraylets.  This is the
+                              most predictable configuration.
+                          A1  Synonym for A (provided for compatibility with
+                              older versions).
+                          CW  Same as C but causes all GC-related fast paths
+                              to fail.  This includes array accesses,
+                              stores, and all allocations.
+                          B1W Same as B1 but causes all GC-related fast paths
+                              to fail.
+                          B2W Same as B2 but causes all GC-related fast paths
+                              to fail.
+                          AW  Same as A but causes all GC-related fast paths
+                              to fail.  This includes just stores and
+                              allocations.
+                        The default is predictability level C, which optimizes
+                        for throughput while still having a tightly bounded
+                        worst-case, which can be observed by compiling with
+                        --g-pred-level CW.
+  --rc                  Read options from the given file.  By default, the
+                        FIVMHOME/lib/targets/TARGET/fivmcrc and ~/.fivmcrc
+                        files are read prior to command-line options
+                        processing.
+  --file                Specifies that the next argument is to be part of the
+                        file list, and is not to be treated as an option.
+  --target              Select the compiler target system.  Valid arguments
+                        on your system:
+                          POSIX
+                          POSIX-linux-gnu-i686-32
+                          default
+                          i686
+                          i686-pc-linux-gnu
+                          linux-gnu
+                          local
+                          local-32
+                        Default is 'default'.
+  --sys-name            Print a string describing the target system.  This is
+                        usually the target's canonical name.
+  --version             Show the compiler version and exit.
+  --help       (or -h)  Show usage message and exit.
+  --more-help           Show a more complete usage message, with some
+                        additional options not shown above, and exit.
+
+Additional options:
+  --verbosity  (or -v)  Set the compiler verbosity level, default is 0.  The
+                        levels are as follows:
+                        Level 0: all console output is suppressed; output from
+                           make is saved to "makeLog" in the build directory
+                           (see --build-dir).
+                        Level 1: log when classes are compiled, show major
+                           phases of whole-program analysis, and show output
+                           from make on the console.
+                        Level 2: show slightly more information than level 1,
+                           but also, crucially, make a copy of the code before
+                           each phase so that internal compiler error reports
+                           can include a before-and-after view.  This slows the
+                           compiler down noticeably, but makes debugging
+                           easier.
+                        Level 3 and above: show increasingly more information
+                           from each phase.  This may be too much information
+                           to be of any use.  Maximum level is 100.  Typically,
+                           --noisy-method should be used instead of levels 3
+                           and above, since it will give a level 100 report for
+                           only one method.
+  --sanity-check        Set the compiler sanity checking level, default is 0.
+                        The levels are as follows:
+                        Level 0: do basic checks only.
+                        Level 1: turn on full sanity checking after each
+                           compilation sub-phase.
+                        Level 2: like level 1, but also dump and then reparse
+                           the IR after each sub-phase.
+  --phase-timings       Set whether or not to measure phase timings.  Default
+                        is NO.
+  --main-literal        Same as --main, but only accepts the '/'-delimited
+                        class name format.
+  --boot-file           Adds the given file to the list of files to be
+                        loaded as part of the boot classes.
+  --boot-file-override  Prepends the given file to the list of files to be
+                        loaded as part of the boot classes, allowing it to
+                        override Fiji VM's librariy.
+  --config     (or -c)  Specify the run-time configuration.  By default, it is
+                        extracted by running Main$Config, where Main is the
+                        main class specified by --main.  Using this option
+                        causes it to be read from the given file instead.  Note
+                        that in either case, command-line options override
+                        all other configuration mechanisms.
+  --skip-config         Do not try to extract any run-time configuration from
+                        anywhere except command-line options and VM defaults.
+  --java-config         Extract configuration from Java code (Main$Config).
+                        This is the default.
+  --noisy-method        Do all processing for the given method at the highest
+                        verbosity level (100).  The method name should be
+                        specified as:
+                           L<classname>;/<methodname><descriptor>
+                        This also disables parallel C1 (--parallel-c1 no),
+                        since the code that implements this feature is not
+                        thread-safe.
+  --no-extra-jars       Compile even when the list of jars is empty.  Useful
+                        if the standard library has a main method entrypoint,
+                        and you'd like to build an application that uses that.
+  --no-default-jars     Exclude the system jars.  This allows you to pass them
+                        explicitly.  The default ones are fivmcommon.jar,
+                        fivmr.jar and fijicore.jar; note that fivmcommon.jar
+                        MUST come first in the list, followed by fivmr.jar,
+                        and then fijicore.jar.
+  --no-default-reflect  Do not parse the default reflective call database.
+  --specialize-runtime  Set whether or not the runtime should be specialized.
+                        Arguments are either YES (perform specialization) or
+                        NO.  The default is YES for --build EXE.  It is not
+                        possible to specialize the runtime for --build PAYLOAD
+                        or if --link-payload is used.
+  --one-shot-payload    Set whether or not to create an optimized one-shot
+                        payload.  The default is YES for --build EXE and NO
+                        for --build PAYLOAD.  A one-shot payload is slightly
+                        faster, but can only be executed once in any given
+                        address space.  This makes it optimal for standalone
+                        executables, and generally undesirable for linkable
+                        payloads.
+  --scj                 (Deprecated) Compile an SCJ Safelet instead of a Java
+                        application.  This option is equivalent to
+                        --rt-library SCJ
+  --scj-L0              Run the SCJ Safelet as L0 SCJ applications and enable
+                        all the optimizations related to L0 SCJ. This option is
+                        equivalent to --rt-library SCJ plus L0 optimizations.
+  --scope-style         Set the style of scope stack.  Valid options are SCJ,
+                        which restricts scope structure to a linear stack, and
+                        RTSJ, which allows a tree hierarchy.  Defaults to SCJ.
+  --backend             Set the backend.  Possibilities are:
+                           C       This is the default.  Emit C code and
+                                   invoke a C compiler.
+                           NATIVE  Emit optimized assembly code instead of C.
+                                   Only available on X86 cdecl targets.
+                        Currently the native backend is not yet stable, so
+                        the C backend is recommended.
+  --obj-loc-analysis    Set the object location analysis.  The object location
+                        analysis is used to remove unnecessary scope checks,
+                        and therefore make your program run faster.  The
+                        default is FULL, which removes the most scope checks;
+                        the other options are OPEN, which removes less, or
+                        SCJ, which removes none.  If you have no intention of
+                        using any scope features in your application, you can
+                        use TRUSTED, which disables all scope checks but
+                        prohibits application-level use of scoped memory and
+                        stack allocation.
+  --env-sys-props       Set whether or not to support the setting of system
+                        properties (System.getProperties()) via the
+                        FIVMR_SYS_PROPS environment variable.  The default
+                        is YES if class loading is enabled, no otherwise.
+  --itable-compression  Set whether or not to use interface table compression.
+                        Default is YES.  Using NO is currently only useful for
+                        testing.
+  --type-epochs         Set whether or not to use multi-epoch type inclusion
+                        tests and interface dispatch.  Default is NO.  Using
+                        YES is currently only useful for testing.
+  --track-direct-subs   Set whether or not to store the direct subtypes in the
+                        payload.  Default is NO.  Using YES is currently only
+                        useful for testing.
+  --patch-points        Set whether or not patch points are CLOSED (i.e. can
+                        only throw an exception) or OPEN.  Default is CLOSED.
+                        Using OPEN is currently only useful for testing.
+  --use-ctypes-info     Set whether or not to use C typesystem meta-data.
+                        Default is NO.
+  --indirect-god-givens Set whether or not to indirect all calls and uses of
+                        C functions and C variables from the run-time.
+                        Default is NO.
+  --rt-search-root      Set whether or not to search root class files at
+                        runtime.  Default is NO.
+  --code-repo           Set the way the code is stored in memory during
+                        compilation.  Possibilities are CACHE or DISK.  DISK
+                        involves reloading the code from disk whenever it is
+                        needed, which results in less memory usage - often
+                        allowing the compiler to deal with larger programs.
+                        CACHE stores the code in memory, which uses more
+                        memory but can speed up compilation.
+  --0-log-access        Log the order in which a 0CFA-based compilation
+                        accesses classes.
+  --0-preload           Accelerate the 0CFA and E0CFA analyses on a parallel
+                        machine by preloading the given classes.
+  --0-preload-internal  Same as --0-preload, but the filename is given
+                        relative to the fivm directory.  This option also
+                        differs from --0-preload in that it only prints a
+                        warning, rather than aborting compilation, if the
+                        file is not found.
+  --object-model        Select the object model.  The possible options are
+                        CONTIGUOUS or FRAGMENTED.  Note that FRAGMENTED is
+                        selected by default for the HF garbage collector.
+                        Normally, you would not use this option directly
+                        but instead allow the garbage collector to choose
+                        the appropriate object model.
+  --header-model        Select the header model.  The possible options are
+                        NARROW or POISONED.  In both cases, the object header
+                        consists of a single pointer (but: with GC, there is
+                        typically a GC header prepended to the object header,
+                        which results in a total header size of two pointers).
+                        With POISONED, the low-order bit of the header is set,
+                        which is meant only for header model testing, but may
+                        be useful for some types of debugging as well.
+  --force-arraylets     Force all arrays to be allocated as arraylets.  Only
+                        applies to the FRAGMENTED object model, and is ignored
+                        under the HF collector.  This is useful for doing a
+                        worst-case analysis of code that uses arrays under the
+                        HF garbage collector.
+  --i-max-size          Maximum size (as per heuristic estimate) of a callee
+                        when inlining.  Default is 50.  Note that the compiler
+                        uses two method size heuristics: this option, and a
+                        built-in heuristic that determines if a method's body
+                        is smaller than a callsite (in which case inlining it
+                        is always guaranteed to reduce both code size and
+                        execution time).  But, when this option's value is
+                        too small, it overrides the other heuristic as well.
+                        Thus, setting this to values smaller than 40 is not
+                        advised; if you'd like to only inline small methods
+                        then use --i-max-fixpoint 0.  On the other hand, to
+                        increase performance, tuning this up to 100 may
+                        result in faster execution, at the expense of
+                        increased code size.
+  --i-max-fixpoint      Maximum number of fixpoint interations of inlining of
+                        methods that are not smaller than a callsite. Default
+                        is 2.  Calls to methods whose bodies are smaller than
+                        a callsite are always inlined using an unbounded
+                        fixpoint.  This option controls the depth of inlining
+                        of larger methods (whose max size is controlled by
+                        --i-max-size).  With the default setting of 2, at
+                        most 2 calls deep may get inlined.  Setting this to 3
+                        will likely increase performance.
+  --i-max-recurse       Maximum recursive inline depth.  Default is 0, which
+                        prevents recursive inlining.  Having some recursive
+                        inlining is likely to boost performance at the price
+                        of potentially significantly increased code size.
+  --i-max-caller-blocks Maximum number of blocks allowed in caller when
+                        inlining.  Default is 1000.  This limit is usually
+                        used for sanity only.  But increasing it may lead to
+                        better performance in some cases; as well, decreasing
+                        it may reduce code size.
+  --unroll-budget       Maximum size of a loop for it to be unrolled.  The
+                        unit is an internal one to the compiler, and is based
+                        on an estimate of the cost of various operations.
+                        The default is 10.
+  --peel-budget         Maximum size of a loop for it to be peeled.  The
+                        unit is an internal one to the compiler, and is based
+                        on an estimate of the cost of various operations.
+                        The default is 100.
+  --om-blocks-max       Maximum number of blocks allowed in a method before
+                        we aggressively out-of-line all non-trivial uses of
+                        the heap.  Default is 4000.
+  --rce                 Specify whether or not to run RCE (redundant code
+                        elimination).  The benefits are quite large in
+                        some cases so the default is YES.
+  --late-rce            Specify whether or not to rerun RCE (redundant code
+                        elimination) late.  Arguments are either YES or NO.
+                        Default is YES.
+  --rce-distance        Set the maximum distance between instructions for RCE
+                        to take effect.  Default is 10000.
+  --forward-motion      Specify whether or not to enable forward motion
+                        optimizations at the end of compilation, and if so,
+                        how many iterations to run.  The default is 0
+                        (disabled).  To enable pass 1, or a higher number.
+  --nb-reg-alloc        Select the register allocator.  Valid settings are:
+                          LLS    A simple but inefficient register allocator.
+                          IRC    The fast production allocator.
+                        Default is IRC unless optimizations are disabled.
+  --nb-omit-fp          Set whether to omit the frame pointer.  Omitting the
+                        frame pointer improves performance but makes
+                        debugging more difficult in some cases.
+  --opt-cm-barriers     Optimize away concurrent marking barriers if possible.
+                        Arguments are either NO, YES, AGGRESSIVE, CHECKED, or
+                        CHECKED_AGGRESSIVE.  Default is NO, since this is still
+                        experimental.
+  --filt-cm-barriers    Use a filtered concurrent marking barrier.  Enabling
+                        this feature may increase overall performance at the
+                        expense of a bit of predictability.  Default is NO;
+                        pass YES to enable.
+  --scj-scope-backing   Size of the SCJ wrapper RealtimeThread's scope backing
+                        store.  Defaults to 1MB.
+  --g-def-trigger       The default setting for the GC's trigger, in bytes.
+                        This setting can be overridden at runtime with
+                        FIVMR_GC_TRIGGER.  The default is half of whatever
+                        was specified for --g-def-max-mem.  As in other
+                        VMs, the size may be specified by suffixing K, M, or G
+                        to indicate kilobytes, megabytes, or gigabytes.
+  --g-def-max-mem       The default setting for the maximum amount of memory,
+                        in bytes, that the GC will allow itself to use.  The
+                        default is 200M on POSIX and 1M on RTEMS.  This can
+                        also be overridden at runtime using the
+                        FIVMR_GC_MAX_MEM environment variable.  As in other
+                        VMs, the size may be specified by suffixing K, M, or G
+                        to indicate kilobytes, megabytes, or gigabytes.
+  --g-finalization      Set whether or not to enable finalization support.
+                        Default is YES on POSIX; pass NO to disable.
+  --g-debug             Enable additional debugging support in the collector.
+  --g-self-man-mem      Self-manage heap memory.  The GC will allocate a single
+                        contiguous region of memory whose size is equal to the
+                        specified max memory size (see --g-def-max-mem).
+  --g-black-stack       Increase garbage collector predictability by using a
+                        black stack.  This will slow down execution, but
+                        further reduce the pause times.  Pass YES or NO.
+  --g-thread-priority   The default thread priority for the collector.  This
+                        can be overridden at runtime using the
+                        FIVMR_GC_THREAD_PRIORITY environment variable.
+  --g-scoped-memory     Enable scoped memory.  Implies --obj-loc-analysis SCJ.
+  --g-scope-checks      Sets whether or not any scope checks are emitted.
+                        Pass either YES or NO.  Default is YES.
+  --g-shared-scopes     Sets whether or not the VM will support shared scopes.
+                        Pass either YES or NO.  Default is YES.  NO is still
+                        experimental.
+  --g-def-immortal-mem  Sets the default size of the Immortal memory area in
+                        bytes.  Defaults to 100K.  Relevant only in conjunction
+                        with --g-scoped-memory.
+  --g-def-log           Sets the default for whether or not GC's get logged.
+                        On POSIX platforms you can set this at runtime using
+                        FIVMR_LOG_GC=true|false.
+  --g-def-log-sync      Sets the default for whether or not synchronous GC's
+                        get logged.  On POSIX platforms you can set this at
+                        runtime using FIVMR_LOG_SYNC_GC=true|false.
+  --g-log-mark-traps    Sets whether or not to log mark slow path traps.
+                        Default is NO.
+  --lock-impl           Same as --lock-mode; provided for compatibility with
+                        older versions.
+  --parallel-c1         Enable or disable parallelization of the C1 compiler.
+                        Specify YES to enable, NO to disable.  Default is YES,
+                        but disabling it may be useful for debugging.
+  --max-threads         Set the maximum number of threads.  Default is 1024 on
+                        POSIX and 10 on RTEMS.
+  --sa-size             Set the number of bytes, per thread, usable by the
+                        stack allocator.  Default is 64K on POSIX and 8K on
+                        RTEMS.
+  --static-jni          Statically link JNI libraries.  This is a non-standard
+                        approach to JNI; using --no-dyn-load is better.
+  --no-dyn-loading      Disable dynamic loading of native code.  This only
+                        affects JNI code.  When this option is used, JNI code
+                        modules must be specified using the --link option,
+                        and any JNI on-load functions must be specified using
+                        --jni-on-load.
+  --jni-on-load         Statically call the given JNI on-load handler.  This
+                        option may be specified multiple times, if there are
+                        multiple on-load handlers.
+  --light-throw         Use a lighter implementation of exception throwing,
+                        which makes debugging instrumentation harder but may
+                        result in smaller code and faster execution for some
+                        programs that use exceptions extremely heavily.
+  --reduce-vars         Have the compiler emit code with fewer local variables
+                        by performing some register allocation.  This should
+                        not have an effect on performance, but may help to
+                        avoid pathologies in some C compilers.
+  --ref-map-opt         Enable or disable ref map optimizations.  Default is
+                        YES.
+  --opt-pollcheck       Optimize ref maps around pollchecks.  Default is YES.
+  --pollcheck-mode      Specify the pollcheck mode, may be one of NONE or
+                        PORTABLE.  NONE is the fastest but may cause GC
+                        Default is PORTABLE.
+  --pollcheck-budget    Specify the amount of code that is allowed to execute
+                        between pollchecks in the worst case.  The unit is
+                        an internal one to the compiler, and is based on an
+                        estimate of the cost of various operations.  The
+                        default is 200.
+  --exclude-profiler    Exclude the built-in sampling profiler.  This will
+                        save approximately 60KB of footprint for some
+                        applications, but it should not change performance.
+  --no-sigquit-debug    Disable SIGQUIT debug support.  By default, the
+                        runtime will register a signal handler for SIGQUIT,
+                        which will print the stack traces of all threads.
+  --p-checkinit         Compile the code so that it counts, and then reports,
+                        the number of uses of CheckInit.
+  --p-subtype           Compile the code so that it counts, and then reports,
+                        the number of subtype tests.
+  --p-nullcheck         Compile the code so that it counts, and then reports,
+                        the number of null checks.
+  --p-arraystore        Compile the code so that it counts, and then reports,
+                        the number of uses of ArrayCheckStore.
+  --p-arraybounds       Compile the code so that it counts, and then reports,
+                        the number of uses of ArrayBoundsCheck.
+  --p-checkdiv          Compile the code so that it counts, and then reports,
+                        the number of uses of CheckDivisor.
+  --p-invokes           Compile the code so that it counts, and then reports,
+                        the number of method invocations that are not inlined.
+  --p-monitor           Compile the code so that it counts, and then reports,
+                        the number of uses of slow-path monitor functions,
+                        such as the lock and unlock slow paths, as well as
+                        lock inflations.
+  --p-monitor-heavy     Compile the code so that it counts, and then reports,
+                        the number of uses of all monitor functions.  This
+                        subsumes --p-monitor.
+  --p-gc                Compile the code so that it counts, and then reports,
+                        the number of uses of slow-path GC functions.
+  --p-gc-heavy          Compile the code so that it counts, and then reports,
+                        the number of uses of all GC functions.  This
+                        subsumes --p-gc.
+  --p-stack-height      Compile the code so that it checks, and reports in
+                        real time, the stack high watermark of each thread.
+  --p-reflection        Compile the code so that it counts, and then reports,
+                        the time spent doing reflection.
+  --p-all               Turn on all profiling options except for stack height.
+                        Equivalent to:
+                          --p-checkinit
+                          --p-subtype
+                          --p-nullcheck
+                          --p-arraystore
+                          --p-arraybounds
+                          --p-checkdiv
+                          --p-invokes
+                          --p-monitor-heavy
+                          --p-gc-heavy
+                          --p-reflection
+  --coverage            Instrument the code to measure, and then report, code
+                        coverage.  Note that coverage is unaffected by inlining
+                        but inlining decisions are affected by the presence of
+                        coverage instrumentation.  Thus, it may be a good idea
+                        to turn off inlining when using this option.
+  --internal-inst       Add internal instrumentation.  The argument is a path
+                        to a header file, supplied by you, which should
+                        implement an API that the VM will call whenever
+                        something interesting happens.
+  --all-barrier         Redirect all object accesses to out-of-line barriers.
+                        Useful for instrumentation and testing only.
+  --simple-comp         Perform simplified compilation.  This is an
+                        experimental option.
+  --arith-helper        Specify an arithmetic helper to use.  Format is:
+                          <type>_<operation>
+                        For example: int_div
+                        It's also possible to specify 'all', which causes all
+                        arithmetic to go through helpers.
+  --r-thr-stack-size    Specify the thread stack size (only applicable to
+                        RTEMS targets)
+  --r-nanos-per-tick    Specify the nanoseconds per tick (only applicable to
+                        RTEMS targets)
+  --r-ticks-per-slice   Specify the ticks per timeslice (only applicable to
+                        RTEMS targets)
+  --r-max-os-threads    Specify the maximum number of OS threads (only
+                        applicable to RTEMS targets)
+  --r-int-stack-size    Specify the interrupt stack size (only applicable to
+                        RTEMS targets)
+  --r-max-fds           Specify the maximum number of file descriptors (only
+                        applicable to RTEMS targets)
+  --uniprocessor        Force the runtime to assume that it is running on a
+                        uniprocessor.  This option is extremely dangerous.  An
+                        executable generated with this option may fail
+                        unpredictably on multiprocessors.  But when running
+                        on a uniprocessor, this option may result in a nice
+                        speedup.  This option is currently the default on
+                        RTEMS.  On POSIX and Win32, this only makes a
+                        difference when using either x86-gcc or ppc-gcc as an
+                        argument to --sys-sync-type.
+  --main-in-thread      Launch a separate thread for the main program.  Only
+                        supported on POSIX systems.  Typically only useful for
+                        working around irregularities in main() thread
+                        semantics on some UNIX flavors.
+  --trace-exec          Trace the execution of methods, including their return
+                        values.  The argument to this option is a regular
+                        expression over the JNI-form names of methods.
+  --dumb-hash-code      Make the identity hash code of all objects 0.  This
+                        forces deterministic execution at the price of
+                        performance, especially in code that uses hashtables.
+  --c-file-size         Specify the number of linkable elements per output C
+                        file.  Default is 400.  Making this larger may speed
+                        up compilation, with the risk of reducing scalability
+                        and increasing memory usage.  Making this 0 will force
+                        each file to correspond to only one class.
+  --no-cat-rt-code      Normally the C files for the runtime are concatenated
+                        prior to compilation, to improve performance.  This
+                        option turns this feature off.
+  --no-line-pragma      Never use '#' pragmas in C code to hint line numbers.
+  --c-prefix            The prefix to prepend to all symbols generated by the
+                        compiler.  The default is a mangled form of the
+                        argument to --output.
+  --build-dir           Set the build directory, default is the output file
+                        with the ".build" extension.  For example, if you
+                        passed -o hello, then the build directory will be
+                        hello.build.  Note that fivmc will begin by deleting
+                        the contents of this directly entirely (unless you use
+                        --no-regen).  As well, fivmc may put ~1GB of data in
+                        this directory, especially when compiling large
+                        applications.
+  --del-build-dir       Indicate hat the build directory should be deleted
+                        after a successful build completes.  This is useful for
+                        saving space.
+  --host-vm-cmd         Change the command to use to launch the host VM that
+                        runs the compiler, default is "java".  Note that fivmc
+                        requires a reasonably fast Java 5 VM.  We recommend the
+                        Sun Java HotSpot(TM) 1.5 Client VM.
+  --host-vm-args        Change the configuration arguments given to the VM that
+                        runs the compiler, default is -Xms800M -Xmx800M.  Note
+                        that even large programs typically compile in less than
+                        300MB, so these settings can be changed if your machine
+                        has less RAM.
+  --add-host-vm-args    Append to the host VM arguments.
+  --host-jar-cmd        Change the command to launch jar, default is "jar".
+  --link                Link the given module into the resulting binary, where
+                        the path is specified relative to the current
+                        directory.  This option may be specified multiple
+                        times if there are multiple modules to link.
+  --link-internal       Link the given module into the resulting binary, where
+                        the path is specified relative to the fivm home
+                        directory.
+  --link-dynamic        Link the given native shared library into the resulting
+                        binary.  This option may be specified multiple times if
+                        there are multiple libraries to link.
+  --link-dir            Add a directory to the native library link path
+                        (equivalent to passing -L to the linker).  May be
+                        specified multiple times to add multiple directories.
+  --extra-include       Specify an additional header file to be included by
+                        fivmc-generated native code at compile time.  This may
+                        be necessary if you need to reference native types or
+                        defines from Java code.  THIS MAY BE DANGEROUS.  May be
+                        specified multiple times if there are multiple includes
+                        to be added.
+  --extra-include-dir   Add a directory to the include search path (equivalent
+                        to passing -I to the C preprocessor).  This may be
+                        necessary in conjunction with --extra-include-dir, and
+                        may be specified more than once.
+  --rc-internal         Like --rc, but the path is relative to the fivm
+                        directory.
+  --ignore-errors       Specifies that the given file contains summaries of
+                        errors that should not be reported.
+  --ign-err-internal    Like --ignore-errors, but the path is relative to the
+                        fivm directory.
+  --types-only          Stop after performing just the type computation stage
+                        of compilation.  Only useful for testing.
+  --no-regen            Do not rerun the bytecode-to-C compiler (useful if
+                        you're hacking on the runtime, and would like to just
+                        recompile that).
+  --no-make             Don't run make on the resulting code (useful if you're
+                        just testing the bytecode-to-C compiler).
+  --no-scripts          Do not create 'rebuild' or 'remake' scripts in the
+                        build directory.
+  --make-clean          Run "make clean" before running make.
+  --c-opt               Determines whether or not to optimize C code.  Options
+                        are either SPEED, SIZE, NONE, or a string containing
+                        the specific C compiler options to use for enabling
+                        optimization.  Default is SPEED.
+  --no-c-opt            Equivalent to --c-opt none.
+  --c-debug             Specifies whether or not to have C debugging info.
+                        Possible options are 'yes' or 'no'.
+  --allow-c-inline      Allow the C compiler to perform additional inlining of
+                        generated code.  For this to have full effect, turn up
+                        the setting of --c-file-size.
+  --dump-call-graph     Dump the whole program call graph.
+  --dump-asm            Instruct the C compiler to dump assembly code.
+  --rt-verbosity-limit  Specify the upper bound on verbosity of the runtime.
+                        The lower this number, the smaller the code, and the
+                        fewer verbosity checks there will be (since they will
+                        be statically eliminated).  The default is 10.
+                        Anything higher will result in significant slow-downs.
+                        NOTE: on RTEMS configurations, the default is 0.
+  --rt-assertions       Specify whether to enable assertions in the runtime.
+                        Use YES to enable them, NO to disable them.
+  --rt-flowlog-enable   Enable the runtime flow control logging mechanism.
+                        This will cause the runtime to create a flow control
+                        log containing method entries and exits, monitor
+                        events, and other runtime behaviors.  It may negatively
+                        affect predictability and realtime response.
+  --rt-flowlog-bufsize  Specify the number of events per thread-specific flowlog
+                        buffer.
+  --process-cmacros     Instead of doing normal compilation, extract the C
+                        macros used by the Java code and generate a Java-usable
+                        definition file.
+  --extract-ctypes      Instead of doing normal compilation, extract the C
+                        typesystem references used by both the Java code and by
+                        the compiler.
+  --ct-compute-offsets  Additional option that can be used with
+                        --extract-ctypes.  In addition to extracting C types,
+                        also compute the offsets of fields and the sizes of
+                        types.
+  --ct-incl-generated   Specify whether or not to include variables that were
+                        generated by the compiler itself.  Default is NO.
+  --cmacro-file         Read the given file for information about which C
+                        macros are defined.
+  --sys-arch            The name of the system architecture.  This can be
+                        anything; it's used for constructing the system name
+                        only.
+  --sys-backend-arch    The name of the architecture to use for the backend.
+                        Currently valid options are either 'x86' or 'none'.
+  --sys-stk-grws-dwn    YES if the stack grows down on the target architecture
+                        or NO otherwise.
+  --sys-os              The name of the operating system.  This can be
+                        anything; it's used for constructing the system name
+                        only.
+  --sys-osflavor        The flavor of the operating system.  Possible options
+                        are POSIX or RTEMS.
+  --sys-sync-type       How to do synchronization.  Possible options are
+                        x86-gcc, ppc-gcc, gcc-intrinsic, or rtems.
+  --sys-ptrsize         The size of pointers in bytes.
+  --sys-endianness      The system endianness, either BIG or LITTLE.
+  --sys-log-pagesize    The base-2 logarithm of the page size in bytes.
+  --sys-cc              The command to use to run the C compiler.
+  --sys-make            The command to use to run 'make'.
+  --sys-debug-cflags    The set of CFLAGS to use to enable debugging.
+  --sys-opt-cflags      The set of CFLAGS to use to enable optimization.
+  --sys-size-cflags     The set of CFLAGS to add to opt-cflags to optimize for
+                        size.
+  --sys-arch-cflags     The set of CFLAGS that are specific to the
+                        architecture.  This is typically something like -m32.
+  --sys-warn-cflags     The set of CFLAGS to use to enable more warnings.
+  --sys-nowarn-cflags   The set of CFLAGS to use to disable all warnings.
+  --sys-cppflags        The CPPFLAGS to use.
+  --sys-ldflags         The LDFLAGS to use.
+  --sys-libs            The LIBS to use.
+  --sys-noinline-attr   The no-inline attribute to use.  This is either the
+                        empty string or '__attribute__((noinline))'.
+  --sys-jni-prefix      The prefix to use for JNI library names.
+  --sys-jni-suffix      The suffix to use for JNI library names.
+  --home                Print the Fiji VM home directory.
+  --cc                  Print the C compiler command used for compiling and
+                        linking.
+  --cppflags            Print the CPPFLAGS that fivmc will use to compile C
+                        code.  Note that some of the CPPFLAGS - especially ones
+                        dealing with runtime features - are sensitive to fivmc
+                        command-line options, and thus may change from one use
+                        of fivmc to the next.
+  --cflags              Print The CFLAGS that fivmc will use to compile C code.
+  --cxxflags            Print The CXXFLAGS that fivmc would use to compile C++
+                        code (currently fivmc does not compile C++ code; but
+                        this is handy if you plan on linking C++ code to fivm
+                        executables).
+  --ldflags             Print the LDFLAGS that fivmc will use to link C code.
+  --32-works            Print whether or not 32-bit support is available.
+  --64-works            Print whether or not 64-bit support is available.
+  --cl-works            Print whether or not class loading is available.
+  --libs                Print the LIBS that fivmc will use to link C code.
+  --jni-prefix          Print the JNI prefix.
+  --jni-suffix          Print the JNI suffix.
+  --if-32-works         If 32-bit support works, run the following command and
+                        exit.  Otherwise just exit immediately.
+  --if-64-works         If 64-bit support works, run the following command and
+                        exit.  Otherwise just exit immediately.
+  --if-cl-works         If class loading support works, run the following
+                        command and exit.  Otherwise just exit immediately.
+  --std-rc              Replace the default rc file with the given one.  This
+                        option MUST appear before all other options in order
+                        to be recognized.
+  --no-srd-rc           Do not read a default rc file.  This option MUST
+                        appear before all other options in order to be
+                        recognized.
+  --dollar-zero         Change the name by which the compiler identifies
+                        itself.
+
+Example #1: fivmc -o hello hello.jar
+
+This will compile the classes in hello.jar, starting with whatever class in
+hello.jar has a main(String[]) method.  If there is more than one such class,
+you'll get an error.  Any standard library classes that are required will be
+pulled in automatically.  The result will be an executable named "hello".
+The E0CFA analysis will be used, with the default reflection database.  Note
+that compilation will be silent (unless you use --verbose), and will only
+use one processor (unless you use --jobs).
+
+Example #2: fivmc -m hello -o hello hello.jar -A CHA -j 2 --no-big-inline
+
+Same as example #1, except that we've specified the main class manually,
+we'll use CHA as the analysis, use two processors to compile, and don't
+inline large methods.
+

@@ -1,0 +1,122 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'getoptlong'
+
+meUnresolved=Pathname.new($0)
+me=meUnresolved.realpath
+bindir=me.dirname.realpath
+$homedir=bindir.parent
+$libdir=$homedir+"lib"
+
+$dollarZero=$0
+
+require ($libdir+"fijiconfig.rb")
+
+
+opts=GetoptLong.new([ '--help', GetoptLong::NO_ARGUMENT ],
+                    [ '--fail', GetoptLong::NO_ARGUMENT ],
+                    [ '--verbose', GetoptLong::NO_ARGUMENT ],
+                    [ '--input', GetoptLong::REQUIRED_ARGUMENT ])
+
+def help
+  puts "recall -- show the output of a test"
+  puts
+  puts "Usage: recall [options] <name of test>"
+  puts
+  puts "--input <file>           change input file"
+  puts "--fail                   recall only tests that failed"
+  puts "--verbose                print more stuff"
+  puts "--help                   display this message"
+end
+
+$input="tester-output.conf"
+$fail=false
+$verbose=false
+
+opts.each {
+  | opt, arg |
+  case opt
+  when '--help'
+    help
+    exit 0
+  when '--fail'
+    $fail=true
+  when '--verbose'
+    $verbose=true
+  when '--input'
+    $input=arg
+  end
+}
+
+if ARGV.size==0
+  pattern=//
+elsif ARGV.size==1
+  pattern=Regexp.compile(Regexp.escape(ARGV[0]))
+else
+  help
+  exit 1
+end
+
+found=false
+
+File.open($input,'r') {
+  | inp |
+  inp.each_line {
+    | line |
+    line.chomp!
+    line.strip!
+    unless line.empty?
+      map=FijiConfig::parse(line)
+      if map['name']=~pattern and (not $fail or map['summary']!='SUCCESS')
+        if found
+          puts
+        else
+          found=true
+        end
+        puts ">> #{map['name']}:"
+        map['commands'].each {
+          | cmdmap |
+          puts ">> command: #{cmdmap['commandString']}"
+          if cmdmap['expectExit']
+            puts "      expect exit status: #{cmdmap['expectExitStatus']}"
+            puts "      sys status: #{cmdmap['sysStatus']}"
+          end
+          if cmdmap['timeout']
+            puts "      timeout: #{cmdmap['timeout']}"
+          end
+          if cmdmap['env']
+            cmdmap['env'].each_pair {
+              | key, val |
+              puts "      environment: #{key}=#{val}"
+            }
+          end
+        }
+        puts ">> directory: #{map['directory']}"
+        if $verbose
+          envKeys=map['env'].keys
+        else
+          envKeys=map['envChanged']
+        end
+        envKeys.each {
+          | key |
+          puts ">> environment: #{key}=#{map['env'][key]}"
+        }
+        map['successPatterns'].each {
+          | p |
+          puts ">> success pattern: #{p}"
+        }
+        map['failPatterns'].each {
+          | p |
+          puts ">> fail pattern: #{p}"
+        }
+        puts ">> summary: #{map['summary']}"
+        puts map['output']
+      end
+    end
+  }
+}
+
+if not found
+  puts "Could not find test matching #{ARGV[0]}"
+end

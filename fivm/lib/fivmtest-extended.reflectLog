@@ -1,0 +1,21 @@
+fivmr reflect log: Ljava/util/Calendar;/getInstance(Ljava/util/TimeZone;Ljava/util/Locale;)Ljava/util/Calendar; used Ljava/util/GregorianCalendar;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; used Lgnu/java/net/protocol/file/Handler;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; dynamically called Lgnu/java/net/protocol/file/Handler;/<init>()V
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; alloced Lgnu/java/net/protocol/file/Handler;
+fivmr reflect log: Ljava/io/VMFile;/list(Ljava/lang/String;)[Ljava/lang/String; used Ljava/lang/String;
+fivmr reflect log: Ljava/io/VMFile;/list(Ljava/lang/String;)[Ljava/lang/String; alloced [Ljava/lang/String;
+fivmr reflect log: Ljava/net/URLClassLoader;/addURLImpl(Ljava/net/URL;)V used Lgnu/java/net/loader/Load_file;
+fivmr reflect log: Ljava/net/URLClassLoader;/addURLImpl(Ljava/net/URL;)V used Lgnu/java/net/loader/Load_file;
+fivmr reflect log: Ljava/net/URLClassLoader;/addURLImpl(Ljava/net/URL;)V used Lgnu/java/net/loader/Load_file;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; used Lgnu/java/net/protocol/jar/Handler;
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; dynamically called Lgnu/java/net/protocol/jar/Handler;/<init>()V
+fivmr reflect log: Ljava/net/URL;/getURLStreamHandler(Ljava/lang/String;)Ljava/net/URLStreamHandler; alloced Lgnu/java/net/protocol/jar/Handler;
+fivmr reflect log: Ljava/net/URLClassLoader;/addURLImpl(Ljava/net/URL;)V used Lgnu/java/net/loader/Load_file;
+fivmr reflect log: Ljava/net/URLClassLoader;/addURLImpl(Ljava/net/URL;)V used Lgnu/java/net/loader/Load_file;
+fivmr reflect log: Ljava/util/logging/LogManager;/locateClass(Ljava/lang/String;)Ljava/lang/Class; used Ljava/util/logging/ConsoleHandler;
+fivmr reflect log: Ljava/util/logging/LogManager;/createInstance(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Object; dynamically called Ljava/util/logging/ConsoleHandler;/<init>()V
+fivmr reflect log: Ljava/util/logging/LogManager;/createInstance(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Object; alloced Ljava/util/logging/ConsoleHandler;
+fivmr reflect log: Ljava/util/logging/LogManager;/getInstanceProperty(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object; dynamically called Ljava/util/logging/SimpleFormatter;/<init>()V
+fivmr reflect log: Ljava/util/logging/LogManager;/getInstanceProperty(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object; alloced Ljava/util/logging/SimpleFormatter;
+fivmr reflect log: Ljava/util/logging/LogManager;/getInstanceProperty(Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object; used Ljava/util/logging/Formatter;
+fivmr reflect log: Ljava/net/URLClassLoader;/addURLImpl(Ljava/net/URL;)V used Lgnu/java/net/loader/Load_file;

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+set -x
+
+if test -e scj
+then
+    (cd scj && hg pull)
+    (cd scj && hg up)
+else
+    hg clone ssh://67.23.15.148//srv/hg/scj-jsr302 scj
+fi
+

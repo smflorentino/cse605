@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+
+File.open('makeDirectories.gen','w') {
+  | outp |
+  seen={}
+  ARGV.each {
+    | filename |
+    directories=[]
+    pathname=Pathname.new(filename)
+    while pathname.parent!=Pathname.new('.')
+      pathname=pathname.parent
+      directories.unshift pathname.to_s
+    end
+    directories.each {
+      | directory |
+      unless seen[directory]
+        outp.puts "mkdir(#{directory.inspect},0755);"
+        seen[directory]=true
+      end
+    }
+  }
+}
+
+ARGV.each_with_index {
+  | filename, index |
+  File.open(filename, 'r') {
+    | inp |
+    data=inp.read
+    File.open("datafile#{index}.s",'w') {
+      | outp |
+      outp.puts ".file \"datafile#{index}.s\""
+      outp.puts ".globl myFileData#{index}"
+      outp.puts ".data"
+      outp.puts ".type myFileData#{index} @object"
+      outp.puts ".size myFileData#{index}, #{FileTest.size(filename)}"
+      outp.puts "myFileData#{index}:"
+      data.each_byte {
+        | byte |
+        outp.puts ".byte #{byte}"
+      }
+    }
+  }
+}
+
+File.open('fileDeclarations.gen','w') {
+  | outp |
+  ARGV.length.times {
+    | index |
+    outp.puts "const char myFileData#{index}[];"
+  }
+}
+
+File.open('storeFiles.gen','w') {
+  | outp |
+  ARGV.each_with_index {
+    | filename, index |
+    outp.puts "storeFile(#{filename.inspect},myFileData#{index},#{FileTest.size(filename)});"
+  }
+}
+
+
+
+
+
+
+

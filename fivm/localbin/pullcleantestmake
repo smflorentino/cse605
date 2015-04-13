@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+set -x
+
+if test -e testmake
+then
+    (cd testmake && hg pull)
+    (cd testmake && hg up)
+else
+    hg clone ssh://67.23.15.148//srv/hg/test-make testmake
+fi
+

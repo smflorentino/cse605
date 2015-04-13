@@ -1,0 +1,56 @@
+#!/bin/sh
+
+PS4=">> "
+set -x
+set -e
+
+make clean || echo "Makefile no longer works."
+
+rm -rf scj/oSCJ/scj/ri/build
+rm -rf scj/oSCJ/scj/ri/configure
+rm -rf scj/oSCJ/scj/ri/Makefile
+rm -rf scj/oSCJ/scj/ri/RealMakefile
+rm -rf scj/oSCJ/scj/ri/config.status
+rm -rf scj/oSCJ/scj/ri/config.log
+rm -rf scj/oSCJ/scj/ri/autom4te.cache
+rm -rf configure config.status config.log autom4te.cache RealMakefile lib/fivmcrc lib/config.rb bin/fivmc_trampoline common/src/com/fiji/fivm/Config.java runtimec/src/fivmr_config.h
+rm -rf target/configure target/config.status target/config.log target/autom4te.cache target/fivmr_target.h
+rm -rf `ls -d lib/targets/* | grep -v '^lib/targets/null$'`
+rm -rf common/classpath-*
+rm -rf extra/classpath-*
+rm -f lib/glibj.zip
+rm -f lib/libjava*
+rm -rf codeRepoLogArtifact codeRepoLogArtifact.build
+rm -rf test/c/Makefile test/c/configure test/c/hello.a* test/c/*.o
+rm -rf test/c/hello test/c/hello.log
+rm -rf lib/fiji-asm.jar
+rm -rf lib/bottomup.jar
+rm -rf lib/fivmc.jar
+rm -rf lib/fivmr.jar
+rm -rf lib/*ctypes*
+rm -rf */build
+rm -rf *.build
+rm -rf lib/fivmcommon.jar
+rm -rf lib/fivmtest.jar
+rm -rf lib/rtsj.jar
+rm -rf lib/fijiscj.jar
+rm -rf depend.mk
+rm -rf lib/default_targets_added.phony
+
+localbin/localconf
+
+make
+
+set +x
+
+if test "x$RTEMS_DIR" = "x"; then
+    echo "WARNING!!  Incorrect usage of localbin/cleanbuild!!!"
+    echo
+    echo "Please set the RTEMS_DIR environment variable.  It should point to a"
+    echo "directory that contains a subdirectory called b-sis, which in turn"
+    echo "contains a build of RTEMS for the SIS bsp."
+    echo
+    exit 1
+fi
+
+

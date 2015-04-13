@@ -1,0 +1,773 @@
+#
+# Makefile for fivm
+# Copyright (c) 2009, 2010 Fiji Systems Inc.
+#
+
+JAVA=@JAVA@
+ECJ=@ECJ@
+JAR=@JAR@
+INSTALL=@INSTALL@
+PREFIX=@prefix@
+VERSION=@PACKAGE_VERSION@
+RUBY=@RUBY@
+TARGETALIAS=$(TARGET)
+URL_FETCH=@URL_FETCH@
+
+FIJI_JAVA_COMPILER="@FIJI_JAVA_COMPILER@"
+
+FIJI_CLASSPATH_FETCH=@FIJI_CLASSPATH_FETCH@
+FIJI_CLASSPATH_VERSION=@FIJI_CLASSPATH_VERSION@
+FIJI_CLASSPATH_DIR=@FIJI_CLASSPATH_DIR@
+
+FIJI_LIBRARY_SUFFIX=@FIJI_LIBRARY_SUFFIX@
+FIJI_JNILIB_SUFFIX=@FIJI_JNILIB_SUFFIX@
+
+FIJI_CLASSPATH_TARBALL=classpath-$(FIJI_CLASSPATH_VERSION).tar.gz
+
+FIVMCFLAGS=
+
+include depend.mk
+
+all: util/c/getNumProcs/getNumProcs include.phony lib/bottomup.jar lib/fiji-asm.jar lib/fivmcommon.jar lib/fijirt.jar lib/fijicore.jar lib/fivmc.jar lib/fivmutil.jar lib/fivmrunner.jar lib/fivmr.jar lib/hardrtj.jar lib/fijiscj.jar lib/rtsj.jar runtimec/src/fivmr_settings_fields.h runtimec/src/fivmr_settings_getters.h targetconfig.phony lib/scj.jar.phony lib/cpruntime.jar lib/fivmtest.jar testmake.phony test/c/mvm/configure test/c/mt/configure test/c/tree/configure test/c/jni/configure lib/ctypes.conf.phony
+	@echo
+	@echo "Fiji VM is compiled.  You may use it without installing by executing bin/fivmc,"
+	@echo "or you may wish to install it by logging in as root and running 'make install'."
+	@echo
+	@echo "Enabled libraries:"
+	@echo "       FijiCore  -- yes"
+	@if test -e lib/cpruntime.jar;\
+	then\
+		echo "  GNU Classpath  -- yes";\
+	else\
+		echo "  GNU Classpath  -- no";\
+	fi
+	@echo
+	touch .phony
+
+vm: all vm-stuff
+
+.phony: all
+
+clean:
+	rm -rf lib/default_targets_added.phony
+	rm -rf codeRepoLogArtifact codeRepoLogArtifact.build
+	rm -rf .numberOfProcessors util/c/getNumProcs/getNumProcs
+	rm -rf lib/fivmcommon.jar lib/fivmc.jar lib/fivmr.jar lib/fivmtest.jar lib/rtsj.jar
+	rm -rf lib/fiji-asm.jar lib/bottomup.jar
+	rm -rf common/build compiler/build runtimej/build test/java/build
+	rm -rf testnogc-nogc* testnogc-cmrgc* simplegctest-cmrgc* lib/fivmutil.jar
+	rm -rf lib/fivmrunner.jar
+	rm -rf hardrtj/build lib/hardrtj.jar lib/cpruntime.jar cpruntime/build
+	rm -rf lib/fijicore.jar fijicore/build fijicore/tools/build
+	rm -rf fijicore/generated fijirt/build lib/fijirt.jar
+	rm -rf lib/libfivmr_debug.a lib/libfivmr_opt.a lib/libfivmr_small.a
+	rm -rf lib/fivmr_target.h lib/fivmc_def_config.h lib/fivmr_asm_defs.h
+	rm -rf lib/debug/fivmc_tag_dep_config.h lib/opt/fivmc_tag_dep_config.h
+	rm -rf lib/small/fivmc_tag_dep_config.h
+	rm -rf scjruntime/build lib/fijiscj.jar depend.mk
+	rm -rf RTSJ/build util/build lib/*ctypes*
+	rm -rf */build
+	rm -rf */generated
+	rm -rf *.build
+	rm -rf runtimec/src/fivmr_settings_fields.h
+	rm -rf runtimec/src/fivmr_settings_getters.h
+	rm -rf `ls -d lib/targets/* | grep -v '^lib/targets/null$$'`
+	rm -rf test/c/mvm/Makefile test/c/mvm/configure test/c/mvm/hello.a* test/c/mvm/*.o
+	rm -rf test/c/mvm/hello test/c/mvm/hello.log
+	rm -rf test/c/mvm/hello_copy test/c/mvm/hello_repeat
+	rm -rf test/c/mvm/ticker.a* test/c/mvm/simplegctest.a*
+	rm -rf test/c/mvm/ticker_gc test/c/mvm/ticker_gc_exit
+	rm -rf test/c/mvm/exit42 test/c/mvm/exit42.a*
+	rm -rf test/c/mvm/exitthrow test/c/mvm/exitthrow.a*
+	rm -rf test/c/mvm/testnogc test/c/mvm/testnogc.a* test/c/mvm/testnogc_repeat
+	rm -rf test/c/mvm/ticker_gc_timesliced test/c/mvm/mtgctest2 test/c/mvm/mtgctest2.a*
+	if test -f test/c/mt/Makefile; then \
+	    (cd test/c/mt/ && make clean); \
+	fi
+	if test -f test/c/mvm/Makefile; then \
+	    (cd test/c/mvm/ && make clean); \
+	fi
+	if test -f scj/oSCJ/scj/ri/Makefile; then \
+	    (cd scj/oSCJ/scj/ri && make clean); \
+	fi
+
+distclean: clean classpath-clean javadoc-clean
+	rm -rf config.status config.log autom4te.cache Makefile RealMakefile lib/config.rb lib/host_fivmcrc bin/fivmc_trampoline bin/fijivm_trampoline common/src/com/fiji/fivm/Config.java runtimec/src/fivmr_config.h ecj/ecj
+	rm -rf target/config.status target/config.log target/autom4te.cache
+	rm -rf target/fivmr_target.h target/fivmcrc target/Rules
+	rm -rf target/fivmc_def_config.h target/fivmr_target.h target/fivmr_asm_defs.h
+	rm -rf target/debug/fivmc_tag_dep_config.h target/opt/fivmc_tag_dep_config.h
+	rm -rf target/small/fivmc_tag_dep_config.h
+	rm -rf runtimec/src/fivmr_config_phony.h
+	rm -rf test/c/mt/config.status test/c/mt/config.log
+	rm -rf test/c/mt/autom4te.cache test/c/mt/Makefile
+	rm -rf test/c/mvm/config.status test/c/mvm/config.log
+	rm -rf test/c/mvm/autom4te.cache test/c/mvm/Makefile
+	rm -rf `ls -d lib/targets/* | grep -v '^lib/targets/null$$'`
+	rm -rf runtimec/src/TAGS
+	rm -f bin/fivm_ecj
+
+classpath-clean:
+	if test x$(FIJI_CLASSPATH_FETCH) = xyes; then \
+	    rm -rf extra/classpath-*; \
+	fi
+	rm -f lib/glibj.zip
+	rm -f lib/libjava*$(FIJI_JNILIB_SUFFIX)
+	rm -rf lib/resources
+
+maintainer-clean: distclean
+	rm -rf configure target/configure target/aclocal.m4 target/fivmr_target.h.in
+
+tags:
+	cd runtimec/src && etags *.c *.h
+
+include.phony:
+	mkdir -p include
+	cp runtimec/src/fivmr_jni.h include/jni.h
+
+util/c/getNumProcs/getNumProcs: util/c/getNumProcs/src/getNumProcs.c
+	(cc -o util/c/getNumProcs/getNumProcs util/c/getNumProcs/src/getNumProcs.c -w || echo "Warning: compiler won't know how many processors you have")
+
+lib/bottomup.jar: $(BOTTOMUPSRC) bottomup/src/com/fiji/fivm/bottomup/BottomUpVisitorSpec.g
+	rm -rf bottomup/build
+	rm -rf bottomup/generated
+	mkdir bottomup/build
+	mkdir bottomup/generated
+	(cd bottomup/src && $(JAVA) -jar ../../lib/antlr-3.2.jar -o ../generated com/fiji/fivm/bottomup/BottomUpVisitorSpec.g)
+	$(FIJI_JAVA_COMPILER) -Xlint:unchecked -Xlint:deprecated -warn:-serial -warn:-unused -source 1.5 -target 1.5 -classpath lib/antlr-3.2.jar $(BOTTOMUPSRC) `find bottomup/generated -name '*.java'` -d bottomup/build
+	$(JAR) cf lib/bottomup.jar -C bottomup/build .
+
+lib/fiji-asm.jar: $(FIJIASMSRC)
+	rm -rf fiji-asm/build
+	mkdir fiji-asm/build
+	$(FIJI_JAVA_COMPILER) -nowarn -source 1.5 -target 1.5 $(FIJIASMSRC) -d fiji-asm/build
+	$(JAR) cf lib/fiji-asm.jar -C fiji-asm/build .
+
+lib/fivmcommon.jar: lib/fiji-asm.jar $(FIVMCOMMONDEPSRC)
+	rm -rf common/build
+	mkdir common/build
+	$(FIJI_JAVA_COMPILER) -warn:-serial -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath lib/fiji-asm.jar:lib/fast-md5.jar $(FIVMCOMMONSRC) -d common/build
+	$(JAR) cf lib/fivmcommon.jar -C common/build .
+
+lib/fijicore.jar: $(FIJICORESRC) lib/fivmcommon.jar lib/fijirt.jar
+	rm -rf fijicore/tools/build
+	rm -rf fijicore/generated
+	rm -rf fijicore/build
+	mkdir fijicore/build
+	$(FIJI_JAVA_COMPILER) -nowarn -source 1.5 -target 1.5 -bootclasspath lib/fivmcommon.jar:lib/fijirt.jar:fijicore/build:lib/fast-md5.jar  $(FIJICORESRC) -d fijicore/build
+	$(JAR) cf lib/fijicore.jar -C fijicore/build .
+
+lib/fivmr.jar: $(FIVMRSRC) lib/fiji-asm.jar lib/fijicore.jar lib/fijirt.jar lib/fivmcommon.jar lib/fijiscj.jar
+	rm -rf runtimej/build
+	mkdir runtimej/build
+	$(FIJI_JAVA_COMPILER) -Xlint:unchecked -Xlint:deprecated -warn:-serial -source 1.5 -target 1.5 -bootclasspath lib/fijicore.jar:lib/fijirt.jar:lib/fivmcommon.jar:lib/fast-md5.jar:lib/fijiscj.jar:lib/fiji-asm.jar $(FIVMRSRC) -d runtimej/build
+	$(JAR) cf lib/fivmr.jar -C runtimej/build .
+
+lib/rtsj.jar: $(RTSJSRC) lib/fivmr.jar lib/fijicore.jar lib/fijirt.jar lib/fivmcommon.jar
+	rm -rf RTSJ/build
+	mkdir RTSJ/build
+	$(FIJI_JAVA_COMPILER) -Xlint:unchecked -Xlint:deprecated -warn:-serial -source 1.5 -target 1.5 -bootclasspath lib/fivmr.jar:lib/fijicore.jar:lib/fijirt.jar:lib/fivmcommon.jar:lib/fast-md5.jar $(RTSJSRC) -d RTSJ/build
+	$(JAR) cf lib/rtsj.jar -C RTSJ/build .
+
+# NOTE: GenSettings is smart.  It won't update any files' change times unless it produces
+# different output from what was there before.  This has two side-effects:
+# 1) If you change the Java code in a way that does not perturb the settings files then
+#    make will run GenSettings but the things that depend on the resulting files won't
+#    be rebuilt.
+# 2) If you have ever changed the Java code without perturbing the settings files then
+#    make will stupidly rerun GenSettings every time you type 'make'.  That's annoying.
+#    Thankfully, GenSettings is reasonably fast.
+runtimec/src/fivmr_settings_fields.h runtimec/src/fivmr_settings_getters.h: lib/fijirt.jar lib/fivmcommon.jar lib/fivmc.jar lib/fivmutil.jar lib/rtsj.jar lib/fiji-asm.jar
+	$(JAVA) -classpath lib/fiji-asm.jar:lib/fijirt.jar:lib/fivmcommon.jar:lib/fivmc.jar:lib/fivmutil.jar:lib/rtsj.jar:lib/fast-md5.jar com.fiji.fivm.util.GenSettings
+
+lib/cpruntime.jar: $(CPRUNTIMESRC) lib/fivmr.jar lib/fijirt.jar lib/fivmcommon.jar
+	if test x$(FIJI_CLASSPATH_DIR) != x; then \
+	    $(MAKE) -f RealMakefile classpath.setup.phony; \
+	fi
+	if test -e lib/glibj.zip;\
+	then\
+		rm -rf cpruntime/build &&\
+		mkdir cpruntime/build &&\
+		$(FIJI_JAVA_COMPILER) -nowarn -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -bootclasspath lib/fivmr.jar:lib/fijirt.jar:lib/glibj.zip:lib/fivmcommon.jar:lib/fast-md5.jar $(CPRUNTIMESRC) -d cpruntime/build &&\
+		$(JAR) cf lib/cpruntime.jar -C cpruntime/build .;\
+	fi
+
+
+scj/oSCJ/scj/ri/configure: scj/oSCJ/scj/ri/configure.ac
+	(cd scj/oSCJ/scj/ri && autoreconf -i)
+
+scj/oSCJ/scj/ri/Makefile: scj/oSCJ/scj/ri/configure scj/oSCJ/scj/ri/Makefile.in scj/oSCJ/scj/ri/RealMakefile.in
+	(cd scj/oSCJ/scj/ri && JAVA="$(JAVA)" JAR="$(JAR)" JAVAC="$(FIJI_JAVA_COMPILER)" ./configure)
+
+scj/oSCJ/scj/ri/scj.jar.phony: scj/oSCJ/scj/ri/Makefile
+	(cd scj/oSCJ/scj/ri && make)
+
+lib/scj.jar.phony:
+	if test "@FIJI_SCJ_DIR@" = "scj";\
+	then\
+		$(MAKE) scj/oSCJ/scj/ri/scj.jar.phony;\
+	fi
+	cp @FIJI_SCJ_DIR@/oSCJ/scj/ri/scj.jar lib/scj.jar
+
+scj/oSCJ/examples/testsuite/configure: scj/oSCJ/examples/testsuite/configure.ac
+	(cd scj/oSCJ/examples/testsuite/  && autoreconf -i)
+
+scj/oSCJ/examples/testsuite/Makefile: scj/oSCJ/examples/testsuite/configure scj/oSCJ/examples/testsuite/Makefile.in scj/oSCJ/examples/testsuite/RealMakefile.in
+	(cd scj/oSCJ/examples/testsuite/ && JAVA="$(JAVA)" JAR="$(JAR)" JAVAC="$(FIJI_JAVA_COMPILER)" ./configure && make)
+
+check-scj: scj/oSCJ/examples/testsuite/Makefile
+	(cd scj/oSCJ/examples/testsuite/  && make check-scj)
+
+lib/fijiscj.jar: $(FIJISCJSRC)
+	rm -rf scjruntime/build
+	mkdir scjruntime/build
+	$(FIJI_JAVA_COMPILER) -nowarn -source 1.5 -target 1.5 $(FIJISCJSRC) -d scjruntime/build
+	$(JAR) cf lib/fijiscj.jar -C scjruntime/build .
+
+# This classpath stuff would really be cleaner with automake
+
+# we depend on cp resolving symlinks, here
+classpath.setup.phony: classpath.build.phony
+	cp $(FIJI_CLASSPATH_DIR)/share/classpath/glibj.zip lib
+	cp $(FIJI_CLASSPATH_DIR)/lib/classpath/libjavaio$(FIJI_LIBRARY_SUFFIX) \
+	   lib/libjavaio$(FIJI_JNILIB_SUFFIX)
+	cp $(FIJI_CLASSPATH_DIR)/lib/classpath/libjavalang$(FIJI_LIBRARY_SUFFIX) \
+	   lib/libjavalang$(FIJI_JNILIB_SUFFIX)
+	cp $(FIJI_CLASSPATH_DIR)/lib/classpath/libjavalangmanagement$(FIJI_LIBRARY_SUFFIX) \
+	   lib/libjavalangmanagement$(FIJI_JNILIB_SUFFIX)
+	cp $(FIJI_CLASSPATH_DIR)/lib/classpath/libjavalangreflect$(FIJI_LIBRARY_SUFFIX) \
+	   lib/libjavalangreflection$(FIJI_JNILIB_SUFFIX)
+	cp $(FIJI_CLASSPATH_DIR)/lib/classpath/libjavanet$(FIJI_LIBRARY_SUFFIX) \
+	   lib/libjavanet$(FIJI_JNILIB_SUFFIX)
+	cp $(FIJI_CLASSPATH_DIR)/lib/classpath/libjavanio$(FIJI_LIBRARY_SUFFIX) \
+	   lib/libjavanio$(FIJI_JNILIB_SUFFIX)
+	cp $(FIJI_CLASSPATH_DIR)/lib/classpath/libjavautil$(FIJI_LIBRARY_SUFFIX) \
+	   lib/libjavautil$(FIJI_JNILIB_SUFFIX)
+	mkdir -p lib/resources
+	(cd lib/resources && jar tf ../glibj.zip | grep '\.properties$$' | xargs jar xf ../glibj.zip)
+
+# Note that we really do want CFLAGS below to be --ldflags, because we
+# *only* want -m32 etc.
+classpath.build.phony: classpath.extract.phony
+	if test x$(FIJI_CLASSPATH_FETCH) = xyes \
+	        -a ! -f $(FIJI_CLASSPATH_DIR)/share/classpath/glibj.zip; then \
+	    set -e; \
+	    (cd extra/classpath-$(FIJI_CLASSPATH_VERSION) && \
+              ./configure --disable-gconf-peer --disable-gstreamer-peer \
+	                  --disable-gtk-peer --disable-qt-peer --disable-alsa \
+	                  --disable-plugin --disable-tools --disable-examples \
+	                  --prefix=$(FIJI_CLASSPATH_DIR) \
+	                  CFLAGS="`../../bin/fivmc --ldflags`" \
+	                  LDFLAGS="`../../bin/fivmc --ldflags`" \
+	                  JAVAC="$(FIJI_JAVA_COMPILER) -nowarn"); \
+	    if !(cd extra/classpath-$(FIJI_CLASSPATH_VERSION) && make); then \
+	        if test $(FIJI_JAVA_COMPILER) = ecj; then \
+	            echo; \
+	            echo "Classpath failed to build, and your compiler is ECJ; this may be"; \
+	            echo "because your ECJ cannot access enough heap memory to build classpath."; \
+	            echo "Try adding '-Xmx768M' to the java command in your ecj script."; \
+	            echo; \
+	        fi 1>&2; \
+	        exit 1; \
+	    fi; \
+	    (cd extra/classpath-$(FIJI_CLASSPATH_VERSION) && make install); \
+	fi
+
+classpath.extract.phony: classpath.fetch.phony
+	if test x$(FIJI_CLASSPATH_FETCH) = xyes \
+	        -a ! -d extra/classpath-$(FIJI_CLASSPATH_VERSION); then \
+		(cd extra && tar -xzf $(FIJI_CLASSPATH_TARBALL)); \
+	fi
+
+classpath.fetch.phony:
+	if test x$(FIJI_CLASSPATH_FETCH) = xyes \
+	        -a ! -f extra/$(FIJI_CLASSPATH_TARBALL); then \
+	    set -e; \
+	    if test $(FIJI_CLASSPATH_VERSION) = 0.97.2; then \
+	        fetchdir='http://www.fiji-systems.com/'; \
+	    else \
+	        fetchdir='ftp://ftp.gnu.org/gnu/classpath/'; \
+	    fi; \
+	    (cd extra && $(URL_FETCH) $(FIJI_CLASSPATH_TARBALL).part \
+	                              "$$fetchdir/$(FIJI_CLASSPATH_TARBALL)" \
+	    	      && mv $(FIJI_CLASSPATH_TARBALL).part $(FIJI_CLASSPATH_TARBALL)); \
+	fi
+
+lib/fijirt.jar: $(FIJIRTSRC) lib/fivmcommon.jar
+	rm -rf fijirt/build
+	mkdir fijirt/build
+	$(FIJI_JAVA_COMPILER) -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath lib/fivmcommon.jar:lib/fast-md5.jar $(FIJIRTSRC) -d fijirt/build
+	$(JAR) cf lib/fijirt.jar -C fijirt/build .
+
+lib/fivmc.jar: $(FIVMCSRC) \
+	       compiler/src/com/fiji/fivm/c1/CompareBU.bu \
+	       compiler/src/com/fiji/fivm/c1/x86/MainLoweringBU.bu \
+	       compiler/src/com/fiji/fivm/c1/x86/AddressModeBU.bu \
+	       compiler/src/com/fiji/fivm/c1/x86/EffectiveAddress.bu \
+	       lib/fiji-asm.jar lib/fijirt.jar lib/fivmcommon.jar lib/bottomup.jar
+	rm -rf compiler/build
+	rm -rf compiler/generated
+	mkdir compiler/build
+	mkdir -p compiler/generated/com/fiji/fivm/c1/x86;
+	localbin/bottomup compiler/src/com/fiji/fivm/c1/CompareBU.bu \
+			  compiler/generated/com/fiji/fivm/c1/CompareBU.java
+	localbin/bottomup compiler/src/com/fiji/fivm/c1/x86/MainLoweringBU.bu \
+			  compiler/generated/com/fiji/fivm/c1/x86/MainLoweringBU.java
+	localbin/bottomup compiler/src/com/fiji/fivm/c1/x86/AddressModeBU.bu \
+			  compiler/generated/com/fiji/fivm/c1/x86/AddressModeBU.java
+	$(FIJI_JAVA_COMPILER) \
+		-Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 \
+		-classpath lib/fiji-asm.jar:lib/fijirt.jar:lib/fivmcommon.jar:lib/fast-md5.jar \
+		$(FIVMCSRC) `find compiler/generated -name '*.java'` \
+		-d compiler/build
+	$(JAR) cf lib/fivmc.jar -C compiler/build .
+
+
+lib/fivmutil.jar: $(UTILSRC) lib/fijirt.jar lib/fivmcommon.jar lib/fivmc.jar lib/fivmr.jar lib/fiji-asm.jar
+	rm -rf util/java/build
+	mkdir util/java/build
+	$(FIJI_JAVA_COMPILER) -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath lib/fiji-asm.jar:lib/fijirt.jar:lib/fivmcommon.jar:lib/fivmc.jar:lib/fast-md5.jar:lib/fivmr.jar $(UTILSRC) -d util/java/build
+	$(JAR) cf lib/fivmutil.jar -C util/java/build .
+
+lib/fivmrunner.jar: $(RUNNERSRC) lib/fijirt.jar lib/fivmcommon.jar lib/fivmr.jar lib/fijicore.jar lib/fiji-asm.jar
+	rm -rf runner/build
+	mkdir runner/build
+	$(FIJI_JAVA_COMPILER) -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -bootclasspath lib/fiji-asm.jar:lib/fijirt.jar:lib/fivmcommon.jar:lib/fast-md5.jar:lib/fivmr.jar:lib/fijicore.jar $(RUNNERSRC) -d runner/build
+	$(JAR) cf lib/fivmrunner.jar -C runner/build .
+
+lib/fivmtest.jar: $(FIVMTESTSRC) $(FIVMTESTASMSRC) lib/fivmr.jar lib/fijirt.jar lib/fivmcommon.jar lib/fijicore.jar lib/rtsj.jar lib/fijiscj.jar test/ruby/genInterfaceCollisionTest3.rb test/ruby/genNullArrTest.rb test/ruby/genMultiANewArrayNDim.rb test/ruby/genManyFields.rb
+	rm -rf test/java/build
+	mkdir test/java/build
+	rm -rf test/java/generated
+	mkdir -p test/java/generated/com/fiji/fivm/test
+	$(RUBY) test/ruby/genInterfaceCollisionTest3.rb > test/java/generated/com/fiji/fivm/test/InterfaceCollisionTest3.java
+	$(RUBY) test/ruby/genMultiANewArrayNDim.rb 7 > test/java/generated/com/fiji/fivm/test/MultiANewArray7Dim.java
+	$(RUBY) test/ruby/genMultiANewArrayNDim.rb 100 > test/java/generated/com/fiji/fivm/test/MultiANewArray100Dim.java
+	$(RUBY) test/ruby/genNullArrTest.rb
+	$(RUBY) test/ruby/genManyFields.rb > test/java/generated/com/fiji/fivm/test/ManyFields.java
+	$(JAVA) -jar lib/jasmin.jar -d test/java/build $(FIVMTESTASMSRC) 2>&1 | tee test/java/build/jasmin.log
+	$(RUBY) -e "\$$stdin.each_line{|line| if line=~/Found [0-9]+ errors/ then exit 1 end}" < test/java/build/jasmin.log
+	$(FIJI_JAVA_COMPILER) -nowarn -source 1.5 -target 1.5 -classpath lib/fivmr.jar:lib/fijirt.jar:lib/fivmcommon.jar:lib/fijicore.jar:lib/rtsj.jar:lib/fijiscj.jar:lib/fast-md5.jar:test/java/build $(FIVMTESTSRC) `find test/java/generated -name '*.java'` -d test/java/build
+	rm test/java/build/com/fiji/fivm/test/ClassWeDelete.class
+	$(JAR) cf lib/fivmtest.jar -C test/java/build .
+
+lib/hardrtj.jar: $(HARDRTJSRC) lib/fijicore.jar lib/fivmr.jar lib/fivmcommon.jar
+	rm -rf hardrtj/build
+	mkdir hardrtj/build
+	$(FIJI_JAVA_COMPILER) -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath lib/fijicore.jar:lib/fivmr.jar:lib/fivmcommon.jar:hardrtj/build:lib/fast-md5.jar $(HARDRTJSRC) -d hardrtj/build
+	$(JAR) cf lib/hardrtj.jar -C hardrtj/build .
+
+target/configure: target/configure.ac m4/fiji_compile_opt.m4
+	(cd target && aclocal -I ../m4)
+	(cd target && autoheader)
+	(cd target && autoconf)
+
+lib/targets/%/fivmcrc: bin/add-target lib/fijiconfig.rb target/configure target/fivmc_def_config.h.in target/fivmr_asm_defs.h.in target/Rules.in target/debug/fivmc_tag_dep_config.h.in target/debug/Makefile.in target/opt/fivmc_tag_dep_config.h.in target/opt/Makefile.in target/small/fivmc_tag_dep_config.h.in target/small/Makefile.in target/fivmcrc.in
+	echo "Building fivmcrc/fivmr_target.h for $(TARGET)"
+	$(RUBY) bin/add-target --reconfigure $*
+
+.numberOfProcessors: lib/fivmutil.jar
+	$(JAVA) -classpath lib/fivmutil.jar com.fiji.fivm.util.PrintAvailableProcs > .numberOfProcessors
+
+lib/targets/%/.make.phony: .numberOfProcessors
+	echo "Building runtime for $(TARGET)"
+	$(MAKE) lib/targets/$*/fivmcrc
+	$(RUBY) -e '$$stdout.write "CPPFLAGS="' > lib/targets/$*/Cppflags
+	$(RUBY) bin/fivmc --target $* --cppflags >> lib/targets/$*/Cppflags
+	(cd lib/targets/$*/debug && $(MAKE) -j `cat ../../../../.numberOfProcessors`)
+	(cd lib/targets/$*/opt && $(MAKE) -j `cat ../../../../.numberOfProcessors`)
+	(cd lib/targets/$*/small && $(MAKE) -j `cat ../../../../.numberOfProcessors`)
+
+lib/targets/%/cmacros.conf: lib/targets/%/fivmcrc lib/fivmc.jar lib/fivmr.jar lib/hardrtj.jar lib/fijicore.jar lib/rtsj.jar
+	$(RUBY) bin/fivmc -o lib/targets/$*/cmacros.conf --target $* --process-cmacros -A cha --code-repo disk --sanity-check 1
+
+lib/default_targets_added.phony: target/configure
+	$(RUBY) localbin/add-default-targets
+	touch lib/default_targets_added.phony
+
+targetconfig.phony: lib/default_targets_added.phony target/configure
+	for target in `$(RUBY) localbin/list-targets`; do \
+	     $(MAKE) -f RealMakefile -C . target-add TARGET=$$target || exit 1; \
+	done
+	for target in `$(RUBY) bin/default-target`; do \
+	    cp lib/targets/$$target/libfivmr_*.a lib/; \
+	    mkdir -p lib/debug; \
+	    mkdir -p lib/opt; \
+	    mkdir -p lib/small; \
+	    cp lib/targets/$$target/fivmc_def_config.h lib/; \
+	    cp lib/targets/$$target/fivmr_asm_defs.h lib/; \
+	    cp lib/targets/$$target/fivmr_target.h lib/; \
+	    cp lib/targets/$$target/debug/fivmc_tag_dep_config.h lib/debug; \
+	    cp lib/targets/$$target/opt/fivmc_tag_dep_config.h lib/opt; \
+	    cp lib/targets/$$target/small/fivmc_tag_dep_config.h lib/small; \
+	done
+
+target-add: target/configure
+	test -n "$(TARGET)" || (echo "You must provide a TARGET= argument to use this command" && exit 1)
+	make -f RealMakefile TARGET=$(TARGET) lib/targets/$(TARGETALIAS)/.make.phony
+	echo "Building cmacros.conf for $(TARGET)"
+	time $(RUBY) bin/fivmc -o lib/targets/$(TARGETALIAS)/cmacros.conf --target $(TARGETALIAS) --process-cmacros -A cha --code-repo disk --sanity-check 1
+
+target-install:
+	test -n "$(TARGETALIAS)" || (echo "You must provide a TARGET= or TARGETALIAS= argument to use this command" && exit 1)
+	mkdir -p $(PREFIX)/share/fivm-$(VERSION)/lib/targets/$(TARGETALIAS)
+	for file in fivmcrc cmacros.conf fivmr_target.h Cppflags Rules \
+	            fivmc_def_config.h fivmr_asm_defs.h; do \
+	    $(INSTALL) -m 0644 lib/targets/$(TARGETALIAS)/$$file $(PREFIX)/share/fivm-$(VERSION)/lib/targets/$(TARGETALIAS)/ || exit 1; \
+	done;
+
+TARBALL_DIRNAME=fivm-$(VERSION)
+dist: target/configure test/c/mt/configure test/c/mvm/configure \
+      test/c/tree/configure test/c/jni/configure doc
+	rm -rf $(TARBALL_DIRNAME)
+	mkdir $(TARBALL_DIRNAME)
+	mkdir $(TARBALL_DIRNAME)/bin
+	mkdir $(TARBALL_DIRNAME)/fiji-asm
+	mkdir $(TARBALL_DIRNAME)/common
+	mkdir $(TARBALL_DIRNAME)/compiler
+	mkdir $(TARBALL_DIRNAME)/bottomup
+	mkdir $(TARBALL_DIRNAME)/runner
+	mkdir $(TARBALL_DIRNAME)/util
+	mkdir $(TARBALL_DIRNAME)/util/c
+	mkdir $(TARBALL_DIRNAME)/util/c/getNumProcs
+	mkdir $(TARBALL_DIRNAME)/util/java
+	mkdir $(TARBALL_DIRNAME)/ecj
+	mkdir $(TARBALL_DIRNAME)/extra
+	mkdir $(TARBALL_DIRNAME)/runtimec
+	mkdir $(TARBALL_DIRNAME)/runtimej
+	mkdir $(TARBALL_DIRNAME)/cpruntime
+	mkdir $(TARBALL_DIRNAME)/fijirt
+	mkdir $(TARBALL_DIRNAME)/fijicore
+	mkdir $(TARBALL_DIRNAME)/hardrtj
+	mkdir $(TARBALL_DIRNAME)/fast-md5
+	mkdir $(TARBALL_DIRNAME)/RTSJ
+	mkdir $(TARBALL_DIRNAME)/scjruntime
+	mkdir $(TARBALL_DIRNAME)/test
+	mkdir $(TARBALL_DIRNAME)/test/java
+	mkdir $(TARBALL_DIRNAME)/test/c
+	mkdir $(TARBALL_DIRNAME)/test/c/mt
+	mkdir $(TARBALL_DIRNAME)/test/c/mvm
+	mkdir $(TARBALL_DIRNAME)/test/c/tree
+	mkdir $(TARBALL_DIRNAME)/test/c/jni
+	mkdir $(TARBALL_DIRNAME)/test/ruby
+	mkdir $(TARBALL_DIRNAME)/test/data
+	mkdir $(TARBALL_DIRNAME)/mingw
+	mkdir $(TARBALL_DIRNAME)/scj
+	mkdir $(TARBALL_DIRNAME)/scj/oSCJ
+	mkdir $(TARBALL_DIRNAME)/scj/oSCJ/doc
+	mkdir $(TARBALL_DIRNAME)/scj/oSCJ/scj
+	mkdir $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri
+	cp bin/fivmc $(TARBALL_DIRNAME)/bin
+	cp bin/add-target $(TARBALL_DIRNAME)/bin
+	cp bin/default-target $(TARBALL_DIRNAME)/bin
+	cp bin/fijivm $(TARBALL_DIRNAME)/bin
+	cp bin/fivmc_trampoline.in $(TARBALL_DIRNAME)/bin
+	cp bin/fijivm_trampoline.in $(TARBALL_DIRNAME)/bin
+	cp -r doc $(TARBALL_DIRNAME)/
+	cp -r fiji-asm/src $(TARBALL_DIRNAME)/fiji-asm
+	cp fiji-asm/LICENSE.txt $(TARBALL_DIRNAME)/fiji-asm
+	cp -r common/src $(TARBALL_DIRNAME)/common
+	rm -f $(TARBALL_DIRNAME)/common/src/com/fiji/fivm/Config.java
+	cp -r bottomup/src $(TARBALL_DIRNAME)/bottomup
+	cp -r compiler/src $(TARBALL_DIRNAME)/compiler
+	cp -r util/c/getNumProcs/src $(TARBALL_DIRNAME)/util/c/getNumProcs
+	cp -r util/java/src $(TARBALL_DIRNAME)/util/java
+	cp -r runner/src $(TARBALL_DIRNAME)/runner
+	cp -r runtimec/src $(TARBALL_DIRNAME)/runtimec
+	rm -f $(TARBALL_DIRNAME)/runtimec/src/fivmr_config.h
+	rm -f $(TARBALL_DIRNAME)/runtimec/src/fivmr_config_phony.h
+	rm -f $(TARBALL_DIRNAME)/runtimec/src/fivmr_settings_fields.h
+	rm -f $(TARBALL_DIRNAME)/runtimec/src/fivmr_settings_getters.h
+	cp -r runtimec/mains $(TARBALL_DIRNAME)/runtimec
+	cp -r runtimej/src $(TARBALL_DIRNAME)/runtimej
+	cp -r cpruntime/src $(TARBALL_DIRNAME)/cpruntime
+	cp -r fijirt/src $(TARBALL_DIRNAME)/fijirt
+	cp -r fijicore/javadoc $(TARBALL_DIRNAME)/fijicore
+	cp -r fijicore/src $(TARBALL_DIRNAME)/fijicore
+	cp -r hardrtj/src $(TARBALL_DIRNAME)/hardrtj
+	cp -r fast-md5/src $(TARBALL_DIRNAME)/fast-md5
+	cp -r fast-md5/ChangeLog $(TARBALL_DIRNAME)/fast-md5
+	cp -r fast-md5/README.txt $(TARBALL_DIRNAME)/fast-md5
+	cp -r RTSJ/src $(TARBALL_DIRNAME)/RTSJ
+	cp -r scjruntime/src $(TARBALL_DIRNAME)/scjruntime
+	cp -r test/java/src $(TARBALL_DIRNAME)/test/java
+	cp -r test/c/mt/src $(TARBALL_DIRNAME)/test/c/mt
+	cp -r test/c/mvm/src $(TARBALL_DIRNAME)/test/c/mvm
+	cp -r test/c/tree/src $(TARBALL_DIRNAME)/test/c/tree
+	cp -r test/c/jni/src $(TARBALL_DIRNAME)/test/c/jni
+	cp scj/oSCJ/scj/ri/configure $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri 
+	cp scj/oSCJ/scj/ri/configure.ac $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri 
+	cp scj/oSCJ/scj/ri/Makefile.in $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri 
+	cp scj/oSCJ/scj/ri/RealMakefile.in $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri 
+	cp scj/oSCJ/scj/ri/install-sh $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri 
+	cp scj/oSCJ/LGPL-License $(TARBALL_DIRNAME)/scj/oSCJ/
+	cp scj/oSCJ/doc/readme $(TARBALL_DIRNAME)/scj/oSCJ/doc/readme
+	cp -r scj/oSCJ/scj/ri/spec $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri 
+	cp -r scj/oSCJ/scj/ri/s3 $(TARBALL_DIRNAME)/scj/oSCJ/scj/ri 
+	(cd testmake && $(MAKE) baredist)
+	(cd $(TARBALL_DIRNAME) && tar -xzf ../testmake/testmake.tar.gz)
+	cp test/c/mt/configure test/c/mt/configure.ac $(TARBALL_DIRNAME)/test/c/mt
+	cp test/c/mt/Makefile.in test/c/mt/install-sh $(TARBALL_DIRNAME)/test/c/mt
+	cp test/c/mvm/configure test/c/mvm/configure.ac $(TARBALL_DIRNAME)/test/c/mvm
+	cp test/c/mvm/Makefile.in test/c/mvm/hello.expected $(TARBALL_DIRNAME)/test/c/mvm
+	cp test/c/mvm/Makefile.Test test/c/mvm/hello.expected $(TARBALL_DIRNAME)/test/c/mvm
+	cp test/c/tree/configure test/c/tree/configure.ac $(TARBALL_DIRNAME)/test/c/tree
+	cp test/c/tree/Makefile.in $(TARBALL_DIRNAME)/test/c/tree
+	cp test/c/tree/Makefile.Test $(TARBALL_DIRNAME)/test/c/tree
+	cp test/c/jni/configure test/c/jni/configure.ac $(TARBALL_DIRNAME)/test/c/jni
+	cp test/c/jni/Makefile.in $(TARBALL_DIRNAME)/test/c/jni
+	cp test/ruby/*.rb $(TARBALL_DIRNAME)/test/ruby
+	cp test/data/*.txt $(TARBALL_DIRNAME)/test/data
+	cp extra/README $(TARBALL_DIRNAME)/extra
+	cp cpruntime/LICENSE $(TARBALL_DIRNAME)/cpruntime
+	cp fijirt/LICENSE $(TARBALL_DIRNAME)/fijirt
+	cp fijicore/LICENSE $(TARBALL_DIRNAME)/fijicore
+	cp fast-md5/LICENSE $(TARBALL_DIRNAME)/fast-md5
+	cp scjruntime/LICENSE $(TARBALL_DIRNAME)/scjruntime
+	cp ecj/ecj-3.5.1.jar $(TARBALL_DIRNAME)/ecj
+	cp ecj/ecjsrc-3.5.1.tar.bz2 $(TARBALL_DIRNAME)/ecj
+	cp ecj/epl-v10.html $(TARBALL_DIRNAME)/ecj
+	cp ecj/ecj.in $(TARBALL_DIRNAME)/ecj
+	cp mingw/* $(TARBALL_DIRNAME)/mingw
+	mkdir $(TARBALL_DIRNAME)/lib
+	cp lib/jasmin.jar $(TARBALL_DIRNAME)/lib
+	cp lib/antlr-3.2.jar $(TARBALL_DIRNAME)/lib
+	cp lib/fast-md5.jar $(TARBALL_DIRNAME)/lib
+	cp lib/*.reflectLog $(TARBALL_DIRNAME)/lib
+	cp lib/config.rb.in $(TARBALL_DIRNAME)/lib
+	cp lib/host_fivmcrc.in $(TARBALL_DIRNAME)/lib
+	cp lib/codeRepo.log $(TARBALL_DIRNAME)/lib
+	cp lib/hello.class $(TARBALL_DIRNAME)/lib
+	cp lib/fijiconfig.rb $(TARBALL_DIRNAME)/lib
+	cp lib/defaultIgnoredErrors.conf $(TARBALL_DIRNAME)/lib
+	cp RealMakefile.in $(TARBALL_DIRNAME)
+	cp Makefile.in $(TARBALL_DIRNAME)
+	cp Makefile.Test $(TARBALL_DIRNAME)
+	cp Makefile.Test.conf.in $(TARBALL_DIRNAME)
+	cp configure.ac $(TARBALL_DIRNAME)
+	cp configure $(TARBALL_DIRNAME)
+	cp config.guess $(TARBALL_DIRNAME)
+	cp config.sub $(TARBALL_DIRNAME)
+	cp install-sh $(TARBALL_DIRNAME)
+	cp LEGAL $(TARBALL_DIRNAME)
+	cp README $(TARBALL_DIRNAME)
+	mkdir $(TARBALL_DIRNAME)/m4
+	cp m4/fiji_compile_opt.m4 $(TARBALL_DIRNAME)/m4
+	cp m4/fiji_url_fetch.m4 $(TARBALL_DIRNAME)/m4
+	mkdir $(TARBALL_DIRNAME)/target
+	mkdir $(TARBALL_DIRNAME)/target/debug
+	mkdir $(TARBALL_DIRNAME)/target/opt
+	mkdir $(TARBALL_DIRNAME)/target/small
+	cp target/configure.ac $(TARBALL_DIRNAME)/target
+	cp target/fivmc_def_config.h.in $(TARBALL_DIRNAME)/target
+	cp target/fivmr_asm_defs.h.in $(TARBALL_DIRNAME)/target
+	cp target/Rules.in $(TARBALL_DIRNAME)/target
+	cp target/fivmcrc.in $(TARBALL_DIRNAME)/target
+	cp target/configure $(TARBALL_DIRNAME)/target
+	cp target/fivmr_target.h.in $(TARBALL_DIRNAME)/target
+	cp target/target-results.conf.in $(TARBALL_DIRNAME)/target
+	cp target/debug/fivmc_tag_dep_config.h.in $(TARBALL_DIRNAME)/target/debug
+	cp target/debug/Makefile.in $(TARBALL_DIRNAME)/target/debug
+	cp target/opt/fivmc_tag_dep_config.h.in $(TARBALL_DIRNAME)/target/opt
+	cp target/opt/Makefile.in $(TARBALL_DIRNAME)/target/opt
+	cp target/small/fivmc_tag_dep_config.h.in $(TARBALL_DIRNAME)/target/small
+	cp target/small/Makefile.in $(TARBALL_DIRNAME)/target/small
+	mkdir $(TARBALL_DIRNAME)/lib/targets
+	mkdir $(TARBALL_DIRNAME)/lib/targets/null
+	cp lib/targets/null/* $(TARBALL_DIRNAME)/lib/targets/null
+	if test -e REVISION; then cp REVISION $(TARBALL_DIRNAME); else localbin/hgversion > $(TARBALL_DIRNAME)/REVISION; fi
+	mkdir $(TARBALL_DIRNAME)/localbin
+	cp localbin/verifysuccess $(TARBALL_DIRNAME)/localbin
+	cp localbin/verifysuccess-lenient $(TARBALL_DIRNAME)/localbin
+	cp localbin/add-default-targets $(TARBALL_DIRNAME)/localbin
+	cp bin/default-target $(TARBALL_DIRNAME)/bin
+	cp localbin/list-targets $(TARBALL_DIRNAME)/localbin
+	cp localbin/combineCTypes $(TARBALL_DIRNAME)/localbin
+	cp localbin/emacs-format.el $(TARBALL_DIRNAME)/localbin
+	cp localbin/emacs-format $(TARBALL_DIRNAME)/localbin
+	cp localbin/bottomup.in $(TARBALL_DIRNAME)/localbin
+	rm -rf $(TARBALL_DIRNAME)/.hg
+	rm -rf `find $(TARBALL_DIRNAME) -name '*~'`
+	rm -rf `find $(TARBALL_DIRNAME) -name '.DS_Store'`
+	rm -rf `find $(TARBALL_DIRNAME) -name '*#*'`
+	tar -cf $(TARBALL_DIRNAME).tar $(TARBALL_DIRNAME)
+	gzip -c $(TARBALL_DIRNAME).tar > $(TARBALL_DIRNAME).tar.gz || echo "no gzip"
+	bzip2 -c $(TARBALL_DIRNAME).tar > $(TARBALL_DIRNAME).tar.bz2 || echo "no bzip2"
+	rm -rf $(TARBALL_DIRNAME)
+
+distcheck: dist
+	tar -xzf $(TARBALL_DIRNAME).tar.gz
+	(cd $(TARBALL_DIRNAME) && \
+	 configopts=`../config.status --version | \
+	             sed -e '/^ *with options/!d' \
+	                 -e 's/^ *with options "//' \
+	                 -e 's/"$$//'` && \
+	 ./configure `eval echo $$configopts`)
+	(cd $(TARBALL_DIRNAME) && make)
+	(cd $(TARBALL_DIRNAME) && make full-check)
+	rm -r $(TARBALL_DIRNAME)
+
+install:
+	mkdir -p $(PREFIX)/bin
+	rm -rf $(PREFIX)/share/fivm-$(VERSION)/bin
+	rm -rf $(PREFIX)/share/fivm-$(VERSION)/lib
+	rm -rf $(PREFIX)/share/fivm-$(VERSION)/include
+	rm -rf $(PREFIX)/share/fivm-$(VERSION)/runtimec/src
+	mkdir -p $(PREFIX)/share/fivm-$(VERSION)/bin
+	mkdir -p $(PREFIX)/share/fivm-$(VERSION)/lib
+	mkdir -p $(PREFIX)/share/fivm-$(VERSION)/include
+	mkdir -p $(PREFIX)/share/fivm-$(VERSION)/runtimec/src
+	mkdir -p $(PREFIX)/share/fivm-$(VERSION)/runtimec/mains
+	$(INSTALL) bin/fivmc_trampoline $(PREFIX)/bin/fivmc
+	$(INSTALL) bin/fijivm_trampoline $(PREFIX)/bin/fijivm
+	$(INSTALL) bin/fivmc $(PREFIX)/share/fivm-$(VERSION)/bin/fivmc
+	$(INSTALL) bin/default-target $(PREFIX)/share/fivm-$(VERSION)/bin/default-target
+	$(INSTALL) bin/fijivm $(PREFIX)/share/fivm-$(VERSION)/bin/fijivm
+	for x in `cd bin && ls -1d fijivm-*-* | grep -v build`;\
+	    do $(INSTALL) -m 0755 bin/$$x $(PREFIX)/share/fivm-$(VERSION)/bin/$$x || exit 1; done
+	for x in lib/*.jar lib/*fivmcrc* lib/*.reflectLog lib/*.rb lib/codeRepo.log lib/defaultIgnoredErrors.conf;\
+	    do $(INSTALL) -m 0644 $$x $(PREFIX)/share/fivm-$(VERSION)/$$x || exit 1; done
+	for x in runtimec/src/*.c runtimec/src/*.S runtimec/src/*.h;\
+	    do $(INSTALL) -m 0644 $$x $(PREFIX)/share/fivm-$(VERSION)/$$x || exit 1; done
+	for x in runtimec/mains/*.c;\
+	    do $(INSTALL) -m 0644 $$x $(PREFIX)/share/fivm-$(VERSION)/$$x || exit 1; done
+	mkdir -p $(PREFIX)/share/fivm-$(VERSION)/lib/targets
+	for target in `localbin/list-targets`; do \
+	    $(MAKE) -f RealMakefile -C . target-install PREFIX=$(PREFIX) TARGET=$$target; \
+	done
+	if test -e util/c/getNumProcs/getNumProcs; then \
+	    mkdir -p $(PREFIX)/share/fivm-$(VERSION)/util/c/getNumProcs; \
+	    $(INSTALL) -m 0755 util/c/getNumProcs/getNumProcs $(PREFIX)/share/fivm-$(VERSION)/util/c/getNumProcs/getNumProcs; \
+	fi
+	if test -n "$(FIJI_CLASSPATH_FETCH)"; then \
+            $(MAKE) -f RealMakefile classpath-install || exit 1; \
+	fi
+	if test -e REVISION; then cp REVISION $(PREFIX)/share/fivm-$(VERSION); else localbin/hgversion > $(PREFIX)/share/fivm-$(VERSION)/REVISION; fi
+
+classpath-install:
+	$(INSTALL) -m 0644 lib/glibj.zip $(PREFIX)/share/fivm-$(VERSION)/lib/glibj.zip
+	for lib in lib/libjava*$(FIJI_JNILIB_SUFFIX); do \
+	    $(INSTALL) -m 0755 $$lib $(PREFIX)/share/fivm-$(VERSION)/$$lib; \
+	done
+	$(INSTALL) -d -m 0755 $(PREFIX)/share/fivm-$(VERSION)/lib/resources
+	for dir in `cd lib/resources && find . -type d -print`; do \
+	    $(INSTALL) -d -m 0755 $(PREFIX)/share/fivm-$(VERSION)/lib/resources/$$dir; \
+	done
+	for file in `cd lib/resources && find . -type f -print`; do \
+	    $(INSTALL) -m 0644 lib/resources/$$file \
+	        $(PREFIX)/share/fivm-$(VERSION)/lib/resources/$$file; \
+	done
+	$(INSTALL) -m 0644 include/jni.h $(PREFIX)/share/fivm-$(VERSION)/include/jni.h
+
+doc: javadoc
+	cp README doc/README.txt
+	cp LEGAL doc/LEGAL.txt
+	$(RUBY) bin/fivmc --dollar-zero fivmc --target null --more-help > doc/fivmc_usage.txt
+
+javadoc: fijicore-javadoc compiler-javadoc.phony
+
+javadoc-clean:
+	rm -rf fijicore/javadoc
+	rm -rf compiler-javadoc
+
+fijicore-javadoc:
+	(javadoc -d fijicore/javadoc -classpath -public -sourcepath common/src:runtimej/src:fijirt/src:fijicore/src:fast-md5/src:RTSJ/src java.lang java.lang.annotation java.lang.reflect java.lang.ref java.io java.net java.nio java.nio.channels java.nio.channels.spi java.nio.charset java.util java.math javax.realtime sun.misc com.fiji.util com.fiji.rt com.fiji.fivm com.fiji.fivm.r1 com.fiji.fivm.util com.twmacinta.util com.fiji.mvm); \
+	if test $$? != 0; then \
+	    echo "WARNING: javadoc documentation could not be built" 1>&2; \
+	    rm -rf javadoc; \
+	    mkdir javadoc; \
+	    echo "<html><head></head><body>This distribution contains no documentation.</body></html>" > javadoc/index-all.html; \
+	fi
+
+compiler-javadoc.phony:
+	(javadoc -d compiler-javadoc -classpath lib/fiji-asm.jar -private -sourcepath common/src:fijirt/src:compiler/src com.fiji.util com.fiji.rt com.fiji.fivm com.fiji.fivm.r1 com.fiji.fivm.c1); \
+	if test $$? != 0; then \
+	    echo "WARNING: javadoc documentation could not be built" 1>&2; \
+	    rm -rf fijicore/javadoc; \
+	    mkdir fijicore/javadoc; \
+	    echo "<html><head></head><body>This distribution contains no documentation.</body></html>" > compiler-javadoc/index-all.html; \
+	fi
+
+# this is both a sanity-check test and a way of getting the codeRepo.log to accelerate
+# 0CFA
+codeRepo:
+	time $(RUBY) bin/fivmc -o hello lib/hello.class -m hello --0-log-access --code-repo cache --sanity-check 1
+	cp hello.build/codeRepo.log lib/codeRepo.log
+	echo "hello!" > hello.expected
+	./hello > hello.log 2>&1
+	cat hello.log
+	diff hello.expected hello.log
+	@echo "SUCCESS!  Produced a code repo log, and the compiler appears to work."
+
+# useful for rebuilding fast-md5; don't use normally
+rebuild-fast-md5:
+	(cd fast-md5 && ant clean)
+	(cd fast-md5 && ant jar)
+	cp fast-md5/dist/fast-md5.jar lib/fast-md5.jar
+
+testmake/configure: testmake/configure.ac
+	(cd testmake && autoconf)
+
+testmake.phony: testmake/configure
+	(cd testmake && ./configure)
+	(cd testmake && make)
+
+test/c/mvm/configure: test/c/mvm/configure.ac
+	(cd test/c/mvm && autoconf)
+
+test/c/mt/configure: test/c/mt/configure.ac
+	(cd test/c/mt && autoconf)
+
+test/c/tree/configure: test/c/tree/configure.ac
+	(cd test/c/tree && autoconf)
+
+test/c/jni/configure: test/c/jni/configure.ac
+	(cd test/c/jni && autoconf)
+
+lib/ctypes-$(BITS).conf: runtimec/src/fivmr.h runtimec/src/fivmr_sysdep.h
+	if test `$(RUBY) bin/fivmc --target local-$(BITS) --cl-works` = "yes";\
+	then\
+	    echo "Extracting ctypes for -A open";\
+	    time $(RUBY) bin/fivmc --target local-$(BITS) -o lib/cmr-biased-ctypes.tmp --extract-ctypes --ct-compute-offsets --ct-incl-generated no -A open -G cmr --lock-mode biased;\
+	else\
+	    echo "Extracting ctypes for -A cha";\
+	    time $(RUBY) bin/fivmc --target local-$(BITS) -o lib/cmr-biased-ctypes.tmp --extract-ctypes --ct-compute-offsets --ct-incl-generated no -A cha -G cmr --lock-mode biased;\
+	fi
+	time $(RUBY) bin/fivmc --target local-$(BITS) -o lib/hf-pip-ctypes.tmp --extract-ctypes --ct-compute-offsets --ct-incl-generated no -A cha -G hf --lock-mode pip
+	time $(RUBY) bin/fivmc --target local-$(BITS) -o lib/hfa-ctypes.tmp --extract-ctypes --ct-compute-offsets --ct-incl-generated no -A cha -G hf --g-pred-level a
+	time $(RUBY) localbin/combineCTypes lib/cmr-biased-ctypes.tmp lib/hf-pip-ctypes.tmp lib/hfa-ctypes.tmp > lib/ctypes-$(BITS).conf
+
+lib/ctypes.conf.phony:
+	time $(RUBY) bin/fivmc --if-32-works "$(MAKE) -f RealMakefile lib/ctypes-32.conf BITS=32"
+	time $(RUBY) bin/fivmc --if-64-works "$(MAKE) -f RealMakefile lib/ctypes-64.conf BITS=64"
+
+recompute-ctypes:
+	rm -f lib/ctypes-32.conf
+	rm -f lib/ctypes-64.conf
+	$(MAKE) -f RealMakefile lib/ctypes.conf.phony
+
+basic-vm: all
+	time bin/fivmc --del-build-dir -o bin/fijivm-cmr-biased-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size --lock-mode biased
+
+vm-stuff: all basic-vm
+	time bin/fivmc --del-build-dir -o bin/fijivm-cmr-fast-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size
+	time bin/fivmc --del-build-dir -o bin/fijivm-hf-fast-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size -G hf
+	time bin/fivmc --del-build-dir -o bin/fijivm-hfa-fast-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size -G hf --g-pred-level a
+	time bin/fivmc --del-build-dir -o bin/fijivm-cmr-pip-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size --lock-mode pip
+	time bin/fivmc --del-build-dir -o bin/fijivm-hf-pip-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size -G hf --lock-mode pip
+	time bin/fivmc --del-build-dir -o bin/fijivm-hfa-pip-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size -G hf --g-pred-level a --lock-mode pip
+	time bin/fivmc --del-build-dir -o bin/fijivm-hf-biased-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size -G hf --lock-mode biased
+	time bin/fivmc --del-build-dir -o bin/fijivm-hfa-biased-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa --opt-size -G hf --g-pred-level a --lock-mode biased
+
+check: all
+	testmake/bin/testmake check
+
+quick-check: all
+	testmake/bin/testmake quick-check
+
+medium-check: all
+	$(RUBY) testmake/bin/testmake medium-check
+
+full-check: all
+	testmake/bin/testmake full-check
+

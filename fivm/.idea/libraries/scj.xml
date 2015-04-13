@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="scj">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/scj/oSCJ/scj/ri/scj.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

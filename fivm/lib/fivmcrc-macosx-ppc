@@ -1,0 +1,25 @@
+--sys-arch		ppc
+--sys-osflavor          POSIX
+--sys-os		Darwin
+--sys-osver		9.6.0
+--sys-ptrsize		4
+--sys-endianness        big
+--sys-log-pagesize      12
+--sys-cc		gcc-3.3
+--sys-make		make
+--sys-debug-cflags	"-g"
+--sys-opt-cflags	"-O3 -fno-strict-aliasing -fno-optimize-sibling-calls -falign-loops -mdynamic-no-pic"
+--sys-arch-cflags	"-arch ppc"
+--sys-warn-cflags	"-W -Werror"
+--sys-nowarn-cflags	"-w"
+--sys-cppflags		"-D_REENTRANT -DHAVE_ALLOCA_H -DHAVE_STRINGS_H -DHAVE_SYS_MMAN_H -DHAVE_ICONV"
+--sys-ldflags		"-arch ppc"
+--sys-libs		"-liconv"
+--sys-noinline-attr	"__attribute__((noinline))"
+
+--arith-helper          int_div
+--arith-helper          int_mod
+--arith-helper          long_div
+--arith-helper          long_mod
+
+--host-vm-cmd 		/usr/bin/java

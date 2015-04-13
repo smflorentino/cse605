@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+# testing the case where every array is an arraylet...
+
+echo "Compiling -G none --object-model fragmented --force-arraylets --no-opt configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-nogc-fragmented-forcearraylets-noopt . -m SpecApplication -G none --object-model fragmented --force-arraylets --no-opt
+
+$localbindir/runspec ./SPECjvm98-nogc-fragmented-forcearraylets-noopt
+
+echo "Compiling -G cmr --object-model fragmented --force-arraylets --no-opt configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-fragmented-forcearraylets-noopt . -m SpecApplication -G cmr --object-model fragmented --force-arraylets --no-opt
+
+$localbindir/runspec ./SPECjvm98-cmrgc-fragmented-forcearraylets-noopt
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-fragmented-forcearraylets-noopt
+
+echo "Compiling -G cmr --object-model fragmented --force-arraylets configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-fragmented-forcearraylets . -m SpecApplication -G cmr --object-model fragmented --force-arraylets
+
+$localbindir/runspec ./SPECjvm98-cmrgc-fragmented-forcearraylets
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-fragmented-forcearraylets
+
+# and now testing the case where there are no arraylets...
+
+echo "Compiling -G none --object-model fragmented --no-opt configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-nogc-fragmented-noopt . -m SpecApplication -G none --object-model fragmented --no-opt
+
+$localbindir/runspec ./SPECjvm98-nogc-fragmented-noopt
+
+echo "Compiling -G cmr --object-model fragmented --no-opt configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-fragmented-noopt . -m SpecApplication -G cmr --object-model fragmented --no-opt
+
+$localbindir/runspec ./SPECjvm98-cmrgc-fragmented-noopt
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-fragmented-noopt
+
+echo "Compiling -G cmr --object-model fragmented configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-fragmented . -m SpecApplication -G cmr --object-model fragmented
+
+$localbindir/runspec ./SPECjvm98-cmrgc-fragmented
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-fragmented
+

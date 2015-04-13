@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+set -x
+
+JAVA=java
+
+$JAVA -ea -classpath lib/antlr-3.2.jar:lib/bottomup.jar com.fiji.fivm.bottomup.Main $1> tmp.java
+localbin/emacs-format tmp.java
+mv tmp.java $2
+
+

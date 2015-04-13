@@ -1,0 +1,18 @@
+#!/bin/sh
+
+localbindir=`dirname $0`
+
+PS4=">> "
+set -x
+set -e
+
+"$@" -a -m5 -M5 _201_compress 2>&1 | tee runspec-log
+$localbindir/verifyspec < runspec-log
+"$@" -a -m10 -M10 _202_jess 2>&1 | tee runspec-log
+$localbindir/verifyspec < runspec-log
+"$@" -a -m10 -M10 _209_db 2>&1 | tee runspec-log
+$localbindir/verifyspec < runspec-log
+"$@" -a -m10 -M10 _213_javac 2>&1 | tee runspec-log
+$localbindir/verifyspec < runspec-log
+"$@" -a -m20 -M20 _227_mtrt 2>&1 | tee runspec-log
+$localbindir/verifyspec < runspec-log

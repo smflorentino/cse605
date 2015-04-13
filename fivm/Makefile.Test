@@ -1,0 +1,725 @@
+check: quick-check cl-prog-check-debug-o0cfa check-testnogc-cmrgc check-simplegctest-cmrgc check-mtgctest2
+
+medium-check: quick-check cl-check check-testnogc-cmrgc check-testnogc-hfgc runbtastats-check cha-check check-simplegctest-cmrgc check-simplegctest-hfgc check-mtgctest2-cmr check-mtgctest2 check-bigint check-md5 check-mt check-badinit check-confignode check-stringintern check-cload1 check-utf8enc check-utf8dec check-locktest check-waittest
+
+# FIXME #2: currently this relies on at least one script from localbin that isn't
+# being put into the dist
+# FIXME #3: we're doing RTEMS ERC32 SIS tests whenever there is a sparc-rtems4.9
+# target.  that's kind of bogus for a plethora of reasons.  first, sparc-rtems4.9
+# doesn't imply ERC32 SIS (the user could have configured one of any number of
+# SIS-incompatible sparc BSPs).  second, we're not really married to rtems4.9.  so
+# why should our tests be?
+full-check: quick-check cl-check runbtastats-check noifacecomp-check typeepoch-check trackdirectsubs-check check-cload1 glibj-check cha-check check-cmrgc-misc check-badinit check-evilclinit check-evilclinit2 check-evilclinit3 check-stringintern check-confignode check-jmvm check-utf8enc check-utf8dec check-md5 check-md5-hfgc check-mt check-rbtree check-bigint check-bigint-hfgc check-mtgctest2 check-mtgctest2-cmr check-mtgctest2-opt check-mvm check-64 check-rtems check-waittest check-hfgc check-locktest check-cmrgc check-reflection check-cmrgc-fragmented check-cmrgc-disk check-nogc check-cmrgc-poisoned check-scopedmem check-mtgctest2-long check-mtgctest2-opt-long check-multiplies
+
+check-stringintern:
+	bin/fivmc -o teststringintern lib/fivmtest.jar -m com.fiji.fivm.test.TestStringIntern --sanity-check 1
+	./teststringintern
+
+check-cload1:
+	bin/fivmc -o classloadertest1 lib/fivmtest.jar -m com.fiji.fivm.test.ClassLoaderTest1 --sanity-check 1
+	./classloadertest1
+
+check-badinit:
+	$(RUBY) bin/fivmc -o testbadinit lib/fivmtest.jar -m com.fiji.fivm.test.TestBadInit --sanity-check 1
+	./testbadinit
+
+check-evilclinit:
+	$(RUBY) bin/fivmc -o evilclinit lib/fivmtest.jar -m com.fiji.fivm.test.EvilClinit --sanity-check 1
+	./evilclinit
+
+check-evilclinit2:
+	$(RUBY) bin/fivmc -o evilclinit2 lib/fivmtest.jar -m com.fiji.fivm.test.EvilClinit2 --sanity-check 1
+	./evilclinit2
+
+check-evilclinit3:
+	$(RUBY) bin/fivmc -o evilclinit3 lib/fivmtest.jar -m com.fiji.fivm.test.EvilClinit3 --sanity-check 1
+	./evilclinit3
+--exitStatus = 1
+
+check-confignode:
+	$(RUBY) test/ruby/configtest1.rb
+	$(JAVA) -classpath lib/fivmcommon.jar:lib/fijirt.jar:lib/fivmtest.jar com.fiji.fivm.test.ConfigTest1
+	$(RUBY) bin/fivmc -o configtest1 lib/fivmtest.jar -m com.fiji.fivm.test.ConfigTest1 --sanity-check 1
+	./configtest1
+	$(RUBY) bin/fivmc -o configtest1-hf lib/fivmtest.jar -m com.fiji.fivm.test.ConfigTest1 --sanity-check 1 -G hf
+	./configtest1-hf
+
+check-jmvm: check-jmvm-sliceexit42ok check-jmvm-sliceexit42fail check-jmvm-hello check-jmvm-slicehello check-jmvm-sliceexit42ok check-jmvm-sliceexit42fail
+
+hello.a:
+	$(RUBY) bin/fivmc -o hello -b payload lib/hello.class --sanity-check 1
+
+check-jmvm-hello: hello.a
+	$(RUBY) bin/fivmc -o runhello --link-payload hello lib/fivmtest.jar -m com.fiji.fivm.test.RunHello --sanity-check 1
+	./runhello
+--timeout = 100
+
+check-jmvm-slicehello: hello.a
+	$(RUBY) bin/fivmc -o timeslicehello --link-payload hello lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --sanity-check 1
+	FIVMR_FAKE_RT_PRIORITIES=true ./timeslicehello 10000000 10000
+--timeout = 1000
+
+exit42.a:
+	$(RUBY) bin/fivmc -o exit42 -p lib/fivmtest.jar -m com.fiji.fivm.test.Exit42
+
+check-jmvm-sliceexit42ok: exit42.a
+	$(RUBY) bin/fivmc -o timesliceexit42ok --link-payload exit42 lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --sanity-check 1
+	FIVMR_FAKE_RT_PRIORITIES=true ./timesliceexit42ok 10000000 10000
+--timeout = 1000
+
+check-jmvm-sliceexit42fail: exit42.a
+	$(RUBY) bin/fivmc -o timesliceexit42fail --link-payload exit42 lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSlicedEC --sanity-check 1
+	FIVMR_FAKE_RT_PRIORITIES=true ./timesliceexit42fail 10000000 10000
+--timeout = 1000
+--exitStatus = 1
+
+check-mvm:
+	(cd test/c/mvm && ./configure)
+	(cd test/c/mvm && $(MAKE) clean)
+	(cd test/c/mvm && $(MAKE))
+	(cd test/c/mvm && $(TESTMAKE))
+
+build-mttest:
+	(cd test/c/mt && ./configure)
+	(cd test/c/mt && make clean)
+	(cd test/c/mt && make)
+
+check-rbtree:
+	(cd test/c/tree && ./configure)
+	(cd test/c/tree && make clean)
+	(cd test/c/tree && make)
+	(cd test/c/tree && $(TESTMAKE))
+
+UTF8ENC_ARGS="test/data/testfile-ucs16big.txt utf8encode.dat"
+check-utf8enc:
+	$(JAVA) -classpath lib/fivmcommon.jar:lib/fijirt.jar:lib/fivmtest.jar com.fiji.fivm.test.UTF8Encode $(UTF8ENC_ARGS)
+	diff utf8encode.dat test/data/testfile-utf8.txt
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o utf8enc lib/fivmtest.jar -m com.fiji.fivm.test.UTF8Encode --quickly
+	./utf8enc $(UTF8ENC_ARGS)
+	diff utf8encode.dat test/data/testfile-utf8.txt
+
+UTF8DEC_ARGS="test/data/testfile-utf8.txt utf8decode.dat"
+check-utf8dec:
+	$(JAVA) -classpath lib/fivmcommon.jar:lib/fijirt.jar:lib/fivmtest.jar com.fiji.fivm.test.UTF8Decode $(UTF8DEC_ARGS)
+	diff utf8decode.dat test/data/testfile-ucs16big.txt
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o utf8dec lib/fivmtest.jar -m com.fiji.fivm.test.UTF8Decode --quickly
+	./utf8dec $(UTF8DEC_ARGS)
+	diff utf8decode.dat test/data/testfile-ucs16big.txt
+
+MT1_TEST_ARGS="1 123456 473925"
+check-mt: build-mttest
+	test/c/mt/mt1 $(MT1_TEST_ARGS) > mt1.log.c
+	$(JAVA) -classpath lib/fivmcommon.jar:lib/fivmtest.jar com.fiji.fivm.test.MarsenneTwisterTest1 $(MT1_TEST_ARGS) > mt1.log.jdk
+	diff mt1.log.c mt1.log.jdk
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o mt1 lib/fivmtest.jar -m com.fiji.fivm.test.MarsenneTwisterTest1 --quickly
+	./mt1 $(MT1_TEST_ARGS) > mt1.log.fiji
+	diff mt1.log.c mt1.log.fiji
+
+make-mtgctest2-cmr:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o mtgctest2-cmr lib/fivmtest.jar -m com.fiji.fivm.test.MTGCTest2 -G cmr
+
+make-mtgctest2:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o mtgctest2 lib/fivmtest.jar -m com.fiji.fivm.test.MTGCTest2 -G hf
+
+make-mtgctest2-opt:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o mtgctest2-opt lib/fivmtest.jar -m com.fiji.fivm.test.MTGCTest2 -G hf --more-opt
+
+check-mtgctest2-cmr: make-mtgctest2-cmr
+	FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=1g FIVMR_LOG_GC=true ./mtgctest2-cmr
+--timeout=150
+
+run-mtgctest2:
+	FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=1g FIVMR_LOG_GC=true ./mtgctest2
+--timeout=150
+
+check-mtgctest2: make-mtgctest2 run-mtgctest2
+
+check-mtgctest2-cmr-bigheap: make-mtgctest2-cmr
+	FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=2g FIVMR_LOG_GC=true ./mtgctest2-cmr
+--timeout=150
+
+check-mtgctest2-bigheap: make-mtgctest2
+	FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=2g FIVMR_LOG_GC=true ./mtgctest2
+--timeout=150
+
+check-mtgctest2-opt: make-mtgctest2-opt
+	FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=1g FIVMR_LOG_GC=true ./mtgctest2-opt
+--timeout=150
+
+check-mtgctest2-long: make-mtgctest2
+	FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=1g FIVMR_LOG_GC=true ./mtgctest2 1200
+--timeout=1300
+
+check-mtgctest2-opt-long: make-mtgctest2-opt
+	FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=1g FIVMR_LOG_GC=true ./mtgctest2-opt 600
+--timeout=700
+
+check-64:
+	$(RUBY) bin/fivmc --if-64-works "$(TESTMAKE) FIVMCFLAGS=\"$(FIVMCFLAGS) --64\" check-testnogc-hfgc-noopt check-testnogc-hfgc check-testnogc-hfgc-a check-simplegctest-hfgc-noopt check-simplegctest-hfgc check-simplegctest-hfgc-a check-testnogc-cmrgc-noopt check-testnogc-cmrgc check-testnogc-cmrgc-moreopt check-simplegctest-cmrgc-bigheap check-nogc check-locktest check-waittest-fast check-waittest-biased check-scopedmem-nogc check-scopedmem-cmrgc check-scopedmem-hfgc check-sharedscope-singlethread-nogc check-sharedscope-singlethread-cmrgc check-vmsupport-cmrgc check-vmsupport-hfgc check-vmsupport-complete"
+
+# FIXME: we should get everything to work in Classpath ... right now it doesn't
+check-classpath:
+	$(TESTMAKE) FIVMCFLAGS="-L glibj" full-check
+
+check-nogc: check-testnogc-nogc
+check-cmrgc: check-testnogc-cmrgc-noopt check-testnogc-cmrgc check-testnogc-cmrgc-moreopt check-simplegctest-cmrgc check-simplegctest-cmrgc-selfman
+check-cmrgc-disk: check-testnogc-cmrgc-disk
+check-cmrgc-poisoned: check-testnogc-cmrgc-poisoned check-simplegctest-cmrgc-poisoned
+check-cmrgc-misc: check-testnogc-cmrgc-typeepoch check-testnogc-cmrgc-noifacecomp
+check-cmrgc-fragmented: check-testnogc-cmrgc-fragmented-forcearraylets check-simplegctest-cmrgc-fragmented-forcearraylets check-testnogc-cmrgc-fragmented check-simplegctest-cmrgc-fragmented
+check-hfgc: check-testnogc-hfgc-noopt check-testnogc-hfgc check-simplegctest-hfgc-noopt check-simplegctest-hfgc check-testnogc-hfgc-a check-simplegctest-hfgc-a
+check-locktest: check-locktest-fast check-locktest-biased
+check-waittest: check-waittest-fast check-waittest-biased check-waittest-fast-hfgc
+check-scopedmem: check-scopedmem-nogc check-scopedmem-cmrgc check-scopedmem-hfgc check-simplegcteststatic-cmrgc check-simplegcteststatic-hfgc check-simplegctestscoped-cmrgc check-simplegctestscoped-hfgc check-sharedscope-singlethread-cmrgc check-vmsupport-cmrgc check-vmsupport-hfgc check-vmsupport-complete
+
+check-locktest-fast:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o locktest-fast lib/fivmtest.jar -m com/fiji/fivm/test/LockTest --more-opt --lock-impl fast --sanity-check 1
+	./locktest-fast 1 10 10000000 5
+	./locktest-fast 1 10 10000000 5
+
+check-locktest-biased:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o locktest-biased lib/fivmtest.jar -m com/fiji/fivm/test/LockTest --more-opt --lock-impl biased --sanity-check 1
+	./locktest-biased 1 10 10000000 5
+	./locktest-biased 1 10 10000000 5
+
+check-waittest-fast:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o waittest-fast lib/fivmtest.jar -m com/fiji/fivm/test/WaitTest --lock-impl fast --sanity-check 1
+	./waittest-fast 10 50 10000
+
+check-waittest-fast-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o waittest-fast-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/WaitTest --lock-impl fast --gc hf --sanity-check 1
+	./waittest-fast-hfgc 10 50 10000
+
+check-waittest-biased:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o waittest-biased lib/fivmtest.jar -m com/fiji/fivm/test/WaitTest --lock-impl biased --sanity-check 1
+	./waittest-biased 5 50 10000
+	./waittest-biased 5 50 10000
+	./waittest-biased 5 50 10000
+
+check-rtems:
+	if test -e lib/targets/RTEMS-sis-rtems4.9-sparc-32; then\
+	    echo "Checking RTEMS...";\
+	    $(TESTMAKE) check-rtems-testnogc-cmrgc check-rtems-testnogc-cmrgc-pip check-rtems-testnogc-hfgc check-rtems-sched check-rtems-simplegctest check-rtems-pip check-rtems-pip-hfgc check-rtems-jmvm check-rtsj|| exit 1;\
+	else\
+	    echo "No RTEMS; not testing it.";\
+	fi
+
+check-rtsj:
+	if test -e lib/targets/RTEMS-sis-rtems4.9-sparc-32; then\
+	    echo "Checking RTSJ RTEMS...";\
+	    $(TESTMAKE)  check-rtems-rtsj-sched check-rtems-rtsj-period check-rtems-rtsj-time check-rtems-rtsj-aeh check-rtems-rtsj-baeh || exit 1;\
+	else\
+	    echo "No RTEMS; not testing it.";\
+	fi
+
+check-rtems-jmvm: check-rtems-jmvm-slicehello check-rtems-jmvm-measuretimeslicinggaps
+
+check-rtems-jmvm-slicehello:
+	$(RUBY) bin/fivmc --target sparc-rtems4.9 -p -o hello-rtems lib/hello.class --g-def-max-mem 100k --g-def-trigger 100k --sanity-check 1
+	$(RUBY) bin/fivmc --target sparc-rtems4.9 -o timeslicehello-rtems --link-payload hello-rtems lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --g-def-max-mem 100k --g-def-trigger 100k --sanity-check 1
+	sparc-rtems4.9-run ./timeslicehello-rtems 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "That worked." < log
+
+check-rtems-jmvm-slicetickerhello:
+	$(RUBY) bin/fivmc --target sparc-rtems4.9 -p -o hello-rtems lib/hello.class --sanity-check 1 --more-opt-size --rt-assertions yes --g-def-max-mem 56k --g-def-trigger 56k
+	$(RUBY) bin/fivmc --target sparc-rtems4.9 -p -o ticker-rtems lib/fivmtest.jar -m com.fiji.fivm.test.Ticker --sanity-check 1 --more-opt-size --rt-assertions yes --g-def-max-mem 60k --g-def-trigger 30k --g-def-log-sync yes
+	$(RUBY) bin/fivmc --target sparc-rtems4.9 -o slicetickerhello-rtems --link-payload hello-rtems --link-payload ticker-rtems lib/fivmtest.jar -m com.fiji.fivm.test.RunTimeSliced --sanity-check 1 --more-opt-size --rt-assertions yes --g-def-max-mem 56k --g-def-trigger 56k --g-def-log yes
+	sparc-rtems4.9-run ./slicetickerhello-rtems 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess-lenient "That worked." "fivmr ABORT" < log
+
+check-rtems-jmvm-measuretimeslicinggaps:
+	$(RUBY) bin/fivmc --target sparc-rtems4.9 -o measuretimegaps-rtems -b payload lib/fivmtest.jar -m com.fiji.fivm.test.MeasureTimeGaps --sanity-check 1 --g-def-max-mem 60k --g-def-trigger 60k
+	$(RUBY) bin/fivmc --target sparc-rtems4.9 -o measuretimeslicinggaps-rtems lib/fivmtest.jar -m com.fiji.fivm.test.MeasureTimeSlicingGaps --link-payload measuretimegaps-rtems --sanity-check 1 --g-def-max-mem 60k --g-def-trigger 60k
+	sparc-rtems4.9-run ./measuretimeslicinggaps-rtems 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess-lenient "That worked." "fivmr ABORT" < log
+
+check-rtems-pip:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o piptest-rtems lib/fivmtest.jar -m com/fiji/fivm/test/PIPTest -G cmr --more-opt-size --rt-assertions yes --lock-impl pip --c-debug yes
+	sparc-rtems4.9-run ./piptest-rtems 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS!" < log
+
+check-rtems-pip-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o piptest-rtems-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/PIPTest -G hf --more-opt-size --rt-assertions yes --lock-impl pip
+	sparc-rtems4.9-run ./piptest-rtems-hfgc 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS!" < log
+
+check-rtems-simplegctest: check-rtems-simplegctest-cmrgc check-rtems-simplegctest-hfgc
+
+check-rtems-simplegctest-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o simplegctest-rtems-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestTinyArgsMain -G cmr --more-opt-size --rt-assertions yes --g-def-log yes
+	sparc-rtems4.9-run ./simplegctest-rtems-cmrgc 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "That seems to have worked." < log
+
+check-rtems-simplegctest-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o simplegctest-rtems-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestTinyArgsMain -G hf --more-opt-size --rt-assertions yes --g-def-log yes
+	sparc-rtems4.9-run ./simplegctest-rtems-hfgc 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "That seems to have worked." < log
+
+check-rtems-sched:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o testnogc-rtems-rtsched lib/fivmtest.jar -m com/fiji/fivm/test/SimpleRTSchedulingTest -G cmr --more-opt-size --rt-assertions yes
+	sparc-rtems4.9-run ./testnogc-rtems-rtsched 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+
+check-rtems-rtsj-sched:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --rt-library rtsj --sanity-check 1 -o rtsj-rtems-rtsjsched lib/fivmtest.jar -m com/fiji/fivm/test/SimpleRTSJSchedulingTest -G cmr --more-opt-size --rt-assertions yes
+	sparc-rtems4.9-run ./rtsj-rtems-rtsjsched 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+
+check-rtems-rtsj-period:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --rt-library rtsj --sanity-check 1 -o rtsj-rtems-rtsjperiod lib/fivmtest.jar -m com/fiji/fivm/test/SimpleRTSJWaitForPeriodTest -G cmr --more-opt-size --rt-assertions yes
+	sparc-rtems4.9-run ./rtsj-rtems-rtsjperiod 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+check-rtems-rtsj-time:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --rt-library rtsj --sanity-check 1 -o rtsj-rtems-rtsjtime lib/fivmtest.jar -m com/fiji/fivm/test/SimpleRTSJTimeTest -G cmr --more-opt-size --rt-assertions yes
+	sparc-rtems4.9-run ./rtsj-rtems-rtsjtime 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+check-rtems-rtsj-aeh:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --rt-library rtsj --sanity-check 1 -o rtsj-rtems-rtsjaeh lib/fivmtest.jar -m com/fiji/fivm/test/SimpleRTSJAehTest -G cmr --more-opt-size --rt-assertions yes
+	sparc-rtems4.9-run ./rtsj-rtems-rtsjaeh 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+check-rtems-rtsj-baeh:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --rt-library rtsj --sanity-check 1 -o rtsj-rtems-rtsjbaeh lib/fivmtest.jar -m com/fiji/fivm/test/SimpleRTSJBaehTest -G cmr --more-opt-size --rt-assertions yes
+	sparc-rtems4.9-run ./rtsj-rtems-rtsjbaeh 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+check-rtems-testnogc-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o testnogc-rtems-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMainSmall -G cmr --more-opt-size --rt-assertions yes --c-debug yes
+	sparc-rtems4.9-run ./testnogc-rtems-cmrgc 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+check-rtems-testnogc-cmrgc-pip:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o testnogc-rtems-cmrgc-pip lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMainSmall -G cmr --lock-impl pip --more-opt-size --rt-assertions yes --c-debug yes
+	sparc-rtems4.9-run ./testnogc-rtems-cmrgc-pip 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+check-rtems-testnogc-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o testnogc-rtems-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMainSmall -G hf --more-opt-size --rt-assertions yes --c-debug yes --g-def-max-mem 500k --g-def-trigger 250k
+	sparc-rtems4.9-run ./testnogc-rtems-hfgc 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "SUCCESS (I think)" < log
+
+check-rtems-scopedmem: check-rtems-scopedmem-nogc check-rtems-scopedmem-cmrgc
+
+check-rtems-scopedmem-nogc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o scopedmem-rtems-nogc --g-scoped-memory --g-def-immortal-mem=100k lib/fivmtest.jar -m com/fiji/fivm/test/RawScopedMemoryTest -G none --more-opt-size --rt-assertions yes --c-debug yes
+	sparc-rtems4.9-run ./scopedmem-rtems-nogc 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "Scoped memory interface seems to work" < log
+
+check-rtems-scopedmem-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --target sparc-rtems4.9 --sanity-check 1 -o scopedmem-rtems-cmrgc --g-scoped-memory --g-def-immortal-mem=100k lib/fivmtest.jar -m com/fiji/fivm/test/RawScopedMemoryTest -G cmr --more-opt-size --rt-assertions yes --c-debug yes
+	sparc-rtems4.9-run ./scopedmem-rtems-cmrgc 2>&1 | tee log
+	$(RUBY) localbin/verifysuccess "Scoped memory interface seems to work" < log
+
+check-reflection:
+	if test -e lib/glibj.zip; \
+	then\
+		$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testreflection lib/fivmtest.jar -m com/fiji/fivm/test/TestReflection -L glibj &&\
+		./testreflection;\
+	fi
+
+check-testnogc-nogc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-nogc lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G none
+	./testnogc-nogc
+
+check-testnogc-cmrgc-disk:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-disk lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --code-repo disk
+	./testnogc-cmrgc-disk
+
+check-testnogc-cmrgc-noopt:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-noopt lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --no-opt
+	./testnogc-cmrgc-noopt
+
+check-testnogc-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr
+	./testnogc-cmrgc
+
+check-testnogc-hfgc-noopt:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-hfgc-noopt lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G hf --no-opt
+	./testnogc-hfgc-noopt
+
+check-testnogc-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G hf
+	./testnogc-hfgc
+
+check-testnogc-hfgc-a:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-hfgc-a lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G hf --g-pred-level a
+	./testnogc-hfgc-a
+
+check-testnogc-cmrgc-moreopt:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-moreopt lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --more-opt
+	./testnogc-cmrgc-moreopt
+
+check-simplegctest-hfgc-noopt:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-hfgc-noopt lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G hf --no-opt
+	FIVMR_GC_MAX_MEM=1g FIVMR_GC_TRIGGER=10M ./simplegctest-hfgc-noopt 10 10000000 10
+	FIVMR_GC_MAX_MEM=1g FIVMR_GC_TRIGGER=200M ./simplegctest-hfgc-noopt 10 10000000 10
+
+check-simplegctest-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G hf
+	FIVMR_GC_MAX_MEM=1g FIVMR_GC_TRIGGER=10M ./simplegctest-hfgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=1g FIVMR_GC_TRIGGER=200M ./simplegctest-hfgc 10 10000000 10
+
+check-simplegctest-hfgc-a:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-hfgc-a lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G hf --g-pred-level a
+	FIVMR_GC_MAX_MEM=1g FIVMR_GC_TRIGGER=10M ./simplegctest-hfgc-a 10 10000000 10
+	FIVMR_GC_MAX_MEM=1g FIVMR_GC_TRIGGER=200M ./simplegctest-hfgc-a 10 10000000 10
+
+check-simplegctest-cmrgc-bigheap:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G cmr
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegctest-cmrgc 10 10000000 10
+
+check-simplegctest-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G cmr
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegctest-cmrgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=250M FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc 10 10000000 10
+
+check-simplegctest-cmrgc-selfman:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-cmrgc-selfman lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G cmr --g-self-man-mem
+	FIVMR_GC_MAX_MEM=500M FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-selfman 10 10000000 10
+	FIVMR_GC_MAX_MEM=500M FIVMR_GC_TRIGGER=200M ./simplegctest-cmrgc-selfman 10 10000000 10
+	FIVMR_GC_MAX_MEM=250M FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-selfman 10 10000000 10
+
+check-testnogc-cmrgc-poisoned:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-poisoned lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --header-model poisoned
+	./testnogc-cmrgc-poisoned
+
+check-testnogc-cmrgc-typeepoch:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-typeepoch lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --type-epochs yes
+	./testnogc-cmrgc-typeepoch
+
+check-testnogc-cmrgc-noifacecomp:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-noifacecomp lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --itable-compression no
+	./testnogc-cmrgc-noifacecomp
+
+check-simplegctest-cmrgc-poisoned:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-cmrgc-poisoned lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G cmr --header-model poisoned
+	FIVMR_GC_MAX_MEM=1G FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-poisoned 10 10000000 10
+	FIVMR_GC_MAX_MEM=1G FIVMR_GC_TRIGGER=200M ./simplegctest-cmrgc-poisoned 10 10000000 10
+	FIVMR_GC_MAX_MEM=250M FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-poisoned 10 10000000 10
+
+check-testnogc-cmrgc-fragmented:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-fragmented lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --object-model fragmented
+	./testnogc-cmrgc-fragmented
+
+check-simplegctest-cmrgc-fragmented:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-cmrgc-fragmented lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G cmr --object-model fragmented
+	FIVMR_GC_MAX_MEM=1G FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-fragmented 10 10000000 10
+	FIVMR_GC_MAX_MEM=1G FIVMR_GC_TRIGGER=200M ./simplegctest-cmrgc-fragmented 10 10000000 10
+	FIVMR_GC_MAX_MEM=450M FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-fragmented 10 10000000 10
+
+check-testnogc-cmrgc-fragmented-forcearraylets:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o testnogc-cmrgc-fragmented-forcearraylets lib/fivmtest.jar -m com/fiji/fivm/test/TestNoGCMain -G cmr --object-model fragmented --force-arraylets
+	./testnogc-cmrgc-fragmented-forcearraylets
+
+check-simplegctest-cmrgc-fragmented-forcearraylets:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctest-cmrgc-fragmented-forcearraylets lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestMain -G cmr --object-model fragmented --force-arraylets
+	FIVMR_GC_MAX_MEM=1G FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-fragmented-forcearraylets 10 10000000 10
+	FIVMR_GC_MAX_MEM=1G FIVMR_GC_TRIGGER=200M ./simplegctest-cmrgc-fragmented-forcearraylets 10 10000000 10
+	FIVMR_GC_MAX_MEM=500M FIVMR_GC_TRIGGER=10M ./simplegctest-cmrgc-fragmented-forcearraylets 10 10000000 10
+
+check-scopedmem-nogc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o scopedmem-nogc lib/fivmtest.jar -m com/fiji/fivm/test/RawScopedMemoryTest --g-scoped-mem -G none
+	./scopedmem-nogc
+
+check-scopedmem-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o scopedmem-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/RawScopedMemoryTest --g-scoped-mem -G cmr
+	./scopedmem-cmrgc
+
+check-scopedmem-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o scopedmem-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/RawScopedMemoryTest --g-scoped-mem -G hf
+	./scopedmem-hfgc
+
+check-simplegcteststatic-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegcteststatic-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestStaticPinned -G cmr --g-scoped-memory
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegcteststatic-cmrgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegcteststatic-cmrgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=250M FIVMR_GC_TRIGGER=10M ./simplegcteststatic-cmrgc 10 10000000 10
+
+check-simplegcteststatic-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegcteststatic-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestStaticPinned -G hf --g-scoped-memory
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegcteststatic-hfgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegcteststatic-hfgc 10 10000000 10
+	FIVMR_GC_MAX_MEM=500M FIVMR_GC_TRIGGER=10M ./simplegcteststatic-hfgc 10 10000000 10
+
+check-simplegctestscoped-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctestscoped-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestScopePinned -G cmr --g-scoped-memory
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegctestscoped-cmrgc 10 10000000 10 0
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegctestscoped-cmrgc 10 10000000 10 1
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegctestscoped-cmrgc 10 10000000 10 0
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegctestscoped-cmrgc 10 10000000 10 1
+	FIVMR_GC_MAX_MEM=250M FIVMR_GC_TRIGGER=10M ./simplegctestscoped-cmrgc 10 10000000 10 0
+	FIVMR_GC_MAX_MEM=250M FIVMR_GC_TRIGGER=10M ./simplegctestscoped-cmrgc 10 10000000 10 1
+
+check-simplegctestscoped-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o simplegctestscoped-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestScopePinned -G hf --g-scoped-memory
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegctestscoped-hfgc 10 10000000 10 0
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=10M ./simplegctestscoped-hfgc 10 10000000 10 1
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegctestscoped-hfgc 10 10000000 10 0
+	FIVMR_GC_MAX_MEM=800m FIVMR_GC_TRIGGER=200M ./simplegctestscoped-hfgc 10 10000000 10 1
+	FIVMR_GC_MAX_MEM=500M FIVMR_GC_TRIGGER=10M ./simplegctestscoped-hfgc 10 10000000 10 0
+	FIVMR_GC_MAX_MEM=500M FIVMR_GC_TRIGGER=10M ./simplegctestscoped-hfgc 10 10000000 10 1
+
+simplegctestscoped.a:
+	$(RUBY) bin/fivmc -o simplegctestscoped -b payload lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestScopePinned -G cmr --g-scoped-memory --g-def-max-mem=250M --g-def-trigger=10M $(FIVMCFLAGS)
+
+simplegcteststatic.a:
+	$(RUBY) bin/fivmc -o simplegcteststatic -b payload lib/fivmtest.jar -m com/fiji/fivm/test/SimpleGCTestStaticPinned -G cmr --g-scoped-memory --g-def-max-mem=250M --g-def-trigger=10M $(FIVMCFLAGS)
+
+check-scopedmem-mvm: simplegctestscoped.a simplegcteststatic.a
+	$(RUBY) bin/fivmc -o scopedmem-mvm --link-payload simplegctestscoped --link-payload simplegcteststatic lib/fivmtest.jar -m com/fiji/fivm/test/RunScopedmemMVM -G none --g-scoped-memory --sanity-check 1 $(FIVMCFLAGS)
+	FIVMR_GC_MAX_MEM=500m FIVMR_GC_TRIGGER=10M ./scopedmem-mvm
+--failPattern = "Exception in thread"
+
+check-sharedscope-singlethread-nogc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o sharedscope-singlethread-nogc lib/fivmtest.jar -m com/fiji/fivm/test/SharedScopeSingleThreadTest --rt-library scj
+	./sharedscope-singlethread-nogc 10 10000000
+
+check-sharedscope-singlethread-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o sharedscope-singlethread-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/SharedScopeSingleThreadTest --rt-library scj -G cmr
+	./sharedscope-singlethread-cmrgc 10 10000000
+
+# FIXME: Estimates don't work with -G hf, so this fails
+check-sharedscope-singlethread-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o sharedscope-singlethread-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/SharedScopeSingleThreadTest --rt-library scj -G hf
+	./sharedscope-singlethread-hfgc 10 10000000
+
+MD5_TEST_FILES="lib/fast-md5.jar lib/fivmc.jar lib/fijicore.jar bin/fivmc LEGAL README test/ruby/md5.rb lib/fivmr.jar lib/fiji-asm.jar lib/jasmin.jar lib/fijirt.jar lib/fivmutil.jar lib/rtsj.jar lib/hello.class lib/codeRepo.log"
+check-md5:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o md5 -m com.twmacinta.util.MD5InputStream --no-extra-jars --more-opt-size --rt-assertions yes
+	FIVMR_GC_MAX_MEM=150k ./md5 $(MD5_TEST_FILES) > md5.log.java
+	$(RUBY) test/ruby/md5.rb $(MD5_TEST_FILES) > md5.log.ruby
+	diff md5.log.ruby md5.log.java
+
+check-md5-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o md5-hfgc -m com.twmacinta.util.MD5InputStream --no-extra-jars --more-opt-size --rt-assertions yes -G hf --g-pred-level a
+	FIVMR_GC_MAX_MEM=170k ./md5-hfgc $(MD5_TEST_FILES) > md5.log.java
+	$(RUBY) test/ruby/md5.rb $(MD5_TEST_FILES) > md5.log.ruby
+	diff md5.log.ruby md5.log.java
+
+check-vmsupport-nogc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o vmsupport-nogc lib/fivmtest.jar -m com/fiji/fivm/test/VMSupportMemoryTest --rt-library scj
+	./vmsupport-nogc
+
+check-vmsupport-cmrgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o vmsupport-cmrgc lib/fivmtest.jar -m com/fiji/fivm/test/VMSupportMemoryTest --rt-library scj -G cmr
+	./vmsupport-cmrgc
+
+check-vmsupport-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o vmsupport-hfgc lib/fivmtest.jar -m com/fiji/fivm/test/VMSupportMemoryTest --rt-library scj -G hf
+	./vmsupport-hfgc
+
+check-vmsupport-complete:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) --sanity-check 1 -o vmsupport-complete lib/fivmtest.jar -m com/fiji/fivm/test/VMSupportCompleteTest --rt-library scj
+	./vmsupport-complete
+
+BIGINT_TEST_ARGS="1 123456789 12345567891011121314151617181920"
+check-bigint:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o biginttest --sanity-check 1 -m com.fiji.fivm.test.BigIntTest lib/fivmtest.jar
+	$(JAVA) -classpath lib/fivmtest.jar com.fiji.fivm.test.BigIntTest $(BIGINT_TEST_ARGS) > biginttest.log.jdk
+	FIVMR_GC_MAX_MEM=120k ./biginttest $(BIGINT_TEST_ARGS) > biginttest.log.fiji
+	diff biginttest.log.jdk biginttest.log.fiji
+
+check-bigint-hfgc:
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o biginttest-hfgc --sanity-check 1 -m com.fiji.fivm.test.BigIntTest lib/fivmtest.jar -G hf --g-pred-level a
+	$(JAVA) -classpath lib/fivmtest.jar com.fiji.fivm.test.BigIntTest $(BIGINT_TEST_ARGS) > biginttest.log.jdk
+	FIVMR_GC_MAX_MEM=200k ./biginttest-hfgc $(BIGINT_TEST_ARGS) > biginttest.log.fiji
+	diff biginttest.log.jdk biginttest.log.fiji
+
+MULTIPLIES_ARGS="1 1 2 2 3 3 -1 -1 -2 -2 -3 -3 2147483647 9223372036854775807 -2147483648 -9223372036854775808"
+check-multiplies:
+	$(JAVA) -classpath lib/fivmtest.jar com.fiji.fivm.test.TestMultiplies $(MULTIPLIES_ARGS) > multiplies.log.jdk
+	$(RUBY) bin/fivmc $(FIVMCFLAGS) -o testmultiplies --sanity-check 1 -m com.fiji.fivm.test.TestMultiplies lib/fivmtest.jar
+	./testmultiplies $(MULTIPLIES_ARGS) > multiplies.log.fiji
+	diff multiplies.log.jdk multiplies.log.fiji
+
+quick-check:
+	$(RUBY) bin/fivmc -o hello lib/hello.class --sanity-check 1 --quickly
+	./hello
+--successLine = "hello!"
+
+noifacecomp-check:
+	$(RUBY) bin/fivmc -o hello-noifacecomp lib/hello.class --sanity-check 1 --quickly --itable-compression no
+	./hello-noifacecomp
+--successLine = "hello!"
+
+typeepoch-check:
+	$(RUBY) bin/fivmc -o hello-typeepoch lib/hello.class --sanity-check 1 --quickly --type-epochs yes
+	./hello-typeepoch
+--successLine = "hello!"
+
+trackdirectsubs-check:
+	$(RUBY) bin/fivmc -o hello-trackdirectsubs lib/hello.class --sanity-check 1 --quickly --track-direct-subs yes
+	./hello-trackdirectsubs
+--successLine = "hello!"
+
+glibj-check:
+	if test -e lib/glibj.zip; \
+	then\
+		$(TESTMAKE) glibj-cmr-check glibj-hf-check\
+	fi
+
+glibj-cmr-check:
+	$(RUBY) bin/fivmc -o hello-glibj lib/hello.class --sanity-check 1 --quickly -L glibj
+	./hello-glibj
+--successLine = "hello!"
+
+glibj-hf-check:
+	$(RUBY) bin/fivmc -o hello-glibj-hf lib/hello.class --sanity-check 1 --quickly -L glibj -G hf --g-pred-level a
+	./hello-glibj-hf
+--successLine = "hello!"
+
+cha-check:
+	$(RUBY) bin/fivmc -o hello-cha lib/hello.class --sanity-check 1 --quickly -A cha
+	./hello-cha
+--successLine = "hello!"
+
+open-check:
+	$(RUBY) bin/fivmc -o hello-open lib/hello.class --sanity-check 1 --quickly -A open
+	./hello-open
+--successLine = "hello!"
+
+# this is needed because trying to open-compile fivmtest.jar doesn't work so well - we OOME quite badly.
+TESTNOGCCLASSES="test/java/build/com/fiji/fivm/test/TestNoGCMain.class test/java/build/com/fiji/fivm/test/TestNoGCMain\\$$Mode.class test/java/build/com/fiji/fivm/test/SomeInterface.class test/java/build/com/fiji/fivm/test/LockTest.class test/java/build/com/fiji/fivm/test/SomeClass.class test/java/build/com/fiji/fivm/test/TestNoGCMain\\$$1.class test/java/build/com/fiji/fivm/test/SomeOtherClass.class test/java/build/com/fiji/fivm/test/LockTest\\$$1.class test/java/build/com/fiji/fivm/test/LockTest\\$$1\\$$1.class test/java/build/com/fiji/fivm/test/Superclass.class test/java/build/com/fiji/fivm/test/ClassThatCantBeLoaded.class test/java/build/com/fiji/fivm/test/SomeInterfaceImpl.class test/java/build/com/fiji/fivm/test/TestNoGCMain\\$$1BadKey.class test/java/build/com/fiji/fivm/test/Subclass.class test/java/build/com/fiji/fivm/test/Util.class test/java/build/com/fiji/fivm/test/Fail.class test/java/build/com/fiji/fivm/test/InterfaceEvil.class"
+
+check-testnogc-open:
+	$(RUBY) bin/fivmc -o testnogc-open $(TESTNOGCCLASSES) -m com.fiji.fivm.test.TestNoGCMain --sanity-check 1 --quickly -A open
+	./testnogc-open
+
+check-testnogc-open-noopt:
+	$(RUBY) bin/fivmc -o testnogc-open-noopt $(TESTNOGCCLASSES) -m com.fiji.fivm.test.TestNoGCMain --sanity-check 1 --quickly -A open --no-opt
+	./testnogc-open-noopt
+
+runbtastats-check:
+	java -classpath lib/fivmc.jar:lib/fivmutil.jar:lib/fivmr.jar:lib/fivmcommon.jar:lib/fiji-asm.jar com.fiji.fivm.util.RunBTAStats lib/fivmr.jar lib/fivmc.jar lib/fivmutil.jar lib/fiji-asm.jar lib/fivmtest.jar lib/fijicore.jar
+	bin/fivmc -o runbtastats lib/fivmc.jar lib/fivmutil.jar -m com.fiji.fivm.util.RunBTAStats --sanity-check 1
+	./runbtastats lib/fivmr.jar lib/fivmc.jar lib/fivmutil.jar lib/fiji-asm.jar lib/fivmtest.jar lib/fijicore.jar
+
+build-fijivm-cmr-noopt:
+	rm -f bin/fijivm-cmr-noopt
+	bin/fivmc -o bin/fijivm-cmr-noopt lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open --no-opt
+
+build-fijivm-cmr-noopt-o0cfa:
+	rm -f bin/fijivm-cmr-noopt-o0cfa
+	bin/fivmc -o bin/fijivm-cmr-noopt-o0cfa lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa -G cmr --no-opt
+
+build-fijivm-cmr-debug:
+	rm -f bin/fijivm-cmr-debug
+	bin/fivmc -o bin/fijivm-cmr-debug lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open --quickly
+
+build-fijivm-cmr-debug-o0cfa:
+	rm -f bin/fijivm-cmr-debug-o0cfa
+	bin/fivmc -o bin/fijivm-cmr-debug-o0cfa lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa -G cmr --quickly --sanity-check 1
+
+build-fijivm-cmr-debug-o0cfa-biased:
+	rm -f bin/fijivm-cmr-debug-o0cfa-biased
+	bin/fivmc -o bin/fijivm-cmr-debug-o0cfa-biased lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A o0cfa -G cmr --quickly --lock-mode biased
+
+build-fijivm-cmr-small:
+	rm -f bin/fijivm-cmr-small
+	bin/fivmc -o bin/fijivm-cmr-small lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open --opt-size
+
+build-fijivm-cmr-tiny:
+	rm -f bin/fijivm-cmr-tiny
+	bin/fivmc -o bin/fijivm-cmr-tiny lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open --more-opt-size
+
+build-fijivm-cmr-fast:
+	rm -f bin/fijivm-cmr-fast
+	bin/fivmc -o bin/fijivm-cmr-fast lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open --more-opt
+
+build-fijivm-hf-noopt:
+	rm -f bin/fijivm-hf-noopt
+	bin/fivmc -o bin/fijivm-hf-noopt lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open -G hf --no-opt
+
+build-fijivm-hfa-noopt:
+	rm -f bin/fijivm-hfa-noopt
+	bin/fivmc -o bin/fijivm-hfa-noopt lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open -G hf --g-pred-level a --no-opt
+
+build-fijivm-hf-debug:
+	rm -f bin/fijivm-hf-debug
+	bin/fivmc -o bin/fijivm-hf-debug lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open -G hf --quickly
+
+build-fijivm-hfa-debug:
+	rm -f bin/fijivm-hfa-debug
+	bin/fivmc -o bin/fijivm-hfa-debug lib/fivmrunner.jar -m com.fiji.fivm.util.RunProgram -A open -G hf --g-pred-level a --quickly
+
+build-jnitests:
+	(cd test/c/jni && ./configure)
+	(cd test/c/jni && $(MAKE) clean)
+	(cd test/c/jni && $(MAKE))
+
+cl-prog-check-run-debug:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-debug 1
+--subTest = true
+
+cl-prog-check-run-debug-o0cfa:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-debug-o0cfa 1
+--subTest = true
+
+cl-prog-check-run-debug-o0cfa-biased:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-debug-o0cfa-biased 1
+--subTest = true
+
+cl-prog-check-run-debug-fjsp:
+	FIVMR_FORCE_JIT_SLOWPATH=true $(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-debug 1
+--subTest = true
+
+cl-prog-check-run-noopt:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-noopt 1
+--subTest = true
+
+cl-prog-check-run-noopt-o0cfa:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-noopt-o0cfa 1
+--subTest = true
+
+cl-prog-check-run-tiny:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-tiny 1
+--subTest = true
+
+cl-prog-check-run-hf-noopt:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-hf-noopt 2
+--subTest = true
+
+cl-prog-check-run-hfa-noopt:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-hfa-noopt 2
+--subTest = true
+
+cl-prog-check-run-hf-debug:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-hf-debug 2
+--subTest = true
+
+cl-prog-check-run-hfa-debug:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-hfa-debug 2
+--subTest = true
+
+cl-prog-check-run-default-vm:
+	$(RUBY) test/ruby/cltests.rb bin/fijivm-cmr-biased-small 1
+--subTest = true
+
+cl-prog-check-debug: build-fijivm-cmr-debug build-jnitests cl-prog-check-run-debug
+
+cl-prog-check-debug-o0cfa: build-fijivm-cmr-debug-o0cfa build-jnitests cl-prog-check-run-debug-o0cfa
+
+cl-prog-check-debug-o0cfa-biased: build-fijivm-cmr-debug-o0cfa-biased build-jnitests cl-prog-check-run-debug-o0cfa-biased
+
+cl-prog-check-noopt: build-fijivm-cmr-noopt build-jnitests cl-prog-check-run-noopt
+
+cl-prog-check-noopt-o0cfa: build-fijivm-cmr-noopt-o0cfa build-jnitests cl-prog-check-run-noopt-o0cfa
+
+cl-prog-check-tiny: build-fijivm-cmr-tiny build-jnitests cl-prog-check-run-tiny
+
+cl-prog-check-hf-noopt: build-fijivm-hf-noopt build-jnitests cl-prog-check-run-hf-noopt
+
+cl-prog-check-hfa-noopt: build-fijivm-hfa-noopt build-jnitests cl-prog-check-run-hfa-noopt
+
+cl-prog-check-hf-debug: build-fijivm-hf-debug build-jnitests cl-prog-check-run-hf-debug
+
+cl-prog-check-hfa-debug: build-fijivm-hfa-debug build-jnitests cl-prog-check-run-hfa-debug
+
+cl-check:
+	$(RUBY) bin/fivmc --if-cl-works "$(TESTMAKE) open-check cl-prog-check-debug cl-prog-check-debug-o0cfa cl-prog-check-tiny cl-prog-check-debug-o0cfa-biased check-testnogc-open-noopt check-testnogc-open cl-prog-check-hf-debug cl-prog-check-hfa-debug"

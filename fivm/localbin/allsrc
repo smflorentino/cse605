@@ -1,0 +1,31 @@
+#!/bin/sh
+find common | grep -e \\.java$
+find runtimec | grep -e \\.\[chS\]$
+find util/c | grep -e \\.\[ch\]$
+find runtimej | grep -e \\.java$
+#find fijicore/src | grep -e \\.java$
+find fijirt/src | grep -e \\.java$
+find cpruntime | grep -e \\.java$
+find compiler | grep -e \\.java$
+find test/java/src | grep -e \\.java$
+find test/java/src | grep -e \\.j$
+find test/c/mvm/src | grep -e \\.c$
+find test/c/mt/src | grep -e \\.c$
+find test/c/tree/src | grep -e \\.c$
+find test/ruby | grep -e \\.rb$
+find hardrtj/src | grep -e \\.java$
+find RTSJ/src | grep -e \\.java$
+find util/java/src | grep -e \\.java$
+echo "bin/fivmc"
+echo "bin/fivmc_trampoline.in"
+echo "target/*.in"
+echo "target/*/*.in"
+echo "lib/config.rb.in"
+echo "lib/fijiconfig.rb"
+echo "Makefile.in"
+echo "RealMakefile.in"
+echo "configure.ac"
+echo "target/configure.ac"
+ls -1 m4/*.m4
+for x in `ls -1 localbin | grep -v -e \\~$`; do echo localbin/$x; done
+

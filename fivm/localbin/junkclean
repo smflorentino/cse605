@@ -1,0 +1,8 @@
+#!/bin/sh
+
+find . '(' '(' -name '*.rej' -or -name '*.orig' -or -name '*~' ')' \
+           -and -type f ')' -delete
+find . -name '*.build' -and -type d -exec rm -r {} \; 2>/dev/null
+
+rm -f testnogc* simplegctest* locktest-* waittest-* testreflection
+rm -f scopedmem-* sharedscope-* vmsupport-* rtsj-*

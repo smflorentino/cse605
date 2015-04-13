@@ -1,0 +1,29 @@
+--sys-arch		erc32
+--sys-endianness        big
+--sys-os		rtems
+--sys-osflavor		rtems
+--sys-ptrsize		4
+--sys-cc		sparc-rtems4.9-gcc
+--sys-make		make
+--sys-debug-cflags	"-g"
+--sys-opt-cflags	"-O2 -fno-strict-aliasing -fno-optimize-sibling-calls -fno-pic"
+--sys-arch-cflags	""
+--sys-warn-cflags	"-W"
+--sys-nowarn-cflags	"-w"
+--sys-cppflags		"-B/home/pizlo/Programs/rtems-4.9.2/sis/sparc-rtems4.9/sis/lib -I/home/pizlo/Programs/rtems-4.9.2/sis/sparc-rtems4.9/sis/lib/include -I/home/pizlo/Programs/rtems-4.9.2/sis/sparc-rtems4.9/lib/include -specs bsp_specs -qrtems -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -D_REENTRANT -D_GNU_SOURCE -DHAVE_STDARG_H -DHAVE_ERRNO_H -DHAVE_STDIO_H"
+--sys-ldflags		"-B/home/pizlo/Programs/rtems-4.9.2/sis/sparc-rtems4.9/sis/lib -I/home/pizlo/Programs/rtems-4.9.2/sis/sparc-rtems4.9/sis/lib/include -specs bsp_specs -qrtems"
+--sys-libs		"-lm"
+--sys-noinline-attr	"__attribute__((noinline))"
+
+--host-vm-cmd		java
+
+--arith-helper          int_div
+--arith-helper          int_mod
+--arith-helper          long_div
+--arith-helper          long_mod
+
+--no-dyn-loading
+
+--g-self-man-mem
+
+--cmacro-file           cmacros-rtems.properties

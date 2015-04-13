@@ -1,0 +1,9 @@
+#!/bin/sh
+
+REV=`hg identify 2>/dev/null`
+
+if test $? -ne 0; then
+    echo "exported"
+else
+    echo $REV | cut -d' ' -f1
+fi

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G hf configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-hf . -m SpecApplication -G hf
+
+$localbindir/runspec ./SPECjvm98-hf
+$localbindir/runspec-gctorture ./SPECjvm98-hf
+

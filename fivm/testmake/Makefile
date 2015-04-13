@@ -1,0 +1,65 @@
+RUBY=ruby
+INSTALL=/usr/bin/install -c
+VERSION=v0.0.1
+PREFIX=/usr/local
+
+all:
+	chmod 755 bin/timedrun
+	@echo Everything built.
+
+DISTNAME=testmake-$(VERSION)
+dist:
+	rm -rf $(DISTNAME)
+	mkdir $(DISTNAME)
+	cp configure configure.ac install-sh README LICENSE LICENSE-timedrun Makefile.in $(DISTNAME)
+	mkdir $(DISTNAME)/bin
+	mkdir $(DISTNAME)/lib
+	mkdir $(DISTNAME)/libexec
+	cp bin/recall.in $(DISTNAME)/bin
+	cp bin/summarize.in $(DISTNAME)/bin
+	cp bin/tester.in $(DISTNAME)/bin
+	cp bin/testmake.in $(DISTNAME)/bin
+	cp bin/inst-recall.in $(DISTNAME)/bin
+	cp bin/inst-summarize.in $(DISTNAME)/bin
+	cp bin/inst-tester.in $(DISTNAME)/bin
+	cp bin/inst-testmake.in $(DISTNAME)/bin
+	cp bin/timedrun $(DISTNAME)/bin
+	cp libexec/recall $(DISTNAME)/libexec
+	cp libexec/summarize $(DISTNAME)/libexec
+	cp libexec/tester $(DISTNAME)/libexec
+	cp libexec/testmake $(DISTNAME)/libexec
+	cp lib/testlib.rb $(DISTNAME)/lib
+	cp lib/testharness.rb $(DISTNAME)/lib
+	cp lib/fijiconfig.rb $(DISTNAME)/lib
+	cp lib/config.rb.in $(DISTNAME)/lib
+	tar -czf $(DISTNAME).tar.gz $(DISTNAME)
+	rm -rf $(DISTNAME)
+
+baredist: dist
+	rm -rf testmake
+	tar -xzf $(DISTNAME).tar.gz
+	mv $(DISTNAME) testmake
+	tar -czf testmake.tar.gz testmake
+	rm -rf testmake
+
+install: all
+	mkdir -p $(PREFIX)/bin
+	mkdir -p $(PREFIX)/share/tester-$(VERSION)/libexec
+	mkdir -p $(PREFIX)/share/tester-$(VERSION)/lib
+	mkdir -p $(PREFIX)/share/tester-$(VERSION)/bin
+	$(INSTALL) -m 0755 bin/inst-recall $(PREFIX)/bin/recall
+	$(INSTALL) -m 0755 bin/inst-summarize $(PREFIX)/bin/summarize
+	$(INSTALL) -m 0755 bin/inst-testmake $(PREFIX)/bin/testmake
+	$(INSTALL) -m 0755 bin/inst-tester $(PREFIX)/bin/tester
+	$(INSTALL) -m 0755 bin/timedrun $(PREFIX)/share/tester-$(VERSION)/bin/timedrun
+	cp libexec/recall $(PREFIX)/share/tester-$(VERSION)/libexec/recall
+	cp libexec/summarize $(PREFIX)/share/tester-$(VERSION)/libexec/summarize
+	cp libexec/testmake $(PREFIX)/share/tester-$(VERSION)/libexec/testmake
+	cp libexec/tester $(PREFIX)/share/tester-$(VERSION)/libexec/tester
+	cp lib/*.rb $(PREFIX)/share/tester-$(VERSION)/lib
+
+
+
+
+
+

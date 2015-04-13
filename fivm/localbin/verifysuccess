@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+lastLine=nil
+$stdin.each_line {
+  | line |
+  lastLine=line.chomp
+}
+
+if lastLine != ARGV[0]
+  $stderr.puts "The given log indicates that the test failed."
+  exit 1
+end
+
+

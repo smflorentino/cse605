@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+$localbindir/runspec $localbindir/../bin/fijivm-hfa-debug SpecApplication
+$localbindir/runspec-gctorture $localbindir/../bin/fijivm-hfa-debug SpecApplication
+

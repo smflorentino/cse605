@@ -1,0 +1,297 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'getoptlong'
+
+meUnresolved=Pathname.new($0)
+me=meUnresolved.realpath
+bindir=me.dirname.realpath
+$homedir=bindir.parent
+$libdir=$homedir+"lib"
+
+$dollarZero=$0
+
+require ($libdir+"fijiconfig.rb")
+
+
+opts=GetoptLong.new([ '--help', GetoptLong::NO_ARGUMENT ],
+                    [ '--script', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--env', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--output', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--expect-result', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--success-line', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--success-pattern', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--fail-pattern', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--verbose', GetoptLong::NO_ARGUMENT ],
+                    [ '--save-full-env', GetoptLong::NO_ARGUMENT ],
+                    [ '--name', GetoptLong::REQUIRED_ARGUMENT])
+
+def help
+  puts "tester -- runs a test from a test suite and stores the results"
+  puts
+  puts "Usage: tester [options] <test command>"
+  puts
+  puts "--script <filename>         run tests in the script"
+  puts "--name <name>               name of the test"
+  puts "--env <name>=<value>        set an environment variable"
+  puts "--output <file>             change output file"
+  puts "--expect-result <stat>      change expected result"
+  puts "--success-line <line>       look for this text for success"
+  puts "--success-pattern <pattern> look for this text for success"
+  puts "--fail-pattern <pattern>    look for this text for failure"
+  puts "--save-full-env             save full environment in output"
+  puts "--verbose                   print some output"
+  puts "--help                      display this message"
+end
+
+def escapeForShell(str)
+  result=''
+  if $isWindows
+    result+='"'
+    str.to_s.each_byte {
+      | b |
+      b=b.chr
+      if b=='"'
+        result+='""'
+      elsif b=='%'
+        result+='%%'
+      else
+        result+=b
+      end
+    }
+    result+='"'
+  else
+    str.to_s.inspect.each_byte {
+      | b |
+      b=b.chr
+      if b=="$"
+        result+="\\"
+      end
+      result+=b
+    }
+  end
+  result
+end
+
+def escapeForShellAsNecessary(str)
+  if str !~ /\s/ and str !~ /[;]/ and escapeForShell(str)[1..-2]==str
+    str
+  else
+    escapeForShell(str)
+  end
+end
+
+if ENV['TESTER_MAKE_SCRIPT']
+  $output=ENV['TESTER_MAKE_SCRIPT']
+  
+  $stderr.puts ">> making script: #{$output}"
+  
+  File.open($output,'a') {
+    | outp |
+    
+    outp.puts
+    
+    postinit=''
+    name=nil
+    expectResult=0
+    
+    opts.each {
+      | opt, arg |
+      case opt
+      when '--help'
+        $stderr.puts "encountered --help; aborting"
+        exit 1
+      when '--script'
+        $stderr.puts "encountered --script; aborting"
+        exit 1
+      when '--verbose'
+        $verbose=true
+      when '--save-full-env'
+        postinit << "t.saveFullEnv=true\n"
+      when '--env'
+        if arg=~/=/
+          key=$`
+          val=$'
+          postinit << "t.env[#{key.inspect}]=#{val.inspect}\n"
+        else
+          $stderr.puts "Could not parse --env #{arg}"
+          exit 1
+        end
+      when '--output'
+        $stderr.puts "encountered --output; aborting"
+        exit 1
+      when '--expect-result'
+        expectResult=arg.to_i
+      when '--success-line'
+        postinit << "t.successLine(#{arg.inspect})\n"
+      when '--success-pattern'
+        postinit << "t.successPattern(#{arg.inspect})\n"
+      when '--fail-pattern'
+        postinit << "t.failPattern(#{arg.inspect})\n"
+      when '--name'
+        name=arg
+      end
+    }
+    
+    if ARGV.empty?
+      help
+      exit 1
+    end
+    
+    outp.puts "t=Test.new(#{name.inspect})"
+    
+    outp.puts postinit
+    
+    if expectResult==0
+      outp.puts("t.command("+ARGV.collect{|x| escapeForShellAsNecessary(x)}.join(' ').inspect+")")
+    else
+      outp.puts("t.command("+ARGV.collect{|x| escapeForShellAsNecessary(x)}.join(' ').inspect+",")
+      outp.puts("          :exitStatus=#{expectResult})")
+    end
+    outp.puts "runTest(t)"
+  }
+
+else
+  $output="tester-output.conf"
+  $expectExit=true
+  $expectExitStatus=0
+  $successLines=[]
+  $failLines=[]
+  $name=ARGV.collect{|x| escapeForShellAsNecessary(x)}.join(' ')
+  $verbose=false
+  $envChanged=[]
+  $saveFullEnv=false
+
+  opts.each {
+    | opt, arg |
+    case opt
+    when '--help'
+      help
+      exit 0
+    when '--verbose'
+      $verbose=true
+    when '--save-full-env'
+      $saveFullEnv=true
+    when '--env'
+      if arg=~/=/
+        key=$`
+        val=$'
+        ENV[key]=val
+        $envChanged << key
+      else
+        $stderr.puts "Could not parse --env #{arg}"
+        exit 1
+      end
+    when '--output'
+      $output=arg
+    when '--expect-result'
+      $expectExitStatus=arg.to_i
+    when '--success-line'
+      $successLines << Regexp.compile("^"+Regexp.escape(arg)+"$")
+    when '--success-pattern'
+      $successLines << Regexp.compile(Regexp.escape(arg))
+    when '--fail-pattern'
+      $failLines << Regexp.compile(Regexp.escape(arg))
+    when '--name'
+      $name=arg
+    end
+  }
+
+  if ARGV.empty?
+    help
+    exit 1
+  end
+
+  $stderr.puts "> running test #{$name}" if $verbose
+
+  $basecmdstr=ARGV.collect{|x| escapeForShellAsNecessary(x)}.join(' ')
+
+  foundSuccessLines={}
+  foundFailLine=false
+
+  resultText=''
+  
+  cmdstr=$basecmdstr+" 2>&1"
+  $stderr.puts ">> #{cmdstr}" if $verbose
+  IO.popen(cmdstr,'r') {
+    | inp |
+    inp.each_line {
+      | line |
+      puts line if $verbose
+      resultText << line
+      $successLines.each {
+        | expected |
+        if line =~ expected
+          foundSuccessLines[expected.to_s]=true
+        end
+      }
+      $failLines.each {
+        | expected |
+        if line =~ expected
+          foundFailLine=true
+        end
+      }
+    }
+  }
+  
+  sysresult=$?
+  result=nil
+  
+  $stderr.puts "> System result: #{sysresult.inspect}" if $verbose
+  
+  if $expectExit
+    if sysresult.exited?
+      if sysresult.exitstatus==$expectExitStatus
+        result="SUCCESS"
+      else
+        result="FAIL: exit=#{sysresult.exitstatus}"
+      end
+    else
+      result="FAIL: stat=#{$?}"
+    end
+  else
+    result="OK"
+  end
+  
+  if result=="SUCCESS" or result=="OK"
+    unless $successLines.size==foundSuccessLines.size
+      result="FAIL: bad output (s)"
+    end
+    if foundFailLine
+      result="FAIL: bad output (f)"
+    end
+  end
+
+  $stderr.puts "> Result: #{result}" if $verbose
+
+  map={}
+
+  map[:name]=$name
+  map[:directory]=Dir.pwd.to_s
+
+  env={}
+  if $saveFullEnv
+    ENV.each_pair{
+      | key, val |
+      env[key.to_s]=val.to_s
+    }
+  else
+    $envChanged.each {
+      | key |
+      env[key.to_s]=ENV[key].to_s
+    }
+  end
+
+  map[:env]=env
+  map[:envChanged]=$envChanged
+  map[:commands]=[{:commandString=>$basecmdstr, :expectExit=>$expectExit, :expectExitStatus=>$expectExitStatus, :sysStatus=>sysresult}]
+  map[:successPatterns]=$successLines.collect{|x| x.inspect}
+  map[:failPatterns]=$failLines.collect{|x| x.inspect}
+  map[:summary]=result
+  map[:output]=resultText
+
+  File.open($output,'a') {
+    | outp |
+    outp.puts FijiConfig::dump(map)
+  }
+end

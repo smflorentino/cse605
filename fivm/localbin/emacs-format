@@ -1,0 +1,16 @@
+#!/bin/sh
+
+exit 0 # comment this out if you want indentation of generated Java code.
+
+set -e
+set -x
+
+echo "Working in $PWD"
+
+for x in "$@";
+do
+    emacs -batch $x -l localbin/emacs-format.el -f emacs-format-function || {
+        echo "Failed to format $x, or emacs not found.  Ignoring since it's not critical."
+        exit 0
+    }
+done

@@ -1,0 +1,17 @@
+include Makefile.conf
+
+all: minicp_common.o minicp_cpio.o minicp_vmchannel.o minicp_vmfile.o
+
+clean:
+	rm -f *.o
+
+minicp_common.o: ../src/minicp_common.c ../src/minicp.h ../../runtimec/src/fivmr_jni.h
+	$(CC) -c -o minicp_common.o ../src/minicp_common.c $(CPPFLAGS) $(CFLAGS)
+minicp_cpio.o: ../src/minicp_cpio.c ../src/minicp.h ../../runtimec/src/fivmr_jni.h
+	$(CC) -c -o minicp_cpio.o ../src/minicp_cpio.c $(CPPFLAGS) $(CFLAGS)
+
+minicp_vmchannel.o: ../src/minicp_vmchannel.c ../src/minicp.h ../src/javanio.h ../../runtimec/src/fivmr_jni.h
+	$(CC) -c -o minicp_vmchannel.o ../src/minicp_vmchannel.c $(CPPFLAGS) $(CFLAGS)
+
+minicp_vmfile.o: ../src/minicp_cpio.o ../src/minicp_vmfile.c  ../src/minicp.h ../src/cpio.h ../../runtimec/src/fivmr_jni.h
+	$(CC) -c -o minicp_vmfile.o ../src/minicp_vmfile.c $(CPPFLAGS) $(CFLAGS)

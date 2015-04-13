@@ -1,0 +1,292 @@
+#
+# MainLoweringBU.bu
+# Copyright 2008, 2009, 2010, 2011, 2012, 2013 Fiji Systems Inc.
+# This file is part of the FIJI VM Software licensed under the FIJI PUBLIC
+# LICENSE Version 3 or any later version.  A copy of the FIJI PUBLIC LICENSE is
+# available at fivm/LEGAL and can also be found at
+# http://www.fiji-systems.com/FPL3.txt
+# 
+# By installing, reproducing, distributing, and/or using the FIJI VM Software
+# you agree to the terms of the FIJI PUBLIC LICENSE.  You may exercise the
+# rights granted under the FIJI PUBLIC LICENSE subject to the conditions and
+# restrictions stated therein.  Among other conditions and restrictions, the
+# FIJI PUBLIC LICENSE states that:
+# 
+# a. You may only make non-commercial use of the FIJI VM Software.
+# 
+# b. Any adaptation you make must be licensed under the same terms 
+# of the FIJI PUBLIC LICENSE.
+# 
+# c. You must include a copy of the FIJI PUBLIC LICENSE in every copy of any
+# file, adaptation or output code that you distribute and cause the output code
+# to provide a notice of the FIJI PUBLIC LICENSE. 
+# 
+# d. You must not impose any additional conditions.
+# 
+# e. You must not assert or imply any connection, sponsorship or endorsement by
+# the author of the FIJI VM Software
+# 
+# f. You must take no derogatory action in relation to the FIJI VM Software
+# which would be prejudicial to the FIJI VM Software author's honor or
+# reputation.
+# 
+# 
+# The FIJI VM Software is provided as-is.  FIJI SYSTEMS INC does not make any
+# representation and provides no warranty of any kind concerning the software.
+# 
+# The FIJI PUBLIC LICENSE and any rights granted therein terminate
+# automatically upon any breach by you of the terms of the FIJI PUBLIC LICENSE.
+#
+#
+
+class com.fiji.fivm.c1.x86.MainLoweringBU
+
+loadAddStore1 := Store(a,Add(Load(a),b))
+loadAddStore2 := Store(a,Add(!%b,Load(a)))
+loadSubStore := Store(a,Sub(Load(a),b))
+loadNegStore := Store(a,Neg(Load(a)))
+loadShlStore := Store(a,Shl(Load(a),b))
+loadShrStore := Store(a,Shr(Load(a),b))
+loadUshrStore := Store(a,Ushr(Load(a),b))
+loadOrStore1 := Store(a,Or(Load(a),b))
+loadOrStore2 := Store(a,Or(!%b,Load(a)))
+loadXorStore1 := Store(a,Xor(Load(a),b))
+loadXorStore2 := Store(a,Xor(!%b,Load(a)))
+loadAndStore1 := Store(a,And(Load(a),b))
+loadAndStore2 := Store(a,And(!%b,Load(a)))
+loadBitNotStore := Store(a,BitNot(Load(a)))
+
+loadAdd1 := Add(Load(a),b)
+loadMul1 := Mul(Load(a),b)
+
+include EffectiveAddress
+
+loadAdd2 := Add(!%a,Load(b))
+loadMul2 := Mul(!%a,Load(b))
+loadSub := Sub(a,Load(b))
+loadDiv := Div(a,Load(b))
+loadMod := Mod(a,Load(b))
+loadOr1 := Or(Load(a),b)
+loadOr2 := Or(a,Load(b))
+loadXor1 := Xor(Load(a),b)
+loadXor2 := Xor(a,Load(b))
+loadAnd1 := And(Load(a),b)
+loadAnd2 := And(a,Load(b))
+loadNot := Not(Load(a))
+loadBoolify := Boolify(Load(a))
+loadSqrt := Sqrt(Load(a))
+
+load := Load(a)
+store := Store(a,b)
+
+strongLoadCAS := StrongLoadCAS(a,b,c)
+strongCAS := StrongCAS(a,b,c)
+strongVoidCAS := StrongVoidCAS(a,b,c)
+weakCAS := WeakCAS(a,b,c)
+
+# NOTE: assume that PutCVar/GetCVar/WeakCASCVar are converted to GetCVarAddress and the relevant op
+
+boolifyAndLoad1 := Boolify(And(Load(a),b))
+boolifyAndLoad2 := Boolify(And(a,Load(b)))
+boolifyAnd := Boolify(And(a,b))
+
+notAndLoad1 := Not(And(Load(a),b))
+notAndLoad2 := Not(And(a,Load(b)))
+notAnd := Not(And(a,b))
+
+eqZeroAndLoad1 := Eq(And(Load(a),b),$0)
+eqContentsAndLoad := Eq(And(Load(a),$b),$b)
+eqZeroAndLoad2 := Eq(And(a,Load(b)),$0)
+eqZeroAnd := Eq(And(a,b),$0)
+eqContentsAnd := Eq(And(a,$b),$b)
+
+neqZeroAndLoad1 := Neq(And(Load(a),b),$0)
+neqZeroAndLoad2 := Neq(And(a,Load(b)),$0)
+neqZeroAnd := Neq(And(a,b),$0)
+
+# Add(a,b) is covered by EffectiveAddress
+
+mul := Mul(a,b)
+sub := Sub(a,b)
+div := Div(a,b)
+mod := Mod(a,b)
+neg := Neg(a)
+or := Or(a,b)
+xor := Xor(a,b)
+and := And(a,b)
+bitNot := BitNot(a)
+boolify := Boolify(a)
+shl := Shl(a,b)
+shr := Shr(a,b)
+ushr := Ushr(a,b)
+fXor := FXor(a,b)
+float0 := Float0()
+double0 := Double0()
+sqrt := Sqrt(a)
+
+getArg := GetCArg()
+
+castLoad := Cast(Load(a))
+cast := Cast(a)
+
+fiat := Fiat(a)
+
+zeroExtendLoad := IntToPointerZeroFill(Load(a))
+zeroExtend := IntToPointerZeroFill(a)
+
+firstHalfLoad := FirstHalf(Load(a))
+firstHalf := FirstHalf(a)
+
+secondHalfLoad := SecondHalf(Load(a))
+secondHalf := SecondHalf(a)
+
+branchCASSucc1 := BranchNonZero(StrongCAS(a,b,c))
+branchCASFail1 := BranchZero(StrongCAS(a,b,c))
+branchCASSucc2 := BranchNonZero(WeakCAS(a,b,c))
+branchCASFail2 := BranchZero(WeakCAS(a,b,c))
+branchCASSucc3 := BranchNonZero(Eq(StrongLoadCAS(a,b,c),b))
+branchCASFail3 := BranchZero(Eq(StrongLoadCAS(a,b,c),b))
+branchCASSucc4 := BranchZero(Neq(StrongLoadCAS(a,b,c),b))
+branchCASFail4 := BranchNonZero(Neq(StrongLoadCAS(a,b,c),b))
+
+branchAndZeroLoad1 := BranchZero(And(Load(a),b))
+branchAndZeroLoad2 := BranchZero(And(a,Load(b)))
+branchAndNotZeroLoad1 := BranchNonZero(And(Load(a),b))
+branchAndNotZeroLoad2 := BranchNonZero(And(a,Load(b)))
+branchAndZero := BranchZero(And(a,b))
+branchAndNotZero := BranchNonZero(And(a,b))
+
+# we don't have a Branch(Eq(And(a,b),$0)) because OptPeephole *should* kill
+# the Eq part.
+
+branchEq1ContentsAndLoad := BranchNonZero(Eq(And(Load(a),$b),$b))
+branchEq2ContentsAndLoad := BranchZero(Neq(And(Load(a),$b),$b))
+
+branchEq1ContentsAnd := BranchNonZero(Eq(And(a,$b),$b))
+branchEq2ContentsAnd := BranchZero(Neq(And(a,$b),$b))
+
+branchEq1Load1 := BranchNonZero(Eq(Load(a),b))
+branchEq2Load1 := BranchZero(Neq(Load(a),b))
+
+branchNeq1Load1 := BranchNonZero(Neq(Load(a),b))
+branchNeq2Load1 := BranchZero(Eq(Load(a),b))
+
+branchLTLoad1 := BranchNonZero(LessThan(Load(a),b))
+branchGELoad1 := BranchZero(LessThan(Load(a),b))
+branchLELoad1 := BranchNonZero(LessThanEq(Load(a),b))
+branchGTLoad1 := BranchZero(LessThanEq(Load(a),b))
+
+branchULTLoad1 := BranchNonZero(ULessThan(Load(a),b))
+branchUGELoad1 := BranchZero(ULessThan(Load(a),b))
+branchULELoad1 := BranchNonZero(ULessThanEq(Load(a),b))
+branchUGTLoad1 := BranchZero(ULessThanEq(Load(a),b))
+
+branchCASSucc5 := BranchNonZero(Eq(b,StrongLoadCAS(a,b,c)))
+branchCASFail5 := BranchZero(Eq(b,StrongLoadCAS(a,b,c)))
+branchCASSucc6 := BranchZero(Neq(b,StrongLoadCAS(a,b,c)))
+branchCASFail6 := BranchNonZero(Neq(b,StrongLoadCAS(a,b,c)))
+
+branchEq1Load2 := BranchNonZero(Eq(a,Load(b)))
+branchEq2Load2 := BranchZero(Neq(a,Load(b)))
+
+branchNeq1Load2 := BranchNonZero(Neq(a,Load(b)))
+branchNeq2Load2 := BranchZero(Eq(a,Load(b)))
+
+branchLTLoad2 := BranchNonZero(LessThan(a,Load(b)))
+branchGELoad2 := BranchZero(LessThan(a,Load(b)))
+branchLELoad2 := BranchNonZero(LessThanEq(a,Load(b)))
+branchGTLoad2 := BranchZero(LessThanEq(a,Load(b)))
+
+branchULTLoad2 := BranchNonZero(ULessThan(a,Load(b)))
+branchUGELoad2 := BranchZero(ULessThan(a,Load(b)))
+branchULELoad2 := BranchNonZero(ULessThanEq(a,Load(b)))
+branchUGTLoad2 := BranchZero(ULessThanEq(a,Load(b)))
+
+branchEq1 := BranchNonZero(Eq(a,b))
+branchEq2 := BranchZero(Neq(a,b))
+
+branchNeq1 := BranchNonZero(Neq(a,b))
+branchNeq2 := BranchZero(Eq(a,b))
+
+branchLT := BranchNonZero(LessThan(a,b))
+branchGE := BranchZero(LessThan(a,b))
+branchLE := BranchNonZero(LessThanEq(a,b))
+branchGT := BranchZero(LessThanEq(a,b))
+
+branchULT := BranchNonZero(ULessThan(a,b))
+branchUGE := BranchZero(ULessThan(a,b))
+branchULE := BranchNonZero(ULessThanEq(a,b))
+branchUGT := BranchZero(ULessThanEq(a,b))
+
+branchNZLoad := BranchNonZero(Load(a))
+branchZLoad := BranchZero(Load(a))
+
+branchNonZero := BranchNonZero(a)
+branchZero := BranchZero(a)
+
+eqLoad1 := Eq(Load(a),b)
+eqLoad2 := Eq(a,Load(b))
+eq := Eq(a,b)
+
+neqLoad1 := Neq(Load(a),b)
+neqLoad2 := Neq(a,Load(b))
+neq := Neq(a,b)
+
+lessThanLoad1 := LessThan(Load(a),b)
+lessThanLoad2 := LessThan(a,Load(b))
+lessThan := LessThan(a,b)
+
+uLessThanLoad1 := ULessThan(Load(a),b)
+uLessThanLoad2 := ULessThan(a,Load(b))
+uLessThan := ULessThan(a,b)
+
+lessThanEqLoad1 := LessThanEq(Load(a),b)
+lessThanEqLoad2 := LessThanEq(a,Load(b))
+lessThanEq := LessThanEq(a,b)
+
+uLessThanEqLoad1 := ULessThanEq(Load(a),b)
+uLessThanEqLoad2 := ULessThanEq(a,Load(b))
+uLessThanEq := ULessThanEq(a,b)
+
+notLessThanLoad1 := Not(LessThan(Load(a),b))
+notLessThanLoad2 := Not(LessThan(a,Load(b)))
+notLessThan := Not(LessThan(a,b))
+
+notLessThanEqLoad1 := Not(LessThanEq(Load(a),b))
+notLessThanEqLoad2 := Not(LessThanEq(a,Load(b)))
+notLessThanEq := Not(LessThanEq(a,b))
+
+not := Not(a)
+
+memcpy := Memcpy(a,b,c)
+
+call := Call()
+
+callIndirectLoad := CallIndirect(Load(a))
+callIndirect := CallIndirect(a)
+
+rawReturn := RawReturn()
+notReached := NotReached()
+jump := Jump()
+awesomeJumpLoad := AwesomeJump(Load(a))
+awesomeJump := AwesomeJump(a)
+
+mov := Mov(a)
+
+# in case we're in SSA
+
+phi := Phi(a)
+ipsilon := Ipsilon(a)
+
+fence := Fence()
+hardCompilerFence := HardCompilerFence()
+
+hardUse := HardUse(a)
+
+# FIXME: add more!  we want to cover all of the operations that can take
+# memory arguments.  for those operations, we then want to use the
+# AddressModeBU recursively.  It would also be good for this visitor to
+# also cover all instructions that we want to generate code for ... that
+# way we don't have to have a separate switch statement.
+
+

@@ -1,0 +1,22 @@
+FIVMDIR=../../..
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+CPPFLAGS=@CPPFLAGS@ -I$(FIVMDIR)/include -I.
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+JNIPREFIX=@JNIPREFIX@
+JNISUFFIX=@JNISUFFIX@
+JNILDFLAGS=@JNILDFLAGS@
+TARGET=$(JNIPREFIX)fijitest$(JNISUFFIX)
+
+all: $(TARGET)
+
+clean:
+	rm -rf *.o $(TARGET)
+
+$(TARGET): fijitest.o
+	$(CC) $(LDFLAGS) $(JNILDFLAGS) -o $(TARGET) fijitest.o
+
+%.o: src/%.c
+	$(CC) -c -o $@ $< $(CPPFLAGS) $(CFLAGS)

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+PS4=">> "
+set -x
+set -e
+
+localbindir=`dirname $0`
+
+$localbindir/testspec-fijivm-basic
+$localbindir/testspec-fijivm-debug-o0cfa
+$localbindir/../bin/fivmc --if-64-works "$localbindir/testspec-cmrgc-64"
+$localbindir/../bin/fivmc --if-64-works "$localbindir/testspec-hfgc-64-a"
+$localbindir/../bin/fivmc --if-64-works "$localbindir/testspec-hfgc-64"
+$localbindir/testspec-hfgc
+$localbindir/testspec-nogc
+$localbindir/testspec-cmrgc-glibj
+$localbindir/testspec-cmrgc
+$localbindir/testspec-fragmented
+$localbindir/testspec-cmrgc-selfman
+$localbindir/testspec-cmrgc-cha
+
+# FIXME should really have tests for CHA GLIBJ

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+localbin/replace_all.rb $1 $2 configure.ac mingw/Config.java mingw/fivmr_target.h mingw/config.rb README doc/index.html

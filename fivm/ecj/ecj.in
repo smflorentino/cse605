@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+ecjdir=`dirname "$0"`
+
+exec @JAVA@ -Xmx768M -classpath "$ecjdir/ecj-3.5.1.jar" org.eclipse.jdt.internal.compiler.batch.Main -warn:-deadCode "$@"

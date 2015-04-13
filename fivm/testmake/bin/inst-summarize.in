@@ -1,0 +1,2 @@
+#!/bin/sh
+@RUBY@ @prefix@/share/tester-@PACKAGE_VERSION@/libexec/summarize "$@"

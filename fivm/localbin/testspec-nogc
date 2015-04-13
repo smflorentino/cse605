@@ -1,0 +1,8 @@
+#!/bin/sh
+
+localbindir=`dirname $0`
+
+echo "Compiling -G none configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-nogc . -m SpecApplication -G none || exit 1
+
+$localbindir/runspec ./SPECjvm98-nogc || exit 1

@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+seen={}
+
+$stdin.each_line {
+  | line |
+  unless seen[line]
+    puts line
+    seen[line]=true
+  end
+}
+

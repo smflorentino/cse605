@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling --64 -G hf --g-pred-level a configuration..."
+time $localbindir/../bin/fivmc --64 --sanity-check 1 -o SPECjvm98-hf-64-a . -m SpecApplication -G hf --g-pred-level a
+
+$localbindir/runspec ./SPECjvm98-hf-64-a
+$localbindir/runspec-gctorture ./SPECjvm98-hf-64-a
+

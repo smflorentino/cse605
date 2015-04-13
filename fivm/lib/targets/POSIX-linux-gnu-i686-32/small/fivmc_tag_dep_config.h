@@ -1,0 +1,11 @@
+#undef FIVMR_ASSERTS_ON
+#undef FIVMR_LOG_LEVEL
+
+#define FIVMR_ASSERTS_ON 0
+#if FIVMR_POSIX || FIVMR_WIN32
+#define FIVMR_LOG_LEVEL 1
+#else
+#define FIVMR_LOG_LEVEL 0
+#endif
+
+

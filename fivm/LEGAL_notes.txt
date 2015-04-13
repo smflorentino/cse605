@@ -1,0 +1,6 @@
+# make sure that it has notes on compulsory stuff in other countries
+
+# can in addition to this license give people a letter giving them
+# permission to do whatever they want to do, for a limited time,
+# under a "coventant"
+

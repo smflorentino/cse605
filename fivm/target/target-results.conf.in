@@ -1,0 +1,9 @@
+{
+   os = !@OS@
+   osflavor = !@OSFLAVOR@
+   arch = !@ARCH@
+   target = !@TARGET@
+   gnuHost = !@GNUHOST@
+   ptrSize = !@PTRSIZE@
+}
+

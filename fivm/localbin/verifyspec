@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+finished=false
+
+$stdin.each_line {
+  | line |
+  if line =~ /NOT VALID/
+    $stderr.puts "Detected validation failure."
+    exit 1
+  elsif line =~ /Error/ or line=~ /Exception/
+    $stderr.puts "Detected unexpected exception."
+    exit 1
+  elsif line =~ /Finished in/
+    finished=true
+  end
+}
+
+if not finished
+  $stderr.puts "Benchmark did not finish."
+  exit 1
+end
+

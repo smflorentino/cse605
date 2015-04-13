@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G hf -L glibj --g-pred-level a1 configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-hfa1-glibj . -m SpecApplication -G hf -L glibj --g-pred-level a1
+
+$localbindir/runspec ./SPECjvm98-hfa1-glibj
+$localbindir/runspec-gctorture ./SPECjvm98-hfa1-glibj
+

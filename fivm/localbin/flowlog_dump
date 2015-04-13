@@ -1,0 +1,1041 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'libxml'
+
+class NanoStamp
+  include Comparable
+
+  attr_reader :seconds, :nanos
+
+  def initialize(ts)
+    @seconds = ts / 1000000000
+    @nanos = ts % @seconds
+  end
+
+  def <=>(other)
+    sd = @seconds <=> other.seconds
+    if sd == 0
+      return @nanos <=> other.nanos
+    end
+    return sd
+  end
+
+  def to_s
+    return sprintf("%d.%09d", @seconds, @nanos)
+  end
+end
+
+# This class is really just a namespace
+class FivmrThreadPriority
+  # This needs to map the same priorities as fivmr_sysdep.h
+  @@Schedulers = {
+    0x00000000 => :Java,
+    0x00010000 => :Normal,
+    0x00020000 => :RR,
+    0x00030000 => :FIFO,
+    0x7ffe0000 => :FiVM,
+    0x7fff0000 => :Invalid
+  }
+
+  def FivmrThreadPriority.scheduler(prio)
+    schedno = (prio & 0x7fff0000)
+    sched = @@Schedulers[schedno]
+    return sched if sched != nil
+    if sched >= 0x00040000 and sched <= 0x7ffd0000
+      return :Platform
+    else
+      return :Reserved
+    end
+  end
+
+  def FivmrThreadPriority.priority(prio)
+    return prio & 0xffff
+  end
+end
+
+class FlowLogEvent
+  include LibXML
+  include Comparable
+
+  @@id = 0
+  @@occurrence = 0
+
+  attr_reader :timestamp, :occurrence
+  attr_accessor :type, :subtype, :thread, :data, :extdata, :otherdata
+
+  def FlowLogEvent.nextid
+    @@id += 1
+    return @@id
+  end
+
+  def initialize(type, subtype, thread, timestamp, data, extdata)
+    @type = type
+    @subtype = subtype
+    @thread = thread
+    @timestamp = timestamp
+    @data = data
+    @extdata = extdata
+    # Synthesized types
+    @otherdata = nil
+
+    @occurrence = (@@occurrence += 1)
+  end
+
+  def <=>(other)
+    tdiff = @timestamp <=> other.timestamp
+    if (tdiff == 0)
+      return @occurrence <=> other.occurrence
+    end
+    return tdiff
+  end
+
+  def synthesize(type, subtype, otherdata = nil)
+    synth = self.dup
+    synth.type = type if type
+    synth.subtype = subtype if subtype
+    synth.otherdata = otherdata if otherdata
+    return synth
+  end
+
+  def unknown(prefix, val)
+    return ("#{prefix}_#{val}").to_sym
+  end
+
+  def to_s
+    return sprintf("%9s|%20s|%10d|%21s|%s", @type, @subtype, @thread,
+                   @timestamp.to_s, datastr)
+  end
+
+  def to_xml
+    kind = xmlkind
+    return nil if kind == nil
+
+    node = XML::Node.new('event')
+    node << XML::Node.new('id', FlowLogEvent.nextid.to_s)
+    node << XML::Node.new('thread', @thread.to_s)
+    node << XML::Node.new('kind', kind)
+    node << XML::Node.new('file', 'unavailable')
+    node << XML::Node.new('line', '-1')
+    node << XML::Node.new('timestamp', @timestamp.to_s)
+
+    details = XML::Node.new('details')
+    xmldetails details
+
+    node << details
+  end
+
+  def datastr
+    sprintf('%016x', @data)
+  end
+
+  def xmlkind
+    nil
+  end
+
+  def xmldetails(details)
+    return
+  end
+end
+
+class VMEvent < FlowLogEvent
+  def initialize(subtype, thread, timestamp, data, extdata)
+    subtype = case subtype
+              when 1 then :INIT
+              when 2 then :EXIT
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:VM, subtype, thread, timestamp, data, extdata)
+  end
+
+  def xmlkind
+    case @subtype
+    when :INIT then 'System Start'
+    when :EXIT then 'System End'
+    else nil
+    end
+  end
+end
+
+class MethodEvent < FlowLogEvent
+  attr_reader :method
+
+  def initialize(subtype, thread, timestamp, data, extdata, map)
+    subtype = case subtype
+              when 1 then :ENTER
+              when 2 then :EXIT
+              when 3 then :ENTER_INLINE
+              when 4 then :EXIT_INLINE
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:METHOD, subtype, thread, timestamp, data, extdata)
+    @method = map.method(data)
+  end
+
+  def xmlkind
+    case @subtype
+    when :CALL         then 'Method Call'
+    when :ENTER        then 'Method Entered'
+    when :EXIT         then 'Method Exit'
+    when :ENTER_INLINE then 'Method Entered'
+    when :EXIT_INLINE  then 'Method Exit'
+    else nil
+    end
+  end
+
+  def xmldetails(details)
+    if @subtype == :CALL
+      details << (XML::Node.new('caller') << XML::Node.new_cdata(@otherdata[0]))
+      details << (XML::Node.new('target') << XML::Node.new_cdata(@method.hrname))
+      details << (XML::Node.new('signature') << XML::Node.new_cdata(@method.to_s))
+      if @otherdata[1]
+        details << XML::Node.new('inline')
+      end
+    end
+  end
+
+  def datastr
+    @method.to_s
+  end
+end
+
+class MonitorEvent < FlowLogEvent
+  def initialize(subtype, thread, timestamp, data, extdata)
+    subtype = case subtype
+              when 1 then :LOCK_FAST
+              when 2 then :UNLOCK_FAST
+              when 3 then :LOCK_SLOW_BEGIN
+              when 4 then :UNLOCK_SLOW_BEGIN
+              when 5 then :LOCK_SLOW_END
+              when 6 then :UNLOCK_COMPLETE
+              when 8 then :RELOCK
+              when 9 then :WAIT
+              when 10 then :NOTIFY
+              when 11 then :NOTIFY_ALL
+              when 12 then :WAKE
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:MONITOR, subtype, thread, timestamp, data, extdata)
+  end
+
+  def xmlkind
+    case @subtype
+    when :LOCK_FAST         then 'Monitor Lock Fast'
+    when :UNLOCK_FAST       then 'Monitor Unlock Fast'
+    when :LOCK_SLOW_BEGIN   then 'Monitor Lock Begin'
+    when :LOCK_SLOW_END     then 'Monitor Lock End'
+    when :UNLOCK_SLOW_BEGIN then 'Monitor Unlock Begin'
+    when :UNLOCK_SLOW_END   then 'Monitor Unlock End'
+    when :UNLOCK_COMPLETE   then 'Monitor Unlock Complete'
+    when :RELOCK            then 'Monitor Relock'
+    when :WAIT              then 'Monitor Wait'
+    when :NOTIFY            then 'Monitor Notify'
+    when :NOTIFY_ALL        then 'Monitor Notify All'
+    when :WAKE              then 'Monitor Wake'
+    else nil
+    end
+  end
+
+  def xmldetails(details)
+    details << XML::Node.new('monitor', datastr)
+  end
+end
+
+class ThreadEvent < FlowLogEvent
+  def initialize(subtype, thread, timestamp, data, extdata)
+    subtype = case subtype
+              when 1 then :CREATE
+              when 2 then :EXIT
+              when 3 then :RUN
+              when 4 then :YIELD
+              when 5 then :SLEEP
+              when 6 then :PRIORITY
+              when 12 then :WAKE
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:THREAD, subtype, thread, timestamp, data, extdata)
+  end
+
+  def datastr
+    if @subtype == :RUN
+      sprintf('%08x', @data)
+    else
+      @data.to_s
+    end
+  end
+
+  def xmlkind
+    case @subtype
+    when :CREATE   then 'Thread Create'
+    when :EXIT     then 'Thread End'
+    when :RUN      then 'Thread Start'
+    when :YIELD    then 'Thread Yield'
+    when :SLEEP    then 'Thread Sleep'
+    when :PRIORITY then 'Thread Priority'
+    when :WAKE     then 'Thread Wake'
+    else nil
+    end
+  end
+
+  def xmldetails(details)
+    case @subtype
+    when :CREATE
+      details << XML::Node.new('newthread', @data.to_s)
+    when :RUN
+      details << XML::Node.new('scheduler',
+                               FivmrThreadPriority.scheduler(@data).to_s)
+      details << XML::Node.new('priority',
+                               FivmrThreadPriority.priority(@data).to_s)
+    when :YIELD
+      details << XML::Node.new('waketime', '0')
+    when :SLEEP
+      details << XML::Node.new('waketime', [@data].pack('Q').unpack('q').to_s)
+    when :PRIORITY
+      prio = @data & 0xffff
+      details << XML::Node.new('target', ((@data >> 32) & 0xffff).to_s)
+      details << XML::Node.new('scheduler',
+                               FivmrThreadPriority.scheduler(prio).to_s)
+      details << XML::Node.new('priority',
+                               FivmrThreadPriority.priority(prio).to_s)
+    when :WAKE
+      details << XML::Node.new('waketime', [@data].pack('Q').unpack('q').to_s)
+    end
+  end
+end
+
+class ScopeEvent < FlowLogEvent
+  def initialize(subtype, thread, timestamp, data, extdata)
+    subtype = case subtype
+              when 1 then :ENTER
+              when 2 then :EXIT
+              when 3 then :ALLOC_BACKING
+              when 4 then :ALLOC_SCOPE
+              when 5 then :FREE_BACKING
+              when 6 then :FREE_SCOPE
+              when 7 then :PUSH
+              when 8 then :POP
+              when 9 then :IMMORTAL
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:SCOPE, subtype, thread, timestamp, data, extdata)
+  end
+
+  def xmlkind
+    case @subtype
+    when :ENTER         then 'Scope Enter'
+    when :EXIT          then 'Scope Exit'
+    when :ALLOC_BACKING then 'Alloc Scope Backing'
+    when :ALLOC_SCOPE   then 'Alloc Scope'
+    when :FREE_BACKING  then 'Free Scope Backing'
+    when :FREE_SCOPE    then 'Free Scope'
+    when :PUSH          then 'Push Scope'
+    when :POP           then 'Pop Scope'
+    when :IMMORTAL      then 'Alloc Scope'
+    else nil
+    end
+  end
+
+  def xmldetails(details)
+    case @subtype
+    when :ALLOC_BACKING
+      details << XML::Node.new('size', datastr)
+    when :ALLOC_SCOPE
+      details << XML::Node.new('size', datastr)
+      details << XML::Node.new('scope', sprintf('%016x', @extdata)) if extdata
+    when :IMMORTAL
+      details << XML::Node.new('size', datastr)
+      details << XML::Node.new('scope', sprintf('%016x', @extdata)) if extdata
+      details << XML::Node.new('immortal')
+    else
+      details << XML::Node.new('scope', datastr)
+    end
+  end
+
+  def datastr
+    case @subtype
+    when :ALLOC_BACKING
+      @data.to_s
+    when :ALLOC_SCOPE
+      @data.to_s
+    when :IMMORTAL
+      @data.to_s
+    else
+      sprintf('%016x', @data)
+    end
+  end
+end
+
+class AllocEvent < FlowLogEvent
+  def initialize(subtype, thread, timestamp, data, extdata, map)
+    subtype = case subtype
+              when 1 then :OBJECT
+              when 2 then :ARRAY
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:ALLOC, subtype, thread, timestamp, data, extdata)
+    @alloctype = map.type((data >> 32) & 0xffff)
+    @size = data & 0xffff
+  end
+
+  def datastr
+    "#{@alloctype}:#{@size}"
+  end
+
+  def xmlkind
+    return "New Object"
+  end
+
+  def xmldetails(details)
+    case @subtype
+    when :OBJECT
+      details << XML::Node.new('type', @alloctype.type)
+      details << XML::Node.new('size', @size.to_s)
+    when :ARRAY
+      details << XML::Node.new('type', @alloctype.type)
+      details << XML::Node.new('elements', @size.to_s)
+    end
+    details << XML::Node.new('object', sprintf('%016x', @extdata)) if @extdata
+  end
+end
+
+class ReferenceEvent < FlowLogEvent
+  def initialize(subtype, thread, timestamp, data, extdata, map)
+    subtype = case subtype
+              when 1 then :PUTFIELD
+              when 2 then :PUTSTATIC
+              when 3 then :ARRAYSTORE
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:REFERENCE, subtype, thread, timestamp, data, extdata)
+    @map = map
+  end
+
+  def datastr
+    "#{ref}:#{value}"
+  end
+
+  def xmlkind
+    case @subtype
+    when :PUTFIELD
+      "Put Field"
+    when :PUTSTATIC
+      "Put Static"
+    when :ARRAYSTORE
+      "Array Store"
+    else nil
+    end
+  end
+
+  def xmldetails(details)
+    case @subtype
+    when :PUTFIELD
+      details << XML::Node.new('target', sprintf('%016x', ref))
+      details << XML::Node.new('value', sprintf('%016x', value))
+    when :PUTSTATIC
+      details << XML::Node.new('targetType', type)
+      details << XML::Node.new('value', sprintf('%016x', value))
+    when :ARRAYSTORE
+      details << XML::Node.new('array', sprintf('%016x', ref))
+      details << XML::Node.new('value', sprintf('%016x', value))
+    end
+  end
+
+  def ref
+    @data
+  end
+
+  def value
+    @extdata
+  end
+
+  def type
+    map.type(@data).type
+  end
+end
+
+class Reference32Event < ReferenceEvent
+  def initialize(subtype, thread, timestamp, data, extdata, map)
+    super(subtype, thread, timestamp, data, extdata, map)
+    @targettype = case @subtype
+                  when :PUTFIELD   then map.type(extdata & 0xffffffff)
+                  when :PUTSTATIC  then map.type(data >> 32)
+                  when :ARRAYSTORE then map.type(extdata >> 32)
+                  end
+  end
+
+  def ref
+    @data >> 32
+  end
+
+  def value
+    @data & 0xffffffff
+  end
+
+  def field
+    extdata >> 32
+  end
+
+  def type
+    @targettype.type
+  end
+
+  def xmldetails(details)
+    super(details)
+    case @subtype
+    when :PUTFIELD
+      details << XML::Node.new('targetType', @targettype.type)
+      details << XML::Node.new('field', @targettype.field(field))
+    when :PUTSTATIC
+      details << XML::Node.new('field', (@extdata & 0xffffffff).to_s)
+    when :ARRAYSTORE
+      details << XML::Node.new('targetType', @targettype.type)
+      details << XML::Node.new('index', (@extdata & 0xffffffff).to_s)
+    end
+  end
+end
+
+class SCJEvent < FlowLogEvent
+  def initialize(subtype, thread, timestamp, data, extdata)
+    subtype = case subtype
+              when 1 then :PEH_DEADLINE
+              when 2 then :T0
+              when 3 then :CYCLE
+              when 4 then :RELEASE
+              else unknown("SUBTYPE", subtype)
+              end
+    super(:SCJ, subtype, thread, timestamp, data, extdata)
+  end
+
+  def xmlkind
+    case @subtype
+    when :PEH_DEADLINE then 'SCJ PEH Deadline'
+    when :T0           then 'SCJ T0'
+    when :CYCLE        then 'SCJ Cycle Start'
+    when :RELEASE      then 'SCJ PEH Release'
+    else nil
+    end
+  end
+
+  def xmldetails(details)
+    case @subtype
+    when :PEH_DEADLINE
+      details << XML::Node.new('peh', sprintf('%016x', @data))
+      details << XML::Node.new('deadline', @extdata.to_s)
+    when :T0
+      details << XML::Node.new('nanos', @data.to_s)
+    when :CYCLE
+      details << XML::Node.new('nanos', @data.to_s)
+    when :RELEASE
+      details << XML::Node.new('peh', sprintf('%016x', @data))
+    end
+  end
+end
+
+class UnknownEvent < FlowLogEvent
+  def initialize(type, subtype, thread, timestamp, data, extdata)
+    super(unknown("TYPE", type), unknown("SUBTYPE", subtype),
+          thread, timestamp, data, extdata)
+  end
+end
+    
+
+class FlowLogEventFactory
+  def initialize(version, platform, map)
+    @version = version
+    @platform = platform
+    @map = map
+  end
+
+  def make(type, subtype, thread, timestamp, data, extdata)
+    ts = timestamp
+    if $opts[:secstamp]
+      ts = NanoStamp.new(timestamp)
+    end
+
+    case type
+    when 0
+      return VMEvent.new(subtype, thread, timestamp, data, extdata)
+    when 1
+      return MethodEvent.new(subtype, thread, timestamp, data, extdata, @map)
+    when 2
+      return MonitorEvent.new(subtype, thread, timestamp, data, extdata)
+    when 4
+      return ThreadEvent.new(subtype, thread, timestamp, data, extdata)
+    when 5
+      return ScopeEvent.new(subtype, thread, timestamp, data, extdata)
+    when 6
+      return AllocEvent.new(subtype, thread, timestamp, data, extdata, @map)
+    when 7
+      if @platform.ptrlen == 4
+        return Reference32Event.new(subtype, thread, timestamp, data, extdata, @map)
+      else
+        return ReferenceEvent.new(subtype, thread, timestamp, data, extdata, @map)
+      end
+    when 128
+      return SCJEvent.new(subtype, thread, timestamp, data, extdata)
+    else
+      return UnknownEvent.new(type, subtype, thread, timestamp, data, extdata)
+    end
+  end
+end
+
+class MethodSignature
+  def initialize(sig)
+    @sig = sig
+    @classname = @method = nil
+  end
+
+  def hrname
+    if @hrname
+      return @hrname
+    end
+    return "#{classname}##{method}"
+  end
+
+  def classname
+    if not @classname
+      cstart = 1
+      cend = @sig.index(';')
+      cname = @sig.slice(cstart, cend - cstart)
+      @classname = cname.gsub!('/', '.') || cname
+      tail = @sig.slice(cend + 2, @sig.length)
+      mend = tail.index('(')
+      @method = tail.slice!(0, mend)
+    end
+    return @classname
+  end
+
+  def method
+    if @method
+      return @method
+    else
+      classname
+      return @method
+    end
+  end
+
+  def to_s
+    return @sig
+  end
+end
+
+class Type
+  def initialize(fijitype, fields)
+    colon = fijitype.index(?:)
+    @context = fijitype[0...colon]
+    @javatype = fijitype[(colon+1)..-1]
+    @fields = fields
+    @classname = nil
+  end
+
+  def simple_object?
+    return @javatype[0] == ?L
+  end
+
+  def array?
+    return @javatype[0] == ?[
+  end
+
+  def primitive?
+    return (!simple_object? and !array?)
+  end
+
+  def type
+    if not @type
+      array = 0
+      javatype.each_char do |c|
+        if c == '['
+          array += 1
+        else
+          break
+        end
+      end
+      simpletype = @javatype[array..-1]
+      type = case simpletype[0]
+             when ?B then 'byte'
+             when ?C then 'char'
+             when ?D then 'double'
+             when ?F then 'float'
+             when ?I then 'int'
+             when ?J then 'long'
+             when ?S then 'short'
+             when ?Z then 'boolean'
+             when ?L then
+               if simpletype[-1] != ?;
+                 raise "Bad type string #{@javatype}"
+               end
+               simpletype[1...-1].gsub('/', '.')
+             else raise "Bad type string #{@javatype}"
+             end
+      @type = type + array.times.inject("") { |s,k| s + "[]" }
+    end
+    return @type
+  end
+
+  def javatype
+    return @javatype
+  end
+
+  def field(f)
+    return nil if not @fields
+    return @fields[f]
+  end
+
+  def to_s
+    @javatype
+  end
+end
+
+class FlowLogMap
+  include LibXML
+
+  def FlowLogMap.makeanon(id)
+    return MethodSignature.new("LAnonymous;/method#{id}()V;");
+  end
+
+  def initialize(file)
+    @methodmap = Hash.new { |h, k| h[k] = FlowLogMap.makeanon(k) }
+    @typemap = Hash.new { |h, k| h[k] = Type.new("App:LAnonymous#{k};", nil) }
+    return if not file
+    parser = XML::Parser.file(file)
+    xml = parser.parse
+    xml.find('/FIJIFlowLogMapping/Methods/Method').each do |mrp|
+      signature = nil
+      id = nil
+      mrp.each_element do |child|
+        case child.name
+        when 'BytecodeSignature'
+          signature = child.content
+        when 'MethodID'
+          id = child.content.to_i
+        end
+      end
+      if signature and id
+        next if id == -1
+        @methodmap[id] = MethodSignature.new(signature)
+      else
+        $stderr.puts("Missing method signature or ID for method (#{id}, #{signature})")
+      end
+    end
+    xml.find('/FIJIFlowLogMapping/Types/Type').each do |trp|
+      name = nil
+      id = nil
+      fields = {}
+      trp.each_element do |child|
+        case child.name
+        when 'ShortName'
+          name = child.content
+        when 'UniqueID'
+          id = child.content.to_i
+        when 'Fields'
+          child.each_element do |c2|
+            if c2.name != 'Field'
+              $stderr.puts("Unexpected XML structure")
+            end
+            field = nil
+            location = nil
+            c2.each_element do |c3|
+              case c3.name
+              when 'Name'
+                field = c3.content
+              when 'Location'
+                location = c3.content.to_i
+              end
+            end
+            if field and location
+              fields[location] = field
+            end
+          end
+        end
+      end
+      if name and id
+        @typemap[id] = Type.new(name, fields.length > 0 ? fields : nil)
+      else
+        $stderr.puts("Missing short name or ID for type (#{id}, #{name})")
+      end
+    end
+  end
+
+  def method(id)
+    return @methodmap[id]
+  end
+
+  def type(id)
+    return @typemap[id]
+  end
+end
+
+class FlowLogPlatform
+  def initialize(platform)
+    @platform = platform
+  end
+
+  def name
+    case @platform & 0x0fff
+    when 1 then 'POSIX'
+    when 2 then 'RTEMS'
+    else 'Unknown Platform'
+    end
+  end
+
+  def ptrlen
+    2**((@platform >> 12) & 0xf)
+  end
+
+  def ptrbitlen
+    ptrlen * 8
+  end
+end
+
+class FlowLog
+  include Enumerable
+
+  @@be_event = "S>S>L>Q>Q>"
+  @@le_event = "S<S<L<Q<Q<"
+
+  @@be_fat_event = "S>S>L>Q>Q>Q>"
+  @@le_fat_event = "S>S>L>Q>Q>Q>"
+
+  @@Version = 3
+
+  def initialize(file, map = nil)
+    @f = File.open(file)
+    magic = @f.read(4)
+    if magic.length != 4
+      raise "Short file"
+    end
+    case magic
+    when "FJFL"
+      @endian = :big
+    when "LFJF"
+      @endian = :little
+    else
+      raise "Invalid magic"
+    end
+    block = @f.read(4)
+    if block == nil or block.length != 4
+      raise "Short file"
+    end
+    if @endian == :big
+      @version, platform = block.unpack("S>S>")
+    else
+      @version, platform = block.unpack("S<S<")
+    end
+    @platform = FlowLogPlatform.new(platform)
+    if @version > @@Version
+      $stderr.puts "Unknown Flow Log Version: got #{@version}, expected #{@@Version} or lower"
+    end
+    @factory = FlowLogEventFactory.new(@version, @platform, map)
+  end
+
+  def eventfmt
+    @endian == :big ? @@be_event : @@le_event
+  end
+
+  def fateventfmt
+    @end == :big ? @@be_fat_event : @@le_fat_event
+  end
+
+  def read_entry
+    if @version == 2
+      block = @f.read(24)
+      if block == nil
+        return nil
+      elsif block.length < 24
+        raise "Truncated file"
+      end
+      type, subtype, tid, timestamp, data = block.unpack(eventfmt)
+      return @factory.make(type, subtype, tid, timestamp, data, nil)
+    elsif @version == 3
+      # Fat events in version 3
+      block = @f.read(32)
+      if block == nil
+        return nil
+      elsif block.length < 32
+        raise "Truncated file"
+      end
+      type, subtype, tid, timestamp, data, extdata = block.unpack(fateventfmt)
+      return @factory.make(type, subtype, tid, timestamp, data, extdata)
+    end
+  end
+
+  def each
+    while (entry = read_entry) != nil
+      yield entry
+    end
+  end
+
+  def header
+    return "Fiji VM Flow Log, #{@endian == :big ? "Big Endian" : "Little Endian"}, #{@platform.name}, #{@platform.ptrbitlen}-bit, Version #{@version}"
+  end
+end
+
+$opts = {}
+
+Usage = "usage: #{$0} [options] <flowlog> <flowlogmap>"
+
+OptionParser.new do |o|
+  o.banner = Usage
+
+  o.on('-t', '--plain-text', 'Output a plain text table') do
+    $opts[:plaintext] = true
+  end
+
+  o.on('-v', '--verbose',
+       'Output system events to XML that would otherwise be suppressed') do
+    $opts[:verbose] = true
+  end
+
+  o.on('-d', '--decimal-timestamp',
+       'Display timestamp as seconds.nanoseconds instead of pure nanoseconds') do
+    $opts[:secstamp] = true
+  end
+
+  o.on('-s', '--short-buffer',
+       'Buffer only a limited number of events before sorting and emitting log entries') do
+    $opts[:shortbuf] = true
+  end
+
+  o.on('-h', '--help', 'Display this help message') do
+    puts o
+    exit
+  end
+end.parse!
+
+if ARGV.length < 2
+  $stderr.puts Usage
+  exit 1
+end
+
+map = FlowLogMap.new(ARGV[1])
+fl = FlowLog.new(ARGV[0], map)
+
+# Plaintext table output
+if $opts[:plaintext]
+  puts fl.header
+  fl.each do |entry|
+    puts entry
+  end
+  exit
+end
+
+# Jive XML output from here on out
+
+class EventProcessor
+  def initialize(doc = nil)
+    @doc = doc
+    @threadset = {}
+    @threadstack = Hash.new { |h,k| h[k] = ['SYSTEM'] }
+    @threadqueue = Hash.new { |h,k| h[k] = [] }
+    @sysruntime = false
+  end
+
+  def process(event)
+    if @sysruntime
+      if event.type == :VM and event.subtype == :EXIT
+        @sysruntime = false
+      end
+    else
+      if event.type == :VM and event.subtype == :INIT
+        @sysruntime = true
+      elsif event.type == :SCOPE
+        if event.subtype == :IMMORTAL
+          event.thread = 'SYSTEM'
+        end
+        @threadqueue[event.thread] << event
+        return
+      elsif not $opts[:verbose]
+        return
+      end
+    end
+
+    # Handle events before and after user thread creation
+    if event.type == :THREAD and event.subtype == :RUN
+      if @threadset[event.thread] != :CREATE
+        create = event.synthesize(nil, :CREATE)
+        create.data = event.thread
+        create.thread = 'SYSTEM'
+        emit create.to_xml
+      end
+      @threadset[event.thread] = :RUN
+    elsif event.type == :THREAD and event.subtype == :CREATE
+      @threadset[event.data] = :CREATE
+      if @threadset[event.thread] != :RUN
+          event.thread = 'SYSTEM'
+      end
+    elsif event.type == :THREAD and event.subtype == :EXIT
+      @threadset.delete(event.thread)
+    elsif @threadset[event.thread] != :RUN
+      if event.type != :VM and event.type != :THREAD and not $opts[:verbose]
+        return
+      end
+      event.thread = 'SYSTEM'
+    end
+
+    # Handle Method Call events
+    if event.type == :METHOD and
+        (event.subtype == :ENTER or event.subtype == :ENTER_INLINE)
+      call = event.synthesize(nil, :CALL, [@threadstack[event.thread].last,
+                                           event.subtype == :ENTER_INLINE])
+      emit call.to_xml
+      @threadstack[event.thread] << call.method.hrname
+    elsif event.type == :METHOD and
+        (event.subtype == :EXIT or event.subtype == :EXIT_INLINE)
+      return if @threadstack[event.thread].length == 0
+      @threadstack[event.thread].pop
+    end
+
+    xml = event.to_xml
+    return if xml == nil
+    emit xml
+
+    if event.type == :VM and event.subtype == :INIT
+      @threadqueue['SYSTEM'].each do |e|
+        emit e.to_xml
+      end
+      @threadqueue['SYSTEM'] = []
+    elsif event.type == :THREAD and event.subtype == :RUN
+      @threadqueue[event.thread].each do |e|
+        emit e.to_xml
+      end
+      @threadqueue[event.thread] = []
+    end
+  end
+
+  def emit(xml)
+    if @doc
+      @doc.root << xml
+    else
+      puts xml
+    end
+  end
+end
+
+if $opts[:shortbuf]
+  events = []
+  ep = EventProcessor.new
+  puts '<events>'
+  fl.each do |event|
+    events << event
+    if events.length == 10000
+      events.sort!
+      push = events.slice(0, 5000)
+      events = events.slice(5000, 5000)
+      push.each do |event|
+        ep.process(event)
+      end
+    end
+  end
+  events.each do |event|
+    ep.process(event)
+  end
+  puts '</events>'
+else
+  doc = LibXML::XML::Document.new
+  doc.root = LibXML::XML::Node.new('events')
+  ep = EventProcessor.new(doc)
+  fl.sort.each do |event|
+    ep.process(event)
+  end
+  puts doc
+end

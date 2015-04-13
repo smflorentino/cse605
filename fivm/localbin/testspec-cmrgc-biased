@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G cmr --lock-impl biased configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-biased . -m SpecApplication -G cmr --lock-impl biased
+
+$localbindir/runspec ./SPECjvm98-cmrgc-biased
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-biased
+

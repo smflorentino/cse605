@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if test "x$1x" = "xx"
+then
+    name=dev
+else
+    name=$1
+fi
+
+set -x
+set -e
+
+hg commit -m more
+hg push ssh://67.23.15.148//home/$USER/fivm-$name

@@ -1,0 +1,2 @@
+$ruby="@RUBY@"
+$perl="@PERL@"

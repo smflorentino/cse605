@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G cmr -L glibj configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-glibj . -m SpecApplication -G cmr -L glibj
+
+$localbindir/runspec ./SPECjvm98-cmrgc-glibj
+$localbindir/runspec-gctorture ./SPECjvm98-cmrgc-glibj
+

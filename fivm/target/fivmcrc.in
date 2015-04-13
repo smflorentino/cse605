@@ -1,0 +1,60 @@
+# FIXME: we should use some other quoting style, since the @foo@ thingies may
+# have quotes in them...
+
+--sys-arch		"@ARCH@"
+--sys-backend-arch      "@BACKENDARCH@"
+--sys-sync-type		"@SYNCTYPE@"
+--sys-os		"@OS@"
+--sys-osflavor		"@OSFLAVOR@"
+--sys-ptrsize		"@PTRSIZE@"
+--sys-endianness        "@ENDIANNESS@"
+--sys-cc		"@CC@"
+--sys-make		make
+--sys-debug-cflags	"@DEBUGCFLAGS@"
+--sys-opt-cflags	"@OPTCFLAGS@"
+--sys-size-cflags	"@SIZECFLAGS@"
+--sys-arch-cflags	"@ARCHCFLAGS@"
+--sys-warn-cflags	"@WARNCFLAGS@"
+--sys-nowarn-cflags	"@NOWARNCFLAGS@"
+--sys-cppflags		"@DEFS@ @CPPFLAGS@"
+--sys-ldflags		"@LDFLAGS@"
+--sys-libs		"@LIBS@"
+--sys-noinline-attr	"@NOINLINEATTR@"
+--sys-log-pagesize      @LOGPAGESIZE@
+--sys-stk-grws-dwn      yes
+
+--sys-jni-prefix        "@JNIPREFIX@"
+--sys-jni-suffix        "@JNISUFFIX@"
+
+--arith-helper          int_div
+--arith-helper          int_mod
+--arith-helper          long_div
+--arith-helper          long_mod
+--arith-helper          float_to_int
+--arith-helper          double_to_int
+--arith-helper          float_to_long
+--arith-helper          double_to_long
+--arith-helper          long_mul
+--arith-helper          int_to_float
+--arith-helper          int_to_double
+--arith-helper          long_to_float
+--arith-helper          long_to_double
+--arith-helper          float_mod
+--arith-helper          double_mod
+
+
+--pollcheck-budget      200
+
+# we believe that the grey stack and ref map optimizations are correct,
+# so we do not need to use these options to turn them off.
+#--g-black-stack
+#--no-ref-map-opt
+
+@NODYNLOADING@
+
+@GSELFMANMEM@
+
+@FINALIZERS@
+
+--ign-err-internal      lib/defaultIgnoredErrors.conf
+

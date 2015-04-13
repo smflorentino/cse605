@@ -1,0 +1,2 @@
+#!/bin/sh
+java -classpath lib/fivmcommon.jar:lib/fijirt.jar:lib/fivmutil.jar com.fiji.fivm.util.PrettyPrintConf "$@"

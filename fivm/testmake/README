@@ -1,0 +1,14 @@
+Testmake
+Copyright (C) 2010 Fiji Systems Inc.
+
+Testmake makes writing tests for command-line programs easy, by allowing 
+you to use familiar 'make' syntax to create tests. Additional syntax is 
+provided for asserting the return code and expected output patterns. 
+Additionally, a Ruby API is provided for scripting tests.
+
+Currently testmake requires a POSIX-like system. An autoconf-based 
+installer is provided. The code is BSD licensed, and we encourage users 
+to redistribute and/or modify the software even in commercial settings.
+
+FIXME: add more documentation!
+

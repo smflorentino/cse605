@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+$localbindir/testspec-cmrgc-simple
+$localbindir/testspec-cmrgc-typeepoch
+$localbindir/testspec-cmrgc-noifacecomp
+$localbindir/testspec-cmrgc-noopt
+$localbindir/testspec-cmrgc-biased
+
+echo "Compiling -G cmr --more-opt configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-moreopt . -m SpecApplication -G cmr --more-opt
+
+$localbindir/runspec ./SPECjvm98-cmrgc-moreopt
+
+echo "Compiling -G cmr --opt-size configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-optsize . -m SpecApplication -G cmr --opt-size
+
+$localbindir/runspec ./SPECjvm98-cmrgc-optsize
+
+echo "Compiling -G cmr --more-opt-size configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-moreoptsize . -m SpecApplication -G cmr --more-opt-size
+
+$localbindir/runspec ./SPECjvm98-cmrgc-moreoptsize
+
+

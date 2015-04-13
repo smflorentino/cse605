@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling -G cmr --g-self-man configuration..."
+time $localbindir/../bin/fivmc --sanity-check 1 -o SPECjvm98-cmrgc-selfman . -m SpecApplication -G cmr --g-self-man
+
+export FIVMR_GC_MAX_MEM=200M
+
+$localbindir/runspec ./SPECjvm98-cmrgc-selfman
+

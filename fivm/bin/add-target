@@ -1,0 +1,841 @@
+#!/usr/bin/env ruby
+#
+# add-target
+# Copyright 2008, 2009, 2010, 2011, 2012, 2013 Fiji Systems Inc.
+# This file is part of the FIJI VM Software licensed under the FIJI PUBLIC
+# LICENSE Version 3 or any later version.  A copy of the FIJI PUBLIC LICENSE is
+# available at fivm/LEGAL and can also be found at
+# http://www.fiji-systems.com/FPL3.txt
+# 
+# By installing, reproducing, distributing, and/or using the FIJI VM Software
+# you agree to the terms of the FIJI PUBLIC LICENSE.  You may exercise the
+# rights granted under the FIJI PUBLIC LICENSE subject to the conditions and
+# restrictions stated therein.  Among other conditions and restrictions, the
+# FIJI PUBLIC LICENSE states that:
+# 
+# a. You may only make non-commercial use of the FIJI VM Software.
+# 
+# b. Any adaptation you make must be licensed under the same terms 
+# of the FIJI PUBLIC LICENSE.
+# 
+# c. You must include a copy of the FIJI PUBLIC LICENSE in every copy of any
+# file, adaptation or output code that you distribute and cause the output code
+# to provide a notice of the FIJI PUBLIC LICENSE. 
+# 
+# d. You must not impose any additional conditions.
+# 
+# e. You must not assert or imply any connection, sponsorship or endorsement by
+# the author of the FIJI VM Software
+# 
+# f. You must take no derogatory action in relation to the FIJI VM Software
+# which would be prejudicial to the FIJI VM Software author's honor or
+# reputation.
+# 
+# 
+# The FIJI VM Software is provided as-is.  FIJI SYSTEMS INC does not make any
+# representation and provides no warranty of any kind concerning the software.
+# 
+# The FIJI PUBLIC LICENSE and any rights granted therein terminate
+# automatically upon any breach by you of the terms of the FIJI PUBLIC LICENSE.
+#
+#
+
+$verbosity=1
+
+require 'pathname'
+require 'getoptlong'
+
+meUnresolved=Pathname.new($0)
+me=meUnresolved.realpath
+bindir=me.dirname.realpath
+$homedir=bindir.parent
+$libdir=$homedir+"lib"
+
+require ($libdir+"config.rb")
+require ($libdir+"fijiconfig.rb")
+
+def escapeForShell(str)
+  result=''
+  if $isWindows
+    result+='"'
+    str.to_s.each_byte {
+      | b |
+      b=b.chr
+      if b=='"'
+        result+='""'
+      elsif b=='%'
+        result+='%%'
+      else
+        result+=b
+      end
+    }
+    result+='"'
+  else
+    str.to_s.inspect.each_byte {
+      | b |
+      b=b.chr
+      if b=="$"
+        result+="\\"
+      end
+      result+=b
+    }
+  end
+  result
+end
+
+def escapeForMake(str)
+  result=''
+  str.to_s.inspect.each_byte {
+    | b |
+    b=b.chr
+    if b=="#"
+      result+="\\"
+    elsif b=="$"
+      result+="\\$"
+    end
+    result+=b
+  }
+  result
+end
+
+def escapeForShellAsNecessary(str)
+  if str !~ /\s/ and str !~ /[;]/ and escapeForShell(str)[1..-2]==str
+    str
+  else
+    escapeForShell(str)
+  end
+end
+
+$cmdStr=(['bin/add-target']+ARGV).collect{|x| escapeForShellAsNecessary(x)}.join(' ')
+
+def headingImpl(outp)
+  outp.puts "add-target #{$version} #{$copyright}, All Rights Reserved"
+end
+
+def heading
+  headingImpl($stderr)
+end
+
+def smallUsage
+  $stderr.puts "Use the --help option to get basic usage information."
+  exit 1
+end
+
+def fail(reason)
+  if $cmdStr
+    $stderr.puts "Failed to execute: #{$cmdStr}"
+  end
+  $stderr.puts "ERROR: #{reason}"
+  if reason.respond_to? :backtrace and $verbosity>=1
+    $stderr.puts "COMPILATION FAILED: #{reason}"
+    $stderr.puts "Stack trace:"
+    $stderr.puts reason.backtrace.join("\n")
+  end
+  exit 1
+end
+
+def osify(str)
+  str=str.to_s
+  if $isWindows
+    str.gsub(/\//,'\\')
+  else
+    str
+  end
+end
+  
+def mysystem(*cmd)
+  $stderr.puts cmd.join(' ') if $verbosity>=1
+  raise "got unexpected result when running #{cmd.join(' ')}: #{$?}" unless system(*cmd)
+end
+
+def mychdir(dir)
+  $stderr.puts ">> entering #{osify(dir)}" if $verbosity>=1
+  Dir.chdir(dir) {
+    yield
+  }
+  $stderr.puts "<< exiting #{osify(dir)}" if $verbosity>=1
+end
+
+def mywrite(filename,opt)
+  if opt=='w'
+    $stderr.puts ">> writing #{osify(filename)}" if $verbosity>=1
+  elsif opt=='a'
+    $stderr.puts ">> appending #{osify(filename)}" if $verbosity>=1
+  else
+    raise opt
+  end
+  File.open(filename,opt) {
+    | outp |
+    yield outp
+  }
+  if $verbosity>=2
+    File.open("#{filename}") {
+      | inp |
+      inp.each_line {
+        | line |
+        $stderr.puts "#{osify(filename)}: #{line}"
+      }
+    }
+  end
+end
+
+begin
+  def usage
+    headingImpl($stdout)
+    puts
+    puts "Usage: bin/add-target [<options>]"
+    puts
+    puts "Options:"
+    puts "  --name              Specify the target name.  The default is to"
+    puts "                      name the target automatically."
+    puts "  --alias             Specify an alternate name for this target."
+    puts "  --host              Specify the GNU host spec.  Use this only for"
+    puts "                      cross compilation."
+    puts "  --flavor            Change OS flavor.  Possible values:"
+    puts "                        POSIX"
+    puts "                        RTEMS"
+    puts "                      Default: POSIX"
+    puts "  --posix             Same as --flavor POSIX."
+    puts "  --rtems             Same as --flavor RTEMS."
+    puts "  --android           Specify that this POSIX build is for Android"
+    puts "  --bsp               Specify the BSP to use.  Only used for RTEMS."
+    puts "  --rtems-build       Specify the RTEMS build directory to compile"
+    puts "                      against.  Implies --flavor RTEMS."
+    puts "  --android-build     Specify the Android build directory to compile"
+    puts "                      against.  Implies --android."
+    puts "  --android-product   Specify the Android product to compile"
+    puts "                      against.  Implies --android."
+    puts "  --ptr-size          Change the pointer size.  Possible values:"
+    puts "                        32 (used for 32-bit systems)"
+    puts "                        64 (used for 64-bit systems)"
+    puts "                        DETECT (automatically detect)"
+    puts "                      Default: DETECT"
+    puts "  --dyn-loading       Enable/disable dynamic loading support."
+    puts "                      Possible values:"
+    puts "                        DETECT (attempt to detect)"
+    puts "                        DISABLE (force disable)"
+    puts "                      Default: DETECT"
+    puts "  --sse               Enable/disable SSE2 floating pointer support."
+    puts "                      Possible values:"
+    puts "                        DETECT (attempt to detect and use SSE)"
+    puts "                        DISABLE (disable SSE)"
+    puts "                      Default: DETECT"
+    puts "  --pthread-pip       Enable/disable PThread PIP support.  Possible"
+    puts "                      values:"
+    puts "                        ENABLE (force enable)"
+    puts "                        DISABLE (force disable)"
+    puts "                        DETECT (automatically detect)"
+    puts "                      Default: DETECT"
+    puts "  --pthread-pcep      Enable/disable PThread PCEP support."
+    puts "                      Possible values:"
+    puts "                        ENABLE (force enable)"
+    puts "                        DISABLE (force disable)"
+    puts "                        DETECT (automatically detect)"
+    puts "                      Default: DETECT"
+    puts "  --ipv6              Enable/disable IPv6 support.  Possible values:"
+    puts "                        ENABLE (force enable)"
+    puts "                        DISABLE (force disable)"
+    puts "                        DETECT (automatically detect)"
+    puts "                      Default: DETECT"
+    puts "  --backend-arch      Enable/disable backend support.  Possible values:"
+    puts "                        x86"
+    puts "                        none"
+    puts "                        DETECT"
+    puts "                      Default: DETECT"
+    puts "  --sync-type         Set the type of synchronization to use."
+    puts "                      Possible values:"
+    puts "                        x86-gcc"
+    puts "                        ppc-gcc"
+    puts "                        gcc-intrinsic"
+    puts "                        rtems"
+    puts "                        DETECT"
+    puts "                      Default: DETECT"
+    puts "  --timestamp-type    Set the type of timestamp support to use."
+    puts "                      Possible values:"
+    puts "                        x86"
+    puts "                        ppc"
+    puts "                        none"
+    puts "                        DETECT"
+    puts "                      Default: DETECT"
+    puts "  --log-pagesize      Set the logarithm of the page size.  Pass"
+    puts "                      either an integer or DETECT to auto-detect."
+    puts "  --pause-type        Set the type of pause support to use."
+    puts "                      Possible values:"
+    puts "                        x86"
+    puts "                        none"
+    puts "                        DETECT"
+    puts "                      Default: DETECT"
+    puts "  --posix-sem         Enable/disable POSIX semaphore support."
+    puts "                      Possible values:"
+    puts "                        ENABLE (force enable)"
+    puts "                        DISABLE (force disable)"
+    puts "                        DETECT (automatically detect)"
+    puts "                      Default: DETECT"
+    puts "  --rtems-grub        Enable/disable support for building for GRUB"
+    puts "                      on RTEMS.  Possible values:"
+    puts "                        ENABLE"
+    puts "                        DISABLE"
+    puts "                      Default: DISABLE"
+    puts "  --cc                Set the C compiler."
+    puts "  --xtra-cflags       Append additional options to CFLAGS."
+    puts "  --xtra-cppflags     Append additional options to CPPFLAGS."
+    puts "  --xtra-ldflags      Append additional options to LDFLAGS."
+    puts "  --ignore-existing   If the target already exists, fail quietly."
+    puts "  --replace-existing  If the target already exists, overwrite it."
+    puts "  --force             Same as --replace-existing."
+    puts "  --reconfigure       Just reconfigure the given target."
+    puts "  --verbosity         Set verbosity level (default is 1)."
+    puts "  --help              Display this message."
+    exit 0
+  end
+  
+  opts=GetoptLong.new([ '--verbosity', '-v', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--name', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--alias', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--host', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--flavor', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--posix', GetoptLong::NO_ARGUMENT ],
+                      [ '--rtems', GetoptLong::NO_ARGUMENT ],
+                      [ '--android', GetoptLong::NO_ARGUMENT ],
+                      [ '--bsp', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--rtems-build', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--android-build', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--android-product', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--ptr-size', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--dyn-loading', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sse', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--pthread-pip', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--pthread-pcep', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--ipv6', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--backend-arch', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sync-type', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--timestamp-type', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--log-pagesize', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--pause-type', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--posix-sem', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--rtems-grub', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--xtra-cflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--xtra-cppflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--xtra-ldflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--cc', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--ignore-existing', GetoptLong::NO_ARGUMENT ],
+                      [ '--replace-existing', GetoptLong::NO_ARGUMENT ],
+                      [ '--force', GetoptLong::NO_ARGUMENT ],
+                      [ '--reconfigure', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--help', '-h', GetoptLong::NO_ARGUMENT ])
+  
+  $settings={
+    'flavor' => 'POSIX',
+    'ptrSize' => 'DETECT',
+    'dynLoading' => 'DETECT',
+    'sse' => 'DETECT',
+    'pthreadPip' => 'DETECT',
+    'pthreadPcep' => 'DETECT',
+    'ipv6' => 'DETECT',
+    'backendArch' => 'DETECT',
+    'syncType' => 'DETECT',
+    'timestampType' => 'DETECT',
+    'logPagesize' => 'DETECT',
+    'pauseType' => 'DETECT',
+    'posixSem' => 'DETECT',
+    'rtemsGrub' => 'DISABLE'
+  }
+  
+  $name=nil
+  $aliases=[]
+  
+  $host=nil
+  
+  $bsp=nil
+  $rtemsBuild=nil
+
+  $android=false
+  $androidBuild=nil
+
+  $cc=nil
+  
+  $xtraCflags=''
+  $xtraCppflags=''
+  $xtraLdflags=''
+  
+  $mode=:createNew
+  
+  def procArg(opt,arg,setting,*stuff)
+    raise setting unless $settings[setting]
+    (stuff.length/2).times {
+      | idx |
+      userArg=stuff[idx*2+0]
+      settingVal=stuff[idx*2+1]
+      if userArg.is_a? Range
+        intArg=arg.to_i
+        if intArg.to_s==arg and intArg>=userArg.min and intArg<=userArg.max
+          $settings[setting]=intArg
+          return
+        end
+      elsif arg.upcase==userArg.upcase
+        $settings[setting]=settingVal
+        return
+      end
+    }
+    fail("argument #{arg} not valid for #{opt}")
+  end
+  
+  opts.each {
+    | opt, arg |
+    case opt
+    when '--verbosity'
+      $verbosity=arg.to_i
+    when '--help'
+      usage
+    when '--reconfigure'
+      $mode=:reconfigure
+      $name=arg
+    when '--replace-existing', '--force'
+      $mode=:replace
+    when '--ignore-existing'
+      $mode=:ignoreExisting
+    when '--name'
+      $name=arg
+    when '--alias'
+      $aliases << arg
+    when '--host'
+      $host=arg
+    when '--flavor'
+      procArg(opt,arg,'flavor',
+              'posix','POSIX',
+              'rtems','RTEMS')
+    when '--posix'
+      $settings['flavor']='POSIX'
+    when '--rtems'
+      $settings['flavor']='RTEMS'
+    when '--android'
+      $android=true
+    when '--bsp'
+      $bsp=arg
+    when '--rtems-build'
+      $rtemsBuild=arg
+      $settings['flavor']='RTEMS'
+    when '--android-build'
+      $androidBuild=arg
+      $android=true
+    when '--android-product'
+      $androidProduct=arg
+      $android=true
+    when '--ptr-size'
+      procArg(opt,arg,'ptrSize',
+              '32',4,
+              '64',8)
+    when '--dyn-loading'
+      procArg(opt,arg,'dynLoading',
+              'DETECT','DETECT',
+              'DISABLE','DISABLE')
+    when '--sse'
+      procArg(opt,arg,'sse',
+              'DETECT','DETECT',
+              'DISABLE','DISABLE')
+    when '--pthread-pip'
+      procArg(opt,arg,'pthreadPip',
+              'ENABLE','ENABLE',
+              'DISABLE','DISABLE',
+              'DETECT','DETECT')
+    when '--pthread-pcep'
+      procArg(opt,arg,'pthreadPcep',
+              'ENABLE','ENABLE',
+              'DISABLE','DISABLE',
+              'DETECT','DETECT')
+    when '--ipv6'
+      procArg(opt,arg,'ipv6',
+              'ENABLE','ENABLE',
+              'DISABLE','DISABLE',
+              'DETECT','DETECT')
+    when '--backend-arch'
+      procArg(opt,arg,'backendArch',
+              'x86','x86',
+              'none','none',
+              'DETECT','DETECT')
+    when '--sync-type'
+      procArg(opt,arg,'syncType',
+              'x86-gcc','x86-gcc',
+              'ppc-gcc','ppc-gcc',
+              'gcc-intrinsic','gcc-intrinsic',
+              'rtems','rtems',
+              'DETECT','DETECT')
+    when '--timestamp-type'
+      procArg(opt,arg,'timestampType',
+              'x86','x86',
+              'ppc','ppc',
+              'none','none',
+              'DETECT','DETECT')
+    when '--log-pagesize'
+      procArg(opt,arg,'logPagesize',
+              'DETECT','DETECT',
+              (1..32))
+    when '--pause-type'
+      procArg(opt,arg,'pauseType',
+              'x86','x86',
+              'none','none',
+              'DETECT','DETECT')
+    when '--posix-sem'
+      procArg(opt,arg,'posixSem',
+              'ENABLE','ENABLE',
+              'DISABLE','DISABLE',
+              'DETECT','DETECT')
+    when '--rtems-grub'
+      procArg(opt,arg,'rtemsGrub',
+              'ENABLE','ENABLE',
+              'DISABLE','DISABLE')
+    when '--cc'
+      $cc=arg
+    when '--xtra-cflags'
+      $xtraCflags += arg
+    when '--xtra-cppflags'
+      $xtraCppflags += arg
+    when '--xtra-ldflags'
+      $xtraLdflags += arg
+    else
+      raise [opt, arg].inspect
+    end
+  }
+  
+  configEnvAdd={}
+  configEnvDelete=[]
+  configArgs=[]
+  
+  targetConf=nil
+  
+  if $name=="null"
+    fail("Invalid target name: null")
+  end
+  
+  if $mode==:reconfigure
+    targetConf=conf=FijiConfig::parse(IO::read("lib/targets/#{$name}/target.conf"))
+    $settings=conf['settings']
+    if conf['name']!=$name
+      fail("target.conf specifies a different name (#{conf['name']}) than the one requested (#{$name})")
+    end
+    $aliases=conf["aliases"]
+    $host=conf["host"]
+    $bsp=conf["bsp"]
+    $rtemsBuild=conf["rtemsBuild"]
+    $cc=conf["cc"]
+    $xtraCflags=conf["xtraCflags"]
+    $xtraCppflags=conf["xtraCppflags"]
+    $xtraLdflags=conf["xtraLdflags"]
+    configEnvAdd=conf["configEnvAdd"]
+    configEnvDelete=conf["configEnvDelete"]
+    configArgs=conf["configArgs"]
+  else
+    if $cc
+      configEnvAdd["CC"]=$cc
+    else
+      configEnvDelete << "CC"
+    end
+    
+    configEnvAdd["XTRA_CFLAGS"]=$xtraCflags
+    configEnvAdd["XTRA_CPPFLAGS"]=$xtraCppflags
+    configEnvAdd["XTRA_LDFLAGS"]=$xtraLdflags
+    
+    if $host
+      configArgs << "--host=#{$host}"
+    end
+    
+    if $settings['flavor']=='RTEMS'
+      unless $rtemsBuild
+        fail("OS flavor set to RTEMS but --rtems-build not supplied.")
+      end
+
+      dir=Pathname.new($rtemsBuild).realpath
+      unless dir.exist? and dir.directory?
+        fail("Could not find directory named #{$rtemsBuild}")
+      end
+      configArgs << "--with-rtems=#{dir}"
+
+      unless $host
+        $stderr.puts "--host not supplied; attempting to infer." if $verbosity>=1
+        Dir.new(dir).each {
+          | entry |
+          if entry=~/rtems/ and
+              Pathname.new(dir+entry+"c").exist? and
+              Pathname.new(dir+entry+"c").directory?
+            $host=entry
+            break
+          end
+        }
+        unless $host
+          fail("OS flavor set to RTEMS but --host not supplied and could not be inferred.")
+        end
+        $stderr.puts "Inferred: --host #{$host}"
+      end
+
+      unless $host=~/rtems/
+        fail("OS flavor set to RTEMS but --host #{$host} does not match")
+      end
+      
+      configArgs << "--host=#{$host}"
+
+      unless $bsp
+        $stderr.puts "--bsp not supplied; attempting to infer." if $verbosity>=1
+        Dir.new(dir+$host).each {
+          | entry |
+          if entry !~ /^\./ and entry != 'c'
+            $bsp=entry
+            break
+          end
+        }
+        unless $bsp
+          fail("OS flavor set to RTEMS but --bsp not supplied and could not be inferred.")
+        end
+        $stderr.puts "Inferred: --bsp #{$bsp}" if $verbosity>=1
+      end
+      
+      configArgs << "--with-rtems-bsp=#{$bsp}"
+    end
+    
+    if $android
+      unless $androidBuild
+        fail("Android build enabled but --android-build not supplied")
+      end
+
+      configArgs << '--enable-android'
+
+      dir=Pathname.new($androidBuild).realpath
+      unless dir.exist? and dir.directory?
+        fail("Could not find directory named #{$androidBuild}")
+      end
+      configArgs << "--with-android=#{dir}"
+
+      unless $androidProduct
+        $stderr.puts "--android-product not supplied; attempting to infer." if $verbosity>1
+        candidates=0
+        Dir.new(dir+'out'+'target'+'product').each do
+          | entry |
+          if entry !~ /^\./
+            candidates += 1
+            $androidProduct=entry
+          end
+        end
+        if candidates != 1
+          fail("Android build enabled but --android-product not supplied and could not be inferred.")
+        end
+      end
+      configArgs << "--with-android-product=#{$androidProduct}"
+    end
+
+    if $settings['ptrSize']!='DETECT'
+      configArgs << "--enable-pointer-size=#{$settings['ptrSize']}"
+    end
+    
+    if $settings['dynLoading']=='DISABLE'
+      configArgs << "--disable-dyn-loading"
+    end
+    
+    if $settings['sse']=='DISABLE'
+      configArgs << "--disable-sse"
+    end
+    
+    if $settings['pthreadPip']=='ENABLE'
+      configArgs << "--enable-pthread-pip"
+    elsif $settings['pthreadPip']=='DISABLE'
+      configArgs << "--disable-pthread-pip"
+    end
+    
+    if $settings['pthreadPcep']=='ENABLE'
+      configArgs << "--enable-pthread-pcep"
+    elsif $settings['pthreadPcep']=='DISABLE'
+      configArgs << "--disable-pthread-pcep"
+    end
+    
+    if $settings['ipv6']=='ENABLE'
+      configArgs << "--enable-ipv6"
+    elsif $settings['ipv6']=='DISABLE'
+      configArgs << "--disable-ipv6"
+    end
+    
+    if $settings['syncType']!='DETECT'
+      configArgs << "--enable-synctype=#{$settings['syncType']}"
+    end
+    
+    if $settings['backendArch']!='DETECT'
+      configArgs << "--enable-backend-arch=#{$settings['backendArch']}"
+    end
+    
+    if $settings['timestampType']!='DETECT'
+      configArgs << "--enable-timestamp=#{$settings['timestampType']}"
+    end
+    
+    if $settings['logPagesize']!='DETECT'
+      configArgs << "--enable-log-pagesize=#{$settings['logPagesize']}"
+    end
+    
+    if $settings['pauseType']!='DETECT'
+      configArgs << "--enable-pause=#{$settings['pauseType']}"
+    end
+    
+    if $settings['posixSem']=='ENABLE'
+      configArgs << "--enable-sem-init"
+    elsif $settings[:posixSem]=='DISABLE'
+      configArgs << "--disable-sem-init"
+    end
+    
+    if $settings['rtemsGrub']=='ENABLE'
+      configArgs << "--enable-rtems-grub"
+    end
+    
+    if $bsp
+      $aliases << $bsp
+    end
+  end
+  
+  configEnvDelete.each {
+    | key |
+    ENV.delete key
+    $stderr.puts "deleting ENV[#{key}]" if $verbosity>=1
+  }
+  
+  configEnvAdd.each_pair {
+    | key, val |
+    ENV[key]=val
+    $stderr.puts "setting ENV[#{key}]=#{val}" if $verbosity>=1
+  }
+  
+  mysystem("make target/configure")
+
+  mychdir('target') {
+    mysystem(*(['./configure']+configArgs))
+    
+    # figure out what to call the target
+    results=FijiConfig::parse(IO::read("target-results.conf"))
+    
+    os=results['os']
+    osflavor=results['osflavor']
+    
+    if osflavor!=$settings['flavor']
+      fail("OS flavor in settings (#{$settings['flavor']}) not the same as detected by configure (#{osflavor})")
+    end
+    
+    arch=results['arch']
+    target=results['target']
+    gnuHost=results['gnuHost']
+    ptrSize=results['ptrSize']
+    
+    $aliases << arch
+    $aliases << os
+    $aliases << osflavor
+    $aliases << target
+    $aliases << gnuHost
+    
+    if $settings['ptrSize']!='DETECT' and ptrSize.to_i!=$settings['ptrSize'].to_i
+      fail("Failed to set pointer size to #{$settings['ptrSize']}")
+    end
+    
+    fullName=osflavor
+    if $bsp
+      fullName+="-"+$bsp
+    end
+    fullName+="-"+os+"-"+arch+"-"+(ptrSize.to_i*8).to_s
+
+    if $name
+      if false
+        # this is fallible.  if the user is creating a new target that
+        # has the same full name as a target that already exists, but it
+        # has somewhat different configuration, then this will prevent
+        # that target from working.
+        $aliases << fullName
+      end
+    else
+      $name = fullName
+    end
+    
+    $aliases.uniq!
+    $aliases.delete($name)
+    
+    $stderr.puts "Using target name: #{$name}" if $verbosity>=1
+    
+    # output additional info
+    mywrite("fivmcrc","a") {
+      | outp |
+      outp.puts("--cmacro-file "+("targets/#{$name}/cmacros.conf".inspect))
+      if false
+        # we'll try to do without this for now...
+        outp.puts("--target "+($name.inspect))
+      end
+    }
+    
+    mywrite("target.conf","w") {
+      | outp |
+      if targetConf
+        outp.puts FijiConfig::dumpPrettyWithMsg(targetConf,"previously generated by bin/add-target")
+      else
+        conf={}
+        conf["settings"]=$settings
+        conf["name"]=$name
+        conf["aliases"]=$aliases
+        if $host
+          conf["host"]=$host
+        end
+        if $bsp
+          conf["bsp"]=$bsp
+        end
+        if $rtemsBuild
+          conf["rtemsBuild"]=$rtemsBuild
+        end
+        if $cc
+          conf["cc"]=$cc
+        end
+        conf["xtraCflags"]=$xtraCflags
+        conf["xtraCppflags"]=$xtraCppflags
+        conf["xtraLdflags"]=$xtraLdflags
+        conf["configEnvAdd"]=configEnvAdd
+        conf["configEnvDelete"]=configEnvDelete
+        conf["configArgs"]=configArgs
+        outp.puts FijiConfig::dumpPrettyWithMsg(conf,"generated by bin/add-target")
+      end
+    }
+    
+    exists=Pathname.new("../lib/targets/#{$name}").exist?
+    
+    if $mode==:createNew and exists
+      fail("Target called #{$name} already exists (use --replace-existing to override).")
+    end
+    
+    if $mode==:ignoreExisting and exists
+      $stderr.puts "Target called #{$name} already exists; returning."
+      exit 0
+    end
+    
+    if exists
+      mysystem("rm -rf ../lib/targets/#{$name}")
+    end
+    
+    mysystem("mkdir -p ../lib/targets/#{$name}")
+    mysystem("mkdir -p ../lib/targets/#{$name}/debug")
+    mysystem("mkdir -p ../lib/targets/#{$name}/opt")
+    mysystem("mkdir -p ../lib/targets/#{$name}/small")
+    
+    mysystem("cp Rules fivmr_target.h fivmc_def_config.h fivmr_asm_defs.h target-results.conf target.conf ../lib/targets/#{$name}")
+    
+    ["debug", "opt", "small"].each {
+      | kind |
+      mysystem("cp #{kind}/fivmc_tag_dep_config.h #{kind}/Makefile ../lib/targets/#{$name}/#{kind}")
+    }
+    
+    mysystem("cp fivmcrc ../lib/targets/#{$name}")
+  }
+  
+  puts
+  puts "Successfully configured target #{$name}"
+  puts
+  puts "To use this target, run fivmc with:"
+  puts "   --target #{$name}"
+  puts
+  puts "The following aliases have also been generated:"
+  $aliases.each {
+    | theAlias |
+    puts "   --target #{theAlias}"
+  }
+  puts
+  puts "Next step: run 'make' to ensure that the target gets built."
+  
+rescue => e
+  fail(e)
+end

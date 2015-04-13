@@ -1,0 +1,42 @@
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z accessed Lgnu/classpath/Pointer32;/data/I
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z dynamically called Lgnu/classpath/Pointer32;/<init>(I)V
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V accessed Ljava/nio/Buffer;/address/Lgnu/classpath/Pointer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/position()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/position(I)Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/limit()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/Buffer;/limit(I)Ljava/nio/Buffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/hasArray()Z
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/array()[B
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Ljava/nio/ByteBuffer;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Ljava/nio/ByteBuffer;/arrayOffset()I
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V used Lgnu/java/nio/VMChannel;
+fivmr reflect log: Lgnu/java/nio/VMChannel;/initIDs()V dynamically called Lgnu/java/nio/VMChannel;/isThreadInterrupted()Z
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z accessed Lgnu/classpath/Pointer32;/data/I
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z dynamically called Lgnu/classpath/Pointer32;/<init>(I)V
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z accessed Lgnu/classpath/Pointer32;/data/I
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z used Lgnu/classpath/Pointer32;
+fivmr reflect log: Ljava/lang/VMRuntime;/fivmr_JNI_loadLibrary(P)Z dynamically called Lgnu/classpath/Pointer32;/<init>(I)V
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Ljava/io/ByteArrayInputStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Lspec/io/FileInputStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Lspec/io/PrintStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/<clinit>()V used Lspec/io/ValidityCheckOutputStream;
+fivmr reflect log: Lspec/harness/ProgramRunner;/runBenchmark2()Ljava/util/Properties; used Lspec/benchmarks/_228_jack/Main;
+fivmr reflect log: Lspec/harness/ProgramRunner;/runBenchmark2()Ljava/util/Properties; dynamically called Lspec/benchmarks/_228_jack/Main;/<init>()V
+fivmr reflect log: Lspec/harness/ProgramRunner;/runBenchmark2()Ljava/util/Properties; alloced Lspec/benchmarks/_228_jack/Main;

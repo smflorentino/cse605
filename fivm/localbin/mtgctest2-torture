@@ -1,0 +1,9 @@
+#!/bin/sh
+
+localbindir=`dirname $0`
+
+set -e
+set -x
+
+FIVMR_ABORT_THROW=true FIVMR_GC_MAX_MEM=1g FIVMR_LOG_GC=true $localbindir/until_fail.rb $localbindir/../mtgctest2 1200
+

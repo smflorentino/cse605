@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'getoptlong'
+
+meUnresolved=Pathname.new($0)
+me=meUnresolved.realpath
+bindir=me.dirname.realpath
+$homedir=bindir.parent
+$libdir=$homedir+"lib"
+
+$dollarZero=$0
+
+require ($libdir+"fijiconfig.rb")
+require ($libdir+"testlib.rb")
+
+opts=GetoptLong.new([ '--help', GetoptLong::NO_ARGUMENT ],
+                    [ '--all', GetoptLong::NO_ARGUMENT ],
+                    [ '--input', GetoptLong::REQUIRED_ARGUMENT ],
+                    [ '--short', GetoptLong::NO_ARGUMENT])
+
+def help
+  puts "summarize -- summarize result of tests"
+  puts
+  puts "--input <file>           change input file"
+  puts "--all                    print results for all tests (even success)"
+  puts "--short                  short form"
+  puts "--help                   display this message"
+end
+
+$input="tester-output.conf"
+$all=false
+$short=false
+
+opts.each {
+  | opt, arg |
+  case opt
+  when '--help'
+    help
+    exit 0
+  when '--short'
+    $short=true
+  when '--all'
+    $all=true
+  when '--input'
+    $input=arg
+  end
+}
+
+if $short
+  File.open($input,'r') {
+    | inp |
+    inp.each_line {
+      | line |
+      line.chomp!
+      line.strip!
+      unless line.empty?
+        map=FijiConfig::parse(line)
+        name=map['name']
+        val=map['summary']
+        thisSuccess=false
+        if val=='SUCCESS' or val=='OK'
+          thisSuccess=true
+        end
+        if $all or not thisSuccess
+          puts name
+        end
+      end
+    }
+  }
+else
+  unless summarize($input,$all)
+    exit 1
+  end
+end
+
+

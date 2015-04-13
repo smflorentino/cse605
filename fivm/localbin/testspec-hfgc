@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+$localbindir/testspec-hfgc-simple
+$localbindir/testspec-hfgc-noopt
+$localbindir/testspec-hfgc-glibj
+

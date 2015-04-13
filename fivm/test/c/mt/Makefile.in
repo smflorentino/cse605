@@ -1,0 +1,21 @@
+FIVMDIR=../../..
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+CPPFLAGS=@CPPFLAGS@ -I$(FIVMDIR)/runtimec/src -I$(FIVMDIR)/lib -I$(FIVMDIR)/lib/debug -I.
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+
+all: mt1
+
+clean:
+	rm -rf *.o mt1
+
+distclean:
+	rm -f Makefile
+
+mt1: mt1.o
+	$(CC) -o mt1 mt1.o $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+%.o: src/%.c
+	$(CC) -c -o $@ $< $(CPPFLAGS) $(CFLAGS)

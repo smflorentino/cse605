@@ -1,0 +1,147 @@
+
+
+
+<!-- 
+
+Copyright (c) 2003 - 2006 by Dannes Wessels, Timothy W Macinta, and
+                          Martin West - All Rights Reserved.
+
+This file can be used to compile the Fast MD5 distribution.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free
+Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+See http://www.twmacinta.com/myjava/fast_md5.php for more information
+on this package.
+
+The original Ant build file was kindly contributed by Dannes Wessels.
+I (Tim Macinta) haven't done much testing of it, but I thought it
+would be good to provide here as a convenience to others that might
+have use for it.  Please feel free to send back any enhancements you
+might make to it or any feedback you may have.  I have made some minor
+changes, but it is very close to the original as of this writing.
+
+Martin West contributed a bug fix and some code refactoring to make
+all targets work out of the box.
+
+Note that there is a also Makefile for Linux in the "src/" directory.
+
+-->
+
+
+
+<project name="FastMD5" default="compile" basedir=".">
+  <description>simple build file for FastMD5</description>
+  
+  <!-- Modify settings here -->
+  <property name="app.name"      	value="fast-md5"/>
+
+  <property name="compile.debug"       	value="true"/>
+  <property name="compile.deprecation" 	value="false"/>
+  <property name="compile.optimize"    	value="true"/>
+  
+  
+  <!-- below here needn't any modifications -->
+  <property name="src.home"      	value="${basedir}/src"/>
+  <property name="build.home"    	value="${basedir}/build"/>
+  <property name="dist.home"     	value="${basedir}/dist"/>
+  <property name="docs.home"     	value="${basedir}/docs"/>
+  <property name="libs.home"     	value="${basedir}/libs"/>
+  <available property="docs.available" file="${docs.home}"/>
+  
+  
+  <!-- Individual external libs can be configured here -->
+  <!--
+  <property name="foo_1.jar"  value="/path/to/foo.jar"/>
+  -->
+  
+  <!-- include files in libs.home for compiling -->	
+  <path id="compile.classpath">
+    <!-- <pathelement location="${foo.jar}"/> -->
+    <!-- <fileset dir="${libs.home}">  <include name="*.jar"/>  </fileset> -->
+  </path>
+ 
+  <!-- =============================== -->
+
+  <target name="prepare">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build.home directory structure used by compile -->
+    <mkdir dir="${build.home}"/>
+    <mkdir dir="${dist.home}"/>
+    <mkdir dir="${dist.home}/libs"/>
+  </target>
+  
+  <!-- =============================== -->
+
+  <target name="compile" depends="prepare" description="Compile Java sources">
+    <!-- Compile Java classes as necessary -->
+    <javac srcdir="${src.home}"
+          destdir="${build.home}"
+            debug="${compile.debug}"
+      deprecation="${compile.deprecation}"
+         optimize="${compile.optimize}">
+       <classpath refid="compile.classpath"/>
+    </javac>   
+  </target>
+  
+  <!-- =============================== -->
+  
+  <target name="jar" depends="compile" description="Create jar distribution">
+
+    <!-- Create application JAR file -->
+    <jar jarfile="${dist.home}/${app.name}.jar"
+         basedir="${build.home}" index="true">
+      <manifest>
+        <attribute name="Built-By"   value="${user.name}"/>
+      	<attribute name="Built-Date" value="${DSTAMP}"/>
+      </manifest>         
+    </jar>
+
+  </target>
+
+  <target name="docs" depends="javadoc" if="docs.available" description="Create binary distribution">
+
+    <!-- Copy documentation subdirectories -->
+    <mkdir     dir="${dist.home}/docs"/>
+    <copy    todir="${dist.home}/docs">
+      <fileset dir="${docs.home}"/>
+    </copy>
+
+  </target>
+  
+  <target name="dist" depends="jar,javadoc,docs" description="Create binary distribution">
+
+  </target>
+  
+  <!-- =============================== -->
+
+  <target name="clean" description="clean up" >
+    <!-- Delete the ${build.home} and ${dist.home} directory trees -->
+    <delete dir="${build.home}"/>
+    <delete dir="${dist.home}"/>
+  </target>
+  
+  <!-- =============================== -->
+  
+  <target name="javadoc" depends="compile"  description="Create Javadoc API documentation">
+
+    <mkdir dir="${dist.home}/docs/javadoc"/>
+    <javadoc sourcepath="${src.home}" destdir="${dist.home}/docs/javadoc"  packagenames="com.*"/>
+
+  </target>
+  
+  <!-- =============================== -->
+  
+</project>

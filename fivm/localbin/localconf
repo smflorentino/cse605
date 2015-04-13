@@ -1,0 +1,21 @@
+#!/bin/sh
+
+PS4=">> "
+set -x
+set -e
+
+autoreconf -i
+
+TARGETS="local"
+
+./configure --enable-fetch-gnu-classpath
+
+if test x$RTEMS_DIR = "x"; then
+    echo "Disabling RTEMS."
+else
+    bin/add-target --rtems-build=$RTEMS_DIR/b-sis
+fi
+
+if test x$FIJI_CLEANBUILD_CLASSPATH_TARBALL != x; then
+    cp $FIJI_CLEANBUILD_CLASSPATH_TARBALL extra/
+fi

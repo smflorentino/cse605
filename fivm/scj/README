@@ -1,0 +1,21 @@
+This is a reduced source version of the Purde University oSCJ project,
+modified for use with the Fiji VM.
+
+The oSCJ project web page can be found at:
+
+    http://sss.cs.purdue.edu/projects/oscj/
+
+The unmodified oSCJ source is available via Mercurial from:
+
+    https://scj-jsr302.googlecode.com/hg/
+
+This code base is branched from the oSCJ version 2.0 release.  The
+modifications of the upstream source in this project are:
+
+ * Unnecessary components have been removed to reduce the repository
+   size and scope
+ * Some interfaces may have been changed to reflect the evolution of
+   the relationship between oSCJ and the Fiji VM
+ * Bug fixes
+
+The original oSCJ license terms apply to this work.

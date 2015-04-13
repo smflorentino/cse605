@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="ri/spec/fiji/src"/>
+	<classpathentry kind="src" path="ri/s3/fiji/src"/>
+	<classpathentry kind="src" path="ri/spec/common/src"/>
+	<classpathentry kind="src" path="ri/s3/common/src"/>
+	<classpathentry kind="var" path="FIJI_LIB/fijicore.jar"/>
+	<classpathentry kind="var" path="FIJI_LIB/fijirt.jar"/>
+	<classpathentry kind="var" path="FIJI_LIB/fivmr.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

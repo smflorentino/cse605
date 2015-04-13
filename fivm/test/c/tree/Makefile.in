@@ -1,0 +1,18 @@
+FIVMDIR=../../..
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+CPPFLAGS=@CPPFLAGS@ -I$(FIVMDIR)/runtimec/src -I$(FIVMDIR)/lib -I$(FIVMDIR)/lib/debug -I.
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+
+all: treetest1
+
+clean:
+	rm -rf *.o treetest1
+
+treetest1: treetest1.o
+	$(CC) -o treetest1 treetest1.o $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+%.o: src/%.c
+	$(CC) -c -o $@ $< $(CPPFLAGS) $(CFLAGS)

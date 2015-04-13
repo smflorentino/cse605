@@ -1,0 +1,66 @@
+FIVMDIR=../../..
+
+check: check-hello check-hello_copy check-hello_repeat check-ticker_gc check-ticker_gc_exit check-exit42 check-exitthrow check-testnogc check-testnogc_repeat check-ticker_gc_timesliced check-mtgctest2
+
+check-hello:
+	./hello 2>&1 > hello.log
+--timeout=100
+	diff hello.expected hello.log
+
+check-hello_copy:
+	./hello_copy 2>&1 > hello.log
+--timeout=100
+	diff hello.expected hello.log
+
+check-hello_repeat:
+	./hello_repeat 5
+--timeout=100
+	./hello_repeat 50
+--timeout=100
+
+check-ticker_gc:
+	./ticker_gc
+--timeout=150
+
+check-ticker_gc_exit:
+	./ticker_gc_exit
+--timeout=150
+
+check-exit42:
+	./exit42
+--timeout=100
+
+check-exitthrow:
+	./exitthrow
+--timeout=100
+
+check-testnogc:
+	./testnogc
+--timeout=500
+
+check-testnogc_repeat:
+	./testnogc_repeat 2
+--timeout=500
+	./testnogc_repeat 6
+--timeout=500
+
+check-ticker_gc_timesliced:
+	./ticker_gc_timesliced
+--timeout=500
+
+check-mtgctest2:
+	./mtgctest2 60
+--timeout=100
+	./mtgctest2 3
+--timeout=50
+	./mtgctest2 3
+--timeout=50
+	./mtgctest2 2
+--timeout=50
+	./mtgctest2 2
+--timeout=50
+	./mtgctest2 1
+--timeout=50
+	./mtgctest2 1
+--timeout=50
+

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+set -x
+
+hg pull
+hg up
+
+localbin/pullcleanscj
+localbin/pullcleantestmake
+
+localbin/cleanbuild
+

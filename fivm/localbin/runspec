@@ -1,0 +1,13 @@
+#!/bin/sh
+
+localbindir=`dirname $0`
+
+PS4=">> "
+set -x
+set -e
+
+for x in _201_compress _202_jess _209_db _213_javac _222_mpegaudio _227_mtrt _228_jack
+do
+    "$@" $x 2>&1 | tee runspec-log
+    $localbindir/verifyspec < runspec-log
+done

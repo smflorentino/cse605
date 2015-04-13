@@ -1,0 +1,79 @@
+FIVMDIR=../../..
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+CPPFLAGS=@CPPFLAGS@ -I$(FIVMDIR)/runtimec/src -I$(FIVMDIR)/lib -I$(FIVMDIR)/lib/debug -I.
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+
+all: hello hello_copy hello_repeat ticker_gc ticker_gc_exit exit42 exitthrow testnogc \
+	testnogc_repeat ticker_gc_timesliced mtgctest2
+
+clean:
+	rm -rf hello hello_copy hello.a* *.o hello.log ticker.a* simplegctest.a*
+	rm -rf ticker_gc ticker_gc_exit hello_repeat exit42 exit42.a* exitthrow
+	rm -rf exitthrow.a* testnogc.a* testnogc testnogc_repeat
+	rm -rf ticker_gc_timesliced mtgctest2 mtgctest2.a*
+
+distclean:
+	rm -f Makefile
+
+hello: hello.o hello.a
+	$(CC) -o hello hello.o hello.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+hello_copy: hello_copy.o hello.a
+	$(CC) -o hello_copy hello_copy.o hello.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+hello_repeat: hello_repeat.o hello.a
+	$(CC) -o hello_repeat hello_repeat.o hello.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+ticker_gc: ticker_gc.o ticker.a simplegctest.a
+	$(CC) -o ticker_gc ticker_gc.o ticker.a simplegctest.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+ticker_gc_exit: ticker_gc_exit.o ticker.a simplegctest.a
+	$(CC) -o ticker_gc_exit ticker_gc_exit.o ticker.a simplegctest.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+exit42: exit42.o exit42.a
+	$(CC) -o exit42 exit42.o exit42.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+check-exit42: exit42
+	./exit42
+
+exitthrow: exitthrow.o exitthrow.a
+	$(CC) -o exitthrow exitthrow.o exitthrow.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+testnogc: testnogc.o testnogc.a
+	$(CC) -o testnogc testnogc.o testnogc.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+testnogc_repeat: testnogc_repeat.o testnogc.a
+	$(CC) -o testnogc_repeat testnogc_repeat.o testnogc.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+ticker_gc_timesliced: ticker_gc_timesliced.o ticker.a simplegctest.a
+	$(CC) -o ticker_gc_timesliced ticker_gc_timesliced.o ticker.a simplegctest.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+mtgctest2: mtgctest2.o mtgctest2.a
+	$(CC) -o mtgctest2 mtgctest2.o mtgctest2.a $(FIVMDIR)/lib/libfivmr_debug.a `$(FIVMDIR)/bin/fivmc --ldflags --libs`
+
+hello.a: $(FIVMDIR)/lib/hello.class
+	$(FIVMDIR)/bin/fivmc -o hello -b payload $(FIVMDIR)/lib/hello.class --sanity-check 1
+
+ticker.a: $(FIVMDIR)/lib/fivmtest.jar
+	$(FIVMDIR)/bin/fivmc -o ticker -b payload $(FIVMDIR)/lib/fivmtest.jar --sanity-check 1 -m com.fiji.fivm.test.Ticker
+
+simplegctest.a: $(FIVMDIR)/lib/fivmtest.jar
+	$(FIVMDIR)/bin/fivmc -o simplegctest -b payload $(FIVMDIR)/lib/fivmtest.jar --sanity-check 1 -m com.fiji.fivm.test.SimpleGCTestMain
+
+exit42.a: $(FIVMDIR)/lib/fivmtest.jar
+	$(FIVMDIR)/bin/fivmc -o exit42 -b payload $(FIVMDIR)/lib/fivmtest.jar --sanity-check 1 -m com.fiji.fivm.test.Exit42
+
+exitthrow.a: $(FIVMDIR)/lib/fivmtest.jar
+	$(FIVMDIR)/bin/fivmc -o exitthrow -b payload $(FIVMDIR)/lib/fivmtest.jar --sanity-check 1 -m com.fiji.fivm.test.ExitThrow
+
+testnogc.a: $(FIVMDIR)/lib/fivmtest.jar
+	$(FIVMDIR)/bin/fivmc -o testnogc -b payload $(FIVMDIR)/lib/fivmtest.jar --sanity-check 1 -m com.fiji.fivm.test.TestNoGCMain
+
+mtgctest2.a: $(FIVMDIR)/lib/fivmtest.jar
+	$(FIVMDIR)/bin/fivmc -o mtgctest2 -b payload $(FIVMDIR)/lib/fivmtest.jar --sanity-check 1 -m com.fiji.fivm.test.MTGCTest2
+
+%.o: src/%.c
+	$(CC) -c -o $@ $< $(CPPFLAGS) $(CFLAGS)

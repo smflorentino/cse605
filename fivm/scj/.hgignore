@@ -1,0 +1,17 @@
+syntax: glob
+*.orig
+*.rej
+*~
+*.o
+*.class
+*gencode*
+*.jar
+tests/*.err
+*build/**
+*.mk
+tester-output.conf
+reports
+.DS_Store
+jdk.jar
+build.properties
+oSCJ/tools/checker/bin/*

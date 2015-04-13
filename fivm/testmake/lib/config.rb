@@ -1,0 +1,2 @@
+$ruby="ruby"
+$perl="perl"

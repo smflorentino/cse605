@@ -1,0 +1,23 @@
+<project default="jar">
+    <!-- Do NOT change this value. Symlink fiji to fivm in this directory. -->
+    <property name="fiji.classpath" value="fivm/lib"/>
+
+    <target name="clean">
+        <delete dir="build"/>
+        <delete dir="testsuite/build"/>
+        <delete file="lib/scj-checker.jar"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="ri" excludes="**/ovm/**" destdir="build/classes"
+               includeAntRuntime="yes" debug="true"
+               debuglevel="lines,vars,source">
+            <compilerarg value="-Xbootclasspath/p:${fiji.classpath}/fijicore.jar:${fiji.classpath}/fijirt.jar:${fiji.classpath}/fivmr.jar"/>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="scj.jar" basedir="build/classes"/>
+    </target>
+</project>

@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ruby /usr/local/share/fivm-v0.9.1/bin/fivmc --dollar-zero "$0" "$@"

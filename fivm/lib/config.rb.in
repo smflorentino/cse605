@@ -1,0 +1,5 @@
+$copyright = "@COPYRIGHT@"
+$vendor = "@VENDOR@"
+$version = "@PACKAGE_VERSION@"
+$java = "@JAVA@"
+$ruby = "@RUBY@"

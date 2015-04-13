@@ -1,0 +1,4651 @@
+#!/usr/bin/env ruby
+#
+# fivmc -- Fiji VM compiler harness.
+# Copyright 2008, 2009, 2010, 2011, 2012, 2013 Fiji Systems Inc.
+# This file is part of the FIJI VM Software licensed under the FIJI PUBLIC
+# LICENSE Version 3 or any later version.  A copy of the FIJI PUBLIC LICENSE is
+# available at fivm/LEGAL and can also be found at
+# http://www.fiji-systems.com/FPL3.txt
+# 
+# By installing, reproducing, distributing, and/or using the FIJI VM Software
+# you agree to the terms of the FIJI PUBLIC LICENSE.  You may exercise the
+# rights granted under the FIJI PUBLIC LICENSE subject to the conditions and
+# restrictions stated therein.  Among other conditions and restrictions, the
+# FIJI PUBLIC LICENSE states that:
+# 
+# a. You may only make non-commercial use of the FIJI VM Software.
+# 
+# b. Any adaptation you make must be licensed under the same terms 
+# of the FIJI PUBLIC LICENSE.
+# 
+# c. You must include a copy of the FIJI PUBLIC LICENSE in every copy of any
+# file, adaptation or output code that you distribute and cause the output code
+# to provide a notice of the FIJI PUBLIC LICENSE. 
+# 
+# d. You must not impose any additional conditions.
+# 
+# e. You must not assert or imply any connection, sponsorship or endorsement by
+# the author of the FIJI VM Software
+# 
+# f. You must take no derogatory action in relation to the FIJI VM Software
+# which would be prejudicial to the FIJI VM Software author's honor or
+# reputation.
+# 
+# 
+# The FIJI VM Software is provided as-is.  FIJI SYSTEMS INC does not make any
+# representation and provides no warranty of any kind concerning the software.
+# 
+# The FIJI PUBLIC LICENSE and any rights granted therein terminate
+# automatically upon any breach by you of the terms of the FIJI PUBLIC LICENSE.
+#
+#
+
+#
+# You might be tempted to "clean up" this file using some ridiculous Bad Idea like
+# Ant.  Don't.  Just don't.  Other "refactorings" that are absolutely forbidden:
+# 
+# - Code generation of options parsing and/or usage messages
+# - Code generation of any of this code except by autoconf (see config.rb.in)
+# - Any introduction of unnecessary "object-orientation"
+# - Use of outside dependencies beyond what is standard in Ruby
+# - "Gems" of any kind
+# - Rewriting this into any language that isn't a scripting language
+# - Rewriting this into any language whose runtime has a large footprint
+# - Rewriting for any reason other than to increase portability or performance
+# - Removal of any features whatsoever
+# - Wrapping this script into another script, or program, or Thing
+#
+# This code is Complicated.  Because it has to be.  It's the harness that brings
+# together a diverse set of tools to build up a fully functional compiler.
+# So unless you understand it completely then don't try to Fix it.
+#
+#
+
+$verbosity=0
+
+require 'pathname'
+require 'getoptlong'
+
+meUnresolved=Pathname.new($0)
+me=meUnresolved.realpath
+bindir=me.dirname.realpath
+$homedir=bindir.parent
+$libdir=$homedir+"lib"
+
+$dollarZero="fivmc"
+$cmdDollarZero=bindir+"fivmc"
+
+require ($libdir+"config.rb")
+require ($libdir+"fijiconfig.rb")
+
+processor, platform, *rest = RUBY_PLATFORM.split("-")
+$isWindows = (platform == 'mswin32')
+
+if $isWindows
+  $timecmd=""
+  $binExt=".exe"
+else
+  $timecmd="time "
+  $binExt=""
+end
+
+def headingImpl(outp)
+  outp.puts "fivmc #{$version} #{$copyright}, All Rights Reserved"
+end
+
+def heading
+  headingImpl($stderr)
+end
+
+def smallUsage
+  $stderr.puts "Use the --help option to get basic usage information."
+  exit 1
+end
+
+def fail(reason)
+  if $cmdStr
+    $stderr.puts "Failed to execute: #{$cmdStr}"
+  end
+  $stderr.puts "Reason: #{reason}"
+  if reason.respond_to? :backtrace and $verbosity>=1
+    $stderr.puts "COMPILATION FAILED: #{reason}"
+    $stderr.puts "Stack trace:"
+    $stderr.puts reason.backtrace.join("\n")
+  end
+  exit 1
+end
+
+def cleanExt(flnm)
+  if flnm.to_s =~ /\.[a-zA-Z0-9_]+$/
+    $`
+  else
+    flnm.to_s
+  end
+end
+
+begin
+  def mysystem(cmd)
+    $stderr.puts cmd if $verbosity>=1
+    raise "got unexpected result when running #{cmd}: #{$?}" unless system cmd
+  end
+
+  def mypiperead(cmd)
+    $stderr.puts "#{cmd} | #{$dollarZero}" if $verbosity>=1
+    success=false
+    IO.popen(cmd,'r') {
+      | inp |
+      yield inp
+      success=true
+    }
+    raise "got unexpected result when running #{cmd}: #{$?}" unless success
+  end
+
+  def mychdir(dir)
+    $stderr.puts ">> entering #{osify(dir)}" if $verbosity>=1
+    Dir.chdir(dir) {
+      yield
+    }
+    $stderr.puts "<< exiting #{osify(dir)}" if $verbosity>=1
+  end
+
+  def mywrite(filename)
+    $stderr.puts ">> writing #{osify(filename)}" if $verbosity>=1
+    File.open(filename,'w') {
+      | outp |
+      yield outp
+    }
+    if $verbosity>=2
+      File.open("#{filename}") {
+        | inp |
+        inp.each_line {
+          | line |
+          $stderr.puts "#{osify(filename)}: #{line}"
+        }
+      }
+    end
+  end
+  
+  # FIXME: isn't this redundant with IO::read?
+  def readall(filename)
+    result=nil
+    File.open(filename,'r') {
+      | inp |
+      result=inp.read
+    }
+    result
+  end
+
+  def mymake(command)
+    command="" unless command
+    if $verbosity==0
+      begin
+        mysystem("#{$sysMake} -j #{$jobs} #{command} > makeLog 2>&1")
+      rescue
+        File.open("makeLog","r") {
+          | inp |
+          $stderr.puts(inp.read)
+        }
+        raise $!
+      end
+    else
+      mysystem("#{$timecmd}#{$sysMake} -j #{$jobs} #{command}")
+    end
+  end
+  
+  def osify(str)
+    str=str.to_s
+    if $isWindows
+      str.gsub(/\//,'\\')
+    else
+      str
+    end
+  end
+  
+  if false
+    $dollarZero=osify($dollarZero)
+  end
+
+  def usage(addl)
+    headingImpl($stdout)
+    puts
+    puts "Usage: #{$dollarZero} [<options>] -o <output> <list of paths...>"
+    puts
+    puts "Mandatory arguments:"
+    puts "  --output     (or -o)  Set the name of the resulting executable file."
+    puts "  <list of paths...>    Set the paths from which we load Java bytecode.  Three"
+    puts "                        possible types of paths are supported:"
+    puts "                        Path to a Jar or zip file: in this case the compiler"
+    puts "                           will treat the Jar or zip file the same way that"
+    puts "                           any VM would, loading all .class files whose"
+    puts "                           directory name and package name match."
+    puts "                        Path to a class file: in this case the class file is"
+    puts "                           loaded regardless (its directory name is ignored)."
+    puts "                        Path to a directory: in this case we search"
+    puts "                           recursively, loading any classes whose directory"
+    puts "                           name relative to the one given matches the package"
+    puts "                           name."
+    puts
+    puts "Commonly used options:"
+    puts "  --main       (or -m)  Set the main class.  Use either of these formats:"
+    puts "                           com/foo/MyClass"
+    puts "                        or:"
+    puts "                           com.foo.MyClass"
+    puts "                        The default is to infer the main class from the classes"
+    puts "                        found in the list of Jar files.  If exactly one main"
+    puts "                        method is found, its class is used as an entrypoint;"
+    puts "                        otherwise, you will be asked to use this option to"
+    puts "                        manually specify the entrypoint."
+    puts "  --library    (or -L)  Set the library.  The possible arguments are FIJICORE"
+    puts "                        or GLIBJ.  FIJICORE is a smaller library, and is"
+    puts "                        included with fivm.  GLIBJ is GNU Classpath, and"
+    puts "                        requires a separate installation; GLIBJ provides full"
+    puts "                        Java 5 support but tends to result in larger"
+    puts "                        executable.  The default is FIJICORE."
+    puts "  --build      (or -b)  Sets the build type.  The possible arguments are:"
+    puts "                          EXE      Build a monolothic stand-alone executable."
+    puts "                                   This is the default."
+    puts "                          PAYLOAD  Build a linkable payload, which can then"
+    puts "                                   be linked against a runtime and potentially"
+    puts "                                   other payloads."
+    puts "                        The default is EXE; PAYLOAD is still experimental."
+    puts "  --payload    (or -p)  Equivalent to --build PAYLOAD."
+    puts "  --analysis   (or -A)  Set the analysis.  The possible arguments are:"
+    puts "                          OPEN   Enable class loading and don't do any"
+    puts "                                 analysis."
+    puts "                          O0CFA  Enable class loading, but use 0CFA to reduce"
+    puts "                                 the code size."
+    puts "                          CHA    This implements a class hierarchy analysis,"
+    puts "                                 which assumes that any method in the code"
+    puts "                                 provided may be invoked (for example via"
+    puts "                                 reflection), but that new code cannot be"
+    puts "                                 introduced at runtime."
+    puts "                          0CFA   Implements a monomorphic (0) control-flow"
+    puts "                                 analysis (CFA).  This assumes that a method"
+    puts "                                 may only be invoked if the presence of that"
+    puts "                                 invocation can be proven by examining both"
+    puts "                                 the given code and assumptions about the"
+    puts "                                 entrypoints (the main method and reflection"
+    puts "                                 logs, cf. --reflect, below)."
+    puts "                          E0CFA  An extended 0CFA analysis, which does a"
+    puts "                                 post-processing pass over the code to limit"
+    puts "                                 the set of methods after inlining is"
+    puts "                                 performed.  This will kill methods that are"
+    puts "                                 invoked, but always inlined."
+    puts "                        E0CFA is the default.  CHA is the safest, but produces"
+    puts "                        larger executables that tend to run slower.  O0CFA is"
+    puts "                        the best choice if you want class loading, though OPEN"
+    puts "                        may be appropriate if you want all of your code"
+    puts "                        compiled ahead-of-time."
+    puts "  --cl                  Enable class loading.  This is equivalent to -A o0cfa."
+    puts "  --gc         (or -G)  Set the garbage collector.  The possible arguments are:"
+    puts "                          NONE   Turn off garbage collection.  All memory is"
+    puts "                                 immortal except if scoped (SCJ or RTSJ) or"
+    puts "                                 stacked (internal Fiji VM construct)"
+    puts "                                 allocation is used."
+    puts "                          CMR    Concurrent Mark-Region garbage collector."
+    puts "                                 This collector gives excellent throughput and"
+    puts "                                 nearly imperceptible pauses, but is not"
+    puts "                                 fragmentation-tolerant."
+    puts "                          HF     Schism/cmr garbage collector, also known as"
+    puts "                                 the Hybrid Fragmenting garbage collector."
+    puts "                                 This collector gives throughput that is almost"
+    puts "                                 as good as CMR, even smaller pauses, and"
+    puts "                                 guaranteed fragmentation-tolerance.  It is"
+    puts "                                 also highly configurable; see --g-pred-level"
+    puts "                                 below."
+    puts "                        The default is CMR."
+    puts "  --32                  Build in 32-bit mode."
+    puts "  --64                  Build in 64-bit mode."
+    puts "  --rt-library          Select the realtime Java library to link against.  The"
+    puts "                        possible arguments are:"
+    puts "                          NONE   Use only the realtime Java features provided"
+    puts "                                 by Fiji VM to all Java applications."
+    puts "                          SCJ    Build an SCJ Safelet instead of a Java"
+    puts "                                 application.  This option causes the compiler"
+    puts "                                 to identify a class identifying the"
+    puts "                                 javax.safetycritical.Safelet interface as the"
+    puts "                                 application, rather than searching for a main"
+    puts "                                 method."
+    puts "                                 Implies: --gc NONE --g-scoped-memory"
+    puts "                                          --primordial-realtime"
+    puts "                          RTSJ   Build an RTSJ application."
+    puts "                                 Implies: --g-scoped-memory"
+    puts "                        This option can affect the default libraries included"
+    puts "                        at compile time, some VM features available to the"
+    puts "                        application, and the default entry point.  The default"
+    puts "                        is NONE."
+    puts "  --scj-safelet         Safelet to be used as the primary SCJ Safelet.  The"
+    puts "                        default is to infer the safelet to be used from the"
+    puts "                        classes found in the list of Jar files.  If exactly one"
+    puts "                        class implementing the javax.safetycritical.Safelet"
+    puts "                        interface is found, it will be used.  Otherwise, you"
+    puts "                        will be asked to specify one using this option."
+    puts "  --link-payload        Link the given payload into the current one.  This will"
+    puts "                        make that payload available for discovery at run-time."
+    puts "  --reflect    (or -R)  Parse the given file for information about reflective"
+    puts "                        and JNI invocations, accesses, and allocations.  The"
+    puts "                        file can be the log generated by passing"
+    puts "                        FIVMR_LOG_REFLECT=true to the runtime."
+    puts "  --jobs       (or -j)  Set the number of processors to attempt to use during"
+    puts "                        compilation.  By default, this value is auto-detected,"
+    puts "                        and should be set to the number of logical processors"
+    puts "                        on your system."
+    puts "  --no-opt              Turn off optimizations.  This is equivalent to the"
+    puts "                        following options:"
+    puts "                          --c-opt none   (turn off C compiler optimizations)"
+    puts "                          --no-inline  (turn off inlining)"
+    puts "                          --rce no   (no redundant code elimination)"
+    puts "                          --nb-reg-alloc LLS (simple register allocation)"
+    puts "                        This is great for speeding up compilation; it also has"
+    puts "                        the benefit of improving debugging with gdb.  But, it"
+    puts "                        makes everything run a lot slower."
+    puts "  --no-inline           Disable all inlining.  Note that this even disables"
+    puts "                        the inlining of methods whose body size is less than"
+    puts "                        or equal to the amount of code required at a callsite."
+    puts "                        If you'd like to only disable the inlining of large"
+    puts "                        methods, use --no-big-inline."
+    puts "  --no-implicit-inline  Disable all inlining except for methods explicitly"
+    puts "                        marked with the @Inline attribute.  This is"
+    puts "                        equivalent to --i-max-fixpoint 0 --i-max-size 0."
+    puts "  --no-big-inline       Disable inlining of large methods only; methods whose"
+    puts "                        bodies are smaller than a callsite will still be"
+    puts "                        inlined.  This is equivalent to --i-max-fixpoint 0."
+    puts "  --more-opt   (or -O)  Turn on more optimizations.  This will increase"
+    puts "                        compilation time and code size, but will typically"
+    puts "                        result in a nice performance increase.  It also"
+    puts "                        disables debug support in the runtime.  This is the"
+    puts "                        equivalent of the following options:"
+    puts "                          --i-max-fixpoint 3  (do more inlining passes)"
+    puts "                          --i-max-size 100    (inline larger methods)"
+    puts "                          --rce yes           (redundant code elimination)"
+    puts "                          --rt-assertions no  (disable runtime assertions)"
+    puts "                          --rt-verbosity-limit 1  (disable almost all logging)"
+    puts "                          --c-debug no        (disable C debug info)"
+    puts "                          --unroll-budget 30  (more loop unrolling)"
+    puts "  --opt-size            Optimize for size.  This turns off debugging support"
+    puts "                        for the runtime and generated C code.  Equivalent to"
+    puts "                        the following options:"
+    puts "                          --rt-assertions no  (disable runtime assertions)"
+    puts "                          --rt-verbosity-limit 1  (disable almost all logging)"
+    puts "                          --c-debug no        (disable C debug info)"
+    puts "  --more-opt-size       Optimize for size more aggressively.  This is"
+    puts "                        equivalent to:"
+    puts "                          --rt-assertions no  (disable runtime assertions)"
+    puts "                          --rt-verbosity-limit 1  (disable almost all logging)"
+    puts "                          --c-debug no        (disable C debug info)"
+    puts "                          --no-big-inline    (disable big method inlining)"
+    puts "                          --exclude-profiler (exclude sampling profiler)"
+    puts "                          --unroll-budget 0  (deactivate loop unrolling)"
+    puts "                          --peel-budget 40   (reduce loop peeling)"
+    puts "                          --c-opt size      (tell C compiler to optimize for"
+    puts "                                             size)"
+    puts "  --quickly             Optimize for quick compilation while still getting"
+    puts "                        reasonably good code with debug information.  This is"
+    puts "                        equivalent to:"
+    puts "                          --c-opt size    (use size optimizations in the C"
+    puts "                                           compiler)"
+    puts "                          --no-big-inline  (disable inlining of large"
+    puts "                                            methods)"
+    puts "                          --unroll-budget 0  (no loop unrolling)"
+    puts "                          --peel-budget 40   (reduce loop peeling)"
+    puts "                          --rce no        (no redundant code elimination)"
+    puts "                        Note that --quickly will actually be slower than"
+    puts "                        --more-opt-size in many cases; but unlike that option"
+    puts "                        it will retain debug information."
+    puts "  --default-opt         Revert to default optimization flags."
+    puts "  --lock-mode           Set the locking implementation used by Fiji VM to"
+    puts "                        implement 'synchronized' statements (in source code)"
+    puts "                        or monitorenter/monitorexit statements (in bytecode)."
+    puts "                        Possibilities are:"
+    puts "                          BIASED  Highest throughput lock implementation.  All"
+    puts "                                  locks are opportunistically presumed to be"
+    puts "                                  thread-local, which turns out to be true"
+    puts "                                  with surprisingly high probability.  In the"
+    puts "                                  case that this presumption fails a fast"
+    puts "                                  fallback is automatically provided."
+    puts "                          FAST    High throughput locks that don't presume"
+    puts "                                  thread-locality.  In practice this will"
+    puts "                                  almost never be faster than BIASED but is"
+    puts "                                  somewhat more predictable."
+    puts "                          PIP     Same as FAST but adds support for Priority"
+    puts "                                  Inheritance Protocol (PIP).  This is"
+    puts "                                  slightly slower than FAST but prevents"
+    puts "                                  priority inversion for code that uses Java"
+    puts "                                  locks."
+    puts "                        Default is FAST."
+    puts "  --g-pred-level        Set the GC predictability level.  This is currently"
+    puts "                        only used for --gc HF.  The possible values are:"
+    puts "                          C   Highest throughput.  Allocate contiguous objects"
+    puts "                              more opportunistically, and predict a lack of"
+    puts "                              arraylets in array accesses."
+    puts "                          B1  Like C but don't predict a lack of arraylets."
+    puts "                          B2  Like C but allocate fewer contiguous arrays,"
+    puts "                              which reduces fragmentation a bit."
+    puts "                          A   Allocate all arrays as arraylets.  This is the"
+    puts "                              most predictable configuration."
+    puts "                          A1  Synonym for A (provided for compatibility with"
+    puts "                              older versions)."
+    puts "                          CW  Same as C but causes all GC-related fast paths"
+    puts "                              to fail.  This includes array accesses,"
+    puts "                              stores, and all allocations."
+    puts "                          B1W Same as B1 but causes all GC-related fast paths"
+    puts "                              to fail."
+    puts "                          B2W Same as B2 but causes all GC-related fast paths"
+    puts "                              to fail."
+    puts "                          AW  Same as A but causes all GC-related fast paths"
+    puts "                              to fail.  This includes just stores and"
+    puts "                              allocations."
+    puts "                        The default is predictability level C, which optimizes"
+    puts "                        for throughput while still having a tightly bounded"
+    puts "                        worst-case, which can be observed by compiling with"
+    puts "                        --g-pred-level CW."
+    puts "  --rc                  Read options from the given file.  By default, the"
+    puts "                        FIVMHOME/lib/targets/TARGET/fivmcrc and ~/.fivmcrc"
+    puts "                        files are read prior to command-line options"
+    puts "                        processing."
+    puts "  --file                Specifies that the next argument is to be part of the"
+    puts "                        file list, and is not to be treated as an option."
+    puts "  --target              Select the compiler target system.  Valid arguments"
+    puts "                        on your system:"
+    getTargets.each {
+      | entry |
+      puts "                          #{entry}"
+    }
+    puts "                        Default is 'default'."
+    puts "  --sys-name            Print a string describing the target system.  This is"
+    puts "                        usually the target's canonical name."
+    puts "  --version             Show the compiler version and exit."
+    puts "  --help       (or -h)  Show usage message and exit."
+    puts "  --more-help           Show a more complete usage message, with some"
+    puts "                        additional options not shown above, and exit."
+    if addl
+      puts
+      puts "Additional options:"
+      puts "  --verbosity  (or -v)  Set the compiler verbosity level, default is 0.  The"
+      puts "                        levels are as follows:"
+      puts "                        Level 0: all console output is suppressed; output from"
+      puts "                           make is saved to \"makeLog\" in the build directory"
+      puts "                           (see --build-dir)."
+      puts "                        Level 1: log when classes are compiled, show major"
+      puts "                           phases of whole-program analysis, and show output"
+      puts "                           from make on the console."
+      puts "                        Level 2: show slightly more information than level 1,"
+      puts "                           but also, crucially, make a copy of the code before"
+      puts "                           each phase so that internal compiler error reports"
+      puts "                           can include a before-and-after view.  This slows the"
+      puts "                           compiler down noticeably, but makes debugging"
+      puts "                           easier."
+      puts "                        Level 3 and above: show increasingly more information"
+      puts "                           from each phase.  This may be too much information"
+      puts "                           to be of any use.  Maximum level is 100.  Typically,"
+      puts "                           --noisy-method should be used instead of levels 3"
+      puts "                           and above, since it will give a level 100 report for"
+      puts "                           only one method."
+      puts "  --sanity-check        Set the compiler sanity checking level, default is 0."
+      puts "                        The levels are as follows:"
+      puts "                        Level 0: do basic checks only."
+      puts "                        Level 1: turn on full sanity checking after each"
+      puts "                           compilation sub-phase."
+      puts "                        Level 2: like level 1, but also dump and then reparse"
+      puts "                           the IR after each sub-phase."
+      puts "  --phase-timings       Set whether or not to measure phase timings.  Default"
+      puts "                        is NO."
+      puts "  --main-literal        Same as --main, but only accepts the '/'-delimited"
+      puts "                        class name format."
+      puts "  --boot-file           Adds the given file to the list of files to be"
+      puts "                        loaded as part of the boot classes."
+      puts "  --boot-file-override  Prepends the given file to the list of files to be"
+      puts "                        loaded as part of the boot classes, allowing it to"
+      puts "                        override Fiji VM's librariy."
+      puts "  --config     (or -c)  Specify the run-time configuration.  By default, it is"
+      puts "                        extracted by running Main$Config, where Main is the"
+      puts "                        main class specified by --main.  Using this option"
+      puts "                        causes it to be read from the given file instead.  Note"
+      puts "                        that in either case, command-line options override"
+      puts "                        all other configuration mechanisms."
+      puts "  --skip-config         Do not try to extract any run-time configuration from"
+      puts "                        anywhere except command-line options and VM defaults."
+      puts "  --java-config         Extract configuration from Java code (Main$Config)."
+      puts "                        This is the default."
+      puts "  --noisy-method        Do all processing for the given method at the highest"
+      puts "                        verbosity level (100).  The method name should be"
+      puts "                        specified as:"
+      puts "                           L<classname>;/<methodname><descriptor>"
+      puts "                        This also disables parallel C1 (--parallel-c1 no),"
+      puts "                        since the code that implements this feature is not"
+      puts "                        thread-safe."
+      puts "  --no-extra-jars       Compile even when the list of jars is empty.  Useful"
+      puts "                        if the standard library has a main method entrypoint,"
+      puts "                        and you'd like to build an application that uses that."
+      puts "  --no-default-jars     Exclude the system jars.  This allows you to pass them"
+      puts "                        explicitly.  The default ones are fivmcommon.jar,"
+      puts "                        fivmr.jar and fijicore.jar; note that fivmcommon.jar"
+      puts "                        MUST come first in the list, followed by fivmr.jar,"
+      puts "                        and then fijicore.jar."
+      puts "  --no-default-reflect  Do not parse the default reflective call database."
+      puts "  --specialize-runtime  Set whether or not the runtime should be specialized."
+      puts "                        Arguments are either YES (perform specialization) or"
+      puts "                        NO.  The default is YES for --build EXE.  It is not"
+      puts "                        possible to specialize the runtime for --build PAYLOAD"
+      puts "                        or if --link-payload is used."
+      puts "  --one-shot-payload    Set whether or not to create an optimized one-shot"
+      puts "                        payload.  The default is YES for --build EXE and NO"
+      puts "                        for --build PAYLOAD.  A one-shot payload is slightly"
+      puts "                        faster, but can only be executed once in any given"
+      puts "                        address space.  This makes it optimal for standalone"
+      puts "                        executables, and generally undesirable for linkable"
+      puts "                        payloads."
+      puts "  --scj                 (Deprecated) Compile an SCJ Safelet instead of a Java"
+      puts "                        application.  This option is equivalent to"
+      puts "                        --rt-library SCJ"
+      puts "  --scj-L0              Run the SCJ Safelet as L0 SCJ applications and enable"
+      puts "                        all the optimizations related to L0 SCJ. This option is"
+      puts "                        equivalent to --rt-library SCJ plus L0 optimizations."
+      puts "  --scope-style         Set the style of scope stack.  Valid options are SCJ,"
+      puts "                        which restricts scope structure to a linear stack, and"
+      puts "                        RTSJ, which allows a tree hierarchy.  Defaults to SCJ."
+      puts "  --backend             Set the backend.  Possibilities are:"
+      puts "                           C       This is the default.  Emit C code and"
+      puts "                                   invoke a C compiler."
+      puts "                           NATIVE  Emit optimized assembly code instead of C."
+      puts "                                   Only available on X86 cdecl targets."
+      puts "                        Currently the native backend is not yet stable, so"
+      puts "                        the C backend is recommended."
+      puts "  --obj-loc-analysis    Set the object location analysis.  The object location"
+      puts "                        analysis is used to remove unnecessary scope checks,"
+      puts "                        and therefore make your program run faster.  The"
+      puts "                        default is FULL, which removes the most scope checks;"
+      puts "                        the other options are OPEN, which removes less, or"
+      puts "                        SCJ, which removes none.  If you have no intention of"
+      puts "                        using any scope features in your application, you can"
+      puts "                        use TRUSTED, which disables all scope checks but"
+      puts "                        prohibits application-level use of scoped memory and"
+      puts "                        stack allocation."
+      puts "  --env-sys-props       Set whether or not to support the setting of system"
+      puts "                        properties (System.getProperties()) via the"
+      puts "                        FIVMR_SYS_PROPS environment variable.  The default"
+      puts "                        is YES if class loading is enabled, no otherwise."
+      puts "  --itable-compression  Set whether or not to use interface table compression."
+      puts "                        Default is YES.  Using NO is currently only useful for"
+      puts "                        testing."
+      puts "  --type-epochs         Set whether or not to use multi-epoch type inclusion"
+      puts "                        tests and interface dispatch.  Default is NO.  Using"
+      puts "                        YES is currently only useful for testing."
+      puts "  --track-direct-subs   Set whether or not to store the direct subtypes in the"
+      puts "                        payload.  Default is NO.  Using YES is currently only"
+      puts "                        useful for testing."
+      puts "  --patch-points        Set whether or not patch points are CLOSED (i.e. can"
+      puts "                        only throw an exception) or OPEN.  Default is CLOSED."
+      puts "                        Using OPEN is currently only useful for testing."
+      puts "  --use-ctypes-info     Set whether or not to use C typesystem meta-data."
+      puts "                        Default is NO."
+      puts "  --indirect-god-givens Set whether or not to indirect all calls and uses of"
+      puts "                        C functions and C variables from the run-time."
+      puts "                        Default is NO."
+      puts "  --rt-search-root      Set whether or not to search root class files at"
+      puts "                        runtime.  Default is NO."
+      puts "  --code-repo           Set the way the code is stored in memory during"
+      puts "                        compilation.  Possibilities are CACHE or DISK.  DISK"
+      puts "                        involves reloading the code from disk whenever it is"
+      puts "                        needed, which results in less memory usage - often"
+      puts "                        allowing the compiler to deal with larger programs."
+      puts "                        CACHE stores the code in memory, which uses more"
+      puts "                        memory but can speed up compilation."
+      puts "  --0-log-access        Log the order in which a 0CFA-based compilation"
+      puts "                        accesses classes."
+      puts "  --0-preload           Accelerate the 0CFA and E0CFA analyses on a parallel"
+      puts "                        machine by preloading the given classes."
+      puts "  --0-preload-internal  Same as --0-preload, but the filename is given"
+      puts "                        relative to the fivm directory.  This option also"
+      puts "                        differs from --0-preload in that it only prints a"
+      puts "                        warning, rather than aborting compilation, if the"
+      puts "                        file is not found."
+      puts "  --object-model        Select the object model.  The possible options are"
+      puts "                        CONTIGUOUS or FRAGMENTED.  Note that FRAGMENTED is"
+      puts "                        selected by default for the HF garbage collector."
+      puts "                        Normally, you would not use this option directly"
+      puts "                        but instead allow the garbage collector to choose"
+      puts "                        the appropriate object model."
+      puts "  --header-model        Select the header model.  The possible options are"
+      puts "                        NARROW or POISONED.  In both cases, the object header"
+      puts "                        consists of a single pointer (but: with GC, there is"
+      puts "                        typically a GC header prepended to the object header,"
+      puts "                        which results in a total header size of two pointers)."
+      puts "                        With POISONED, the low-order bit of the header is set,"
+      puts "                        which is meant only for header model testing, but may"
+      puts "                        be useful for some types of debugging as well."
+      puts "  --force-arraylets     Force all arrays to be allocated as arraylets.  Only"
+      puts "                        applies to the FRAGMENTED object model, and is ignored"
+      puts "                        under the HF collector.  This is useful for doing a"
+      puts "                        worst-case analysis of code that uses arrays under the"
+      puts "                        HF garbage collector."
+      puts "  --i-max-size          Maximum size (as per heuristic estimate) of a callee"
+      puts "                        when inlining.  Default is 50.  Note that the compiler"
+      puts "                        uses two method size heuristics: this option, and a"
+      puts "                        built-in heuristic that determines if a method's body"
+      puts "                        is smaller than a callsite (in which case inlining it"
+      puts "                        is always guaranteed to reduce both code size and"
+      puts "                        execution time).  But, when this option's value is"
+      puts "                        too small, it overrides the other heuristic as well."
+      puts "                        Thus, setting this to values smaller than 40 is not"
+      puts "                        advised; if you'd like to only inline small methods"
+      puts "                        then use --i-max-fixpoint 0.  On the other hand, to"
+      puts "                        increase performance, tuning this up to 100 may"
+      puts "                        result in faster execution, at the expense of"
+      puts "                        increased code size."
+      puts "  --i-max-fixpoint      Maximum number of fixpoint interations of inlining of"
+      puts "                        methods that are not smaller than a callsite. Default"
+      puts "                        is 2.  Calls to methods whose bodies are smaller than"
+      puts "                        a callsite are always inlined using an unbounded"
+      puts "                        fixpoint.  This option controls the depth of inlining"
+      puts "                        of larger methods (whose max size is controlled by"
+      puts "                        --i-max-size).  With the default setting of 2, at"
+      puts "                        most 2 calls deep may get inlined.  Setting this to 3"
+      puts "                        will likely increase performance."
+      puts "  --i-max-recurse       Maximum recursive inline depth.  Default is 0, which"
+      puts "                        prevents recursive inlining.  Having some recursive"
+      puts "                        inlining is likely to boost performance at the price"
+      puts "                        of potentially significantly increased code size."
+      puts "  --i-max-caller-blocks Maximum number of blocks allowed in caller when"
+      puts "                        inlining.  Default is 1000.  This limit is usually"
+      puts "                        used for sanity only.  But increasing it may lead to"
+      puts "                        better performance in some cases; as well, decreasing"
+      puts "                        it may reduce code size."
+      puts "  --unroll-budget       Maximum size of a loop for it to be unrolled.  The"
+      puts "                        unit is an internal one to the compiler, and is based"
+      puts "                        on an estimate of the cost of various operations."
+      puts "                        The default is 10."
+      puts "  --peel-budget         Maximum size of a loop for it to be peeled.  The"
+      puts "                        unit is an internal one to the compiler, and is based"
+      puts "                        on an estimate of the cost of various operations."
+      puts "                        The default is 100."
+      puts "  --om-blocks-max       Maximum number of blocks allowed in a method before"
+      puts "                        we aggressively out-of-line all non-trivial uses of"
+      puts "                        the heap.  Default is 4000."
+      puts "  --rce                 Specify whether or not to run RCE (redundant code"
+      puts "                        elimination).  The benefits are quite large in"
+      puts "                        some cases so the default is YES."
+      puts "  --late-rce            Specify whether or not to rerun RCE (redundant code"
+      puts "                        elimination) late.  Arguments are either YES or NO."
+      puts "                        Default is YES."
+      puts "  --rce-distance        Set the maximum distance between instructions for RCE"
+      puts "                        to take effect.  Default is 10000."
+      puts "  --forward-motion      Specify whether or not to enable forward motion"
+      puts "                        optimizations at the end of compilation, and if so,"
+      puts "                        how many iterations to run.  The default is 0"
+      puts "                        (disabled).  To enable pass 1, or a higher number."
+      puts "  --nb-reg-alloc        Select the register allocator.  Valid settings are:"
+      puts "                          LLS    A simple but inefficient register allocator."
+      puts "                          IRC    The fast production allocator."
+      puts "                        Default is IRC unless optimizations are disabled."
+      puts "  --nb-omit-fp          Set whether to omit the frame pointer.  Omitting the"
+      puts "                        frame pointer improves performance but makes"
+      puts "                        debugging more difficult in some cases."
+      puts "  --opt-cm-barriers     Optimize away concurrent marking barriers if possible."
+      puts "                        Arguments are either NO, YES, AGGRESSIVE, CHECKED, or"
+      puts "                        CHECKED_AGGRESSIVE.  Default is NO, since this is still"
+      puts "                        experimental."
+      puts "  --filt-cm-barriers    Use a filtered concurrent marking barrier.  Enabling"
+      puts "                        this feature may increase overall performance at the"
+      puts "                        expense of a bit of predictability.  Default is NO;"
+      puts "                        pass YES to enable."
+      puts "  --scj-scope-backing   Size of the SCJ wrapper RealtimeThread's scope backing"
+      puts "                        store.  Defaults to 1MB."
+      puts "  --g-def-trigger       The default setting for the GC's trigger, in bytes."
+      puts "                        This setting can be overridden at runtime with"
+      puts "                        FIVMR_GC_TRIGGER.  The default is half of whatever"
+      puts "                        was specified for --g-def-max-mem.  As in other"
+      puts "                        VMs, the size may be specified by suffixing K, M, or G"
+      puts "                        to indicate kilobytes, megabytes, or gigabytes."
+      puts "  --g-def-max-mem       The default setting for the maximum amount of memory,"
+      puts "                        in bytes, that the GC will allow itself to use.  The"
+      puts "                        default is 200M on POSIX and 1M on RTEMS.  This can"
+      puts "                        also be overridden at runtime using the"
+      puts "                        FIVMR_GC_MAX_MEM environment variable.  As in other"
+      puts "                        VMs, the size may be specified by suffixing K, M, or G"
+      puts "                        to indicate kilobytes, megabytes, or gigabytes."
+      puts "  --g-finalization      Set whether or not to enable finalization support."
+      puts "                        Default is YES on POSIX; pass NO to disable."
+      puts "  --g-debug             Enable additional debugging support in the collector."
+      puts "  --g-self-man-mem      Self-manage heap memory.  The GC will allocate a single"
+      puts "                        contiguous region of memory whose size is equal to the"
+      puts "                        specified max memory size (see --g-def-max-mem)."
+      puts "  --g-black-stack       Increase garbage collector predictability by using a"
+      puts "                        black stack.  This will slow down execution, but"
+      puts "                        further reduce the pause times.  Pass YES or NO."
+      puts "  --g-thread-priority   The default thread priority for the collector.  This"
+      puts "                        can be overridden at runtime using the"
+      puts "                        FIVMR_GC_THREAD_PRIORITY environment variable."
+      puts "  --g-scoped-memory     Enable scoped memory.  Implies --obj-loc-analysis SCJ."
+      puts "  --g-scope-checks      Sets whether or not any scope checks are emitted."
+      puts "                        Pass either YES or NO.  Default is YES."
+      puts "  --g-shared-scopes     Sets whether or not the VM will support shared scopes."
+      puts "                        Pass either YES or NO.  Default is YES.  NO is still"
+      puts "                        experimental."
+      puts "  --g-def-immortal-mem  Sets the default size of the Immortal memory area in"
+      puts "                        bytes.  Defaults to 100K.  Relevant only in conjunction"
+      puts "                        with --g-scoped-memory."
+      puts "  --g-def-log           Sets the default for whether or not GC's get logged."
+      puts "                        On POSIX platforms you can set this at runtime using"
+      puts "                        FIVMR_LOG_GC=true|false."
+      puts "  --g-def-log-sync      Sets the default for whether or not synchronous GC's"
+      puts "                        get logged.  On POSIX platforms you can set this at"
+      puts "                        runtime using FIVMR_LOG_SYNC_GC=true|false."
+      puts "  --g-log-mark-traps    Sets whether or not to log mark slow path traps."
+      puts "                        Default is NO."
+      puts "  --lock-impl           Same as --lock-mode; provided for compatibility with"
+      puts "                        older versions."
+      puts "  --parallel-c1         Enable or disable parallelization of the C1 compiler."
+      puts "                        Specify YES to enable, NO to disable.  Default is YES,"
+      puts "                        but disabling it may be useful for debugging."
+      puts "  --max-threads         Set the maximum number of threads.  Default is 1024 on"
+      puts "                        POSIX and 10 on RTEMS."
+      puts "  --sa-size             Set the number of bytes, per thread, usable by the"
+      puts "                        stack allocator.  Default is 64K on POSIX and 8K on"
+      puts "                        RTEMS."
+      puts "  --static-jni          Statically link JNI libraries.  This is a non-standard"
+      puts "                        approach to JNI; using --no-dyn-load is better."
+      puts "  --no-dyn-loading      Disable dynamic loading of native code.  This only"
+      puts "                        affects JNI code.  When this option is used, JNI code"
+      puts "                        modules must be specified using the --link option,"
+      puts "                        and any JNI on-load functions must be specified using"
+      puts "                        --jni-on-load."
+      puts "  --jni-on-load         Statically call the given JNI on-load handler.  This"
+      puts "                        option may be specified multiple times, if there are"
+      puts "                        multiple on-load handlers."
+      puts "  --light-throw         Use a lighter implementation of exception throwing,"
+      puts "                        which makes debugging instrumentation harder but may"
+      puts "                        result in smaller code and faster execution for some"
+      puts "                        programs that use exceptions extremely heavily."
+      puts "  --reduce-vars         Have the compiler emit code with fewer local variables"
+      puts "                        by performing some register allocation.  This should"
+      puts "                        not have an effect on performance, but may help to"
+      puts "                        avoid pathologies in some C compilers."
+      puts "  --ref-map-opt         Enable or disable ref map optimizations.  Default is"
+      puts "                        YES."
+      puts "  --opt-pollcheck       Optimize ref maps around pollchecks.  Default is YES."
+      puts "  --pollcheck-mode      Specify the pollcheck mode, may be one of NONE or"
+      puts "                        PORTABLE.  NONE is the fastest but may cause GC"
+      puts "                        Default is PORTABLE."
+      puts "  --pollcheck-budget    Specify the amount of code that is allowed to execute"
+      puts "                        between pollchecks in the worst case.  The unit is"
+      puts "                        an internal one to the compiler, and is based on an"
+      puts "                        estimate of the cost of various operations.  The"
+      puts "                        default is 200."
+      puts "  --exclude-profiler    Exclude the built-in sampling profiler.  This will"
+      puts "                        save approximately 60KB of footprint for some"
+      puts "                        applications, but it should not change performance."
+      puts "  --no-sigquit-debug    Disable SIGQUIT debug support.  By default, the"
+      puts "                        runtime will register a signal handler for SIGQUIT,"
+      puts "                        which will print the stack traces of all threads."
+      puts "  --p-checkinit         Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of CheckInit."
+      puts "  --p-subtype           Compile the code so that it counts, and then reports,"
+      puts "                        the number of subtype tests."
+      puts "  --p-nullcheck         Compile the code so that it counts, and then reports,"
+      puts "                        the number of null checks."
+      puts "  --p-arraystore        Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of ArrayCheckStore."
+      puts "  --p-arraybounds       Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of ArrayBoundsCheck."
+      puts "  --p-checkdiv          Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of CheckDivisor."
+      puts "  --p-invokes           Compile the code so that it counts, and then reports,"
+      puts "                        the number of method invocations that are not inlined."
+      puts "  --p-monitor           Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of slow-path monitor functions,"
+      puts "                        such as the lock and unlock slow paths, as well as"
+      puts "                        lock inflations."
+      puts "  --p-monitor-heavy     Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of all monitor functions.  This"
+      puts "                        subsumes --p-monitor."
+      puts "  --p-gc                Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of slow-path GC functions."
+      puts "  --p-gc-heavy          Compile the code so that it counts, and then reports,"
+      puts "                        the number of uses of all GC functions.  This"
+      puts "                        subsumes --p-gc."
+      puts "  --p-stack-height      Compile the code so that it checks, and reports in"
+      puts "                        real time, the stack high watermark of each thread."
+      puts "  --p-reflection        Compile the code so that it counts, and then reports,"
+      puts "                        the time spent doing reflection."
+      puts "  --p-all               Turn on all profiling options except for stack height."
+      puts "                        Equivalent to:"
+      puts "                          --p-checkinit"
+      puts "                          --p-subtype"
+      puts "                          --p-nullcheck"
+      puts "                          --p-arraystore"
+      puts "                          --p-arraybounds"
+      puts "                          --p-checkdiv"
+      puts "                          --p-invokes"
+      puts "                          --p-monitor-heavy"
+      puts "                          --p-gc-heavy"
+      puts "                          --p-reflection"
+      puts "  --coverage            Instrument the code to measure, and then report, code"
+      puts "                        coverage.  Note that coverage is unaffected by inlining"
+      puts "                        but inlining decisions are affected by the presence of"
+      puts "                        coverage instrumentation.  Thus, it may be a good idea"
+      puts "                        to turn off inlining when using this option."
+      puts "  --internal-inst       Add internal instrumentation.  The argument is a path"
+      puts "                        to a header file, supplied by you, which should"
+      puts "                        implement an API that the VM will call whenever"
+      puts "                        something interesting happens."
+      puts "  --all-barrier         Redirect all object accesses to out-of-line barriers."
+      puts "                        Useful for instrumentation and testing only."
+      puts "  --simple-comp         Perform simplified compilation.  This is an"
+      puts "                        experimental option."
+      puts "  --arith-helper        Specify an arithmetic helper to use.  Format is:"
+      puts "                          <type>_<operation>"
+      puts "                        For example: int_div"
+      puts "                        It's also possible to specify 'all', which causes all"
+      puts "                        arithmetic to go through helpers."
+      puts "  --r-thr-stack-size    Specify the thread stack size (only applicable to"
+      puts "                        RTEMS targets)"
+      puts "  --r-nanos-per-tick    Specify the nanoseconds per tick (only applicable to"
+      puts "                        RTEMS targets)"
+      puts "  --r-ticks-per-slice   Specify the ticks per timeslice (only applicable to"
+      puts "                        RTEMS targets)"
+      puts "  --r-max-os-threads    Specify the maximum number of OS threads (only"
+      puts "                        applicable to RTEMS targets)"
+      puts "  --r-int-stack-size    Specify the interrupt stack size (only applicable to"
+      puts "                        RTEMS targets)"
+      puts "  --r-max-fds           Specify the maximum number of file descriptors (only"
+      puts "                        applicable to RTEMS targets)"
+      puts "  --uniprocessor        Force the runtime to assume that it is running on a"
+      puts "                        uniprocessor.  This option is extremely dangerous.  An"
+      puts "                        executable generated with this option may fail"
+      puts "                        unpredictably on multiprocessors.  But when running"
+      puts "                        on a uniprocessor, this option may result in a nice"
+      puts "                        speedup.  This option is currently the default on"
+      puts "                        RTEMS.  On POSIX and Win32, this only makes a"
+      puts "                        difference when using either x86-gcc or ppc-gcc as an"
+      puts "                        argument to --sys-sync-type."
+      puts "  --main-in-thread      Launch a separate thread for the main program.  Only"
+      puts "                        supported on POSIX systems.  Typically only useful for"
+      puts "                        working around irregularities in main() thread"
+      puts "                        semantics on some UNIX flavors."
+      puts "  --trace-exec          Trace the execution of methods, including their return"
+      puts "                        values.  The argument to this option is a regular"
+      puts "                        expression over the JNI-form names of methods."
+      puts "  --dumb-hash-code      Make the identity hash code of all objects 0.  This"
+      puts "                        forces deterministic execution at the price of"
+      puts "                        performance, especially in code that uses hashtables."
+      puts "  --c-file-size         Specify the number of linkable elements per output C"
+      puts "                        file.  Default is 400.  Making this larger may speed"
+      puts "                        up compilation, with the risk of reducing scalability"
+      puts "                        and increasing memory usage.  Making this 0 will force"
+      puts "                        each file to correspond to only one class."
+      puts "  --no-cat-rt-code      Normally the C files for the runtime are concatenated"
+      puts "                        prior to compilation, to improve performance.  This"
+      puts "                        option turns this feature off."
+      puts "  --no-line-pragma      Never use '#' pragmas in C code to hint line numbers."
+      puts "  --c-prefix            The prefix to prepend to all symbols generated by the"
+      puts "                        compiler.  The default is a mangled form of the"
+      puts "                        argument to --output."
+      puts "  --build-dir           Set the build directory, default is the output file"
+      puts "                        with the \".build\" extension.  For example, if you"
+      puts "                        passed -o hello, then the build directory will be"
+      puts "                        hello.build.  Note that fivmc will begin by deleting"
+      puts "                        the contents of this directly entirely (unless you use"
+      puts "                        --no-regen).  As well, fivmc may put ~1GB of data in"
+      puts "                        this directory, especially when compiling large"
+      puts "                        applications."
+      puts "  --del-build-dir       Indicate hat the build directory should be deleted"
+      puts "                        after a successful build completes.  This is useful for"
+      puts "                        saving space."
+      puts "  --host-vm-cmd         Change the command to use to launch the host VM that"
+      puts "                        runs the compiler, default is \"java\".  Note that fivmc"
+      puts "                        requires a reasonably fast Java 5 VM.  We recommend the"
+      puts "                        Sun Java HotSpot(TM) 1.5 Client VM."
+      puts "  --host-vm-args        Change the configuration arguments given to the VM that"
+      puts "                        runs the compiler, default is -Xms800M -Xmx800M.  Note"
+      puts "                        that even large programs typically compile in less than"
+      puts "                        300MB, so these settings can be changed if your machine"
+      puts "                        has less RAM."
+      puts "  --add-host-vm-args    Append to the host VM arguments."
+      puts "  --host-jar-cmd        Change the command to launch jar, default is \"jar\"."
+      puts "  --link                Link the given module into the resulting binary, where"
+      puts "                        the path is specified relative to the current"
+      puts "                        directory.  This option may be specified multiple"
+      puts "                        times if there are multiple modules to link."
+      puts "  --link-internal       Link the given module into the resulting binary, where"
+      puts "                        the path is specified relative to the fivm home"
+      puts "                        directory."
+      puts "  --link-dynamic        Link the given native shared library into the resulting"
+      puts "                        binary.  This option may be specified multiple times if"
+      puts "                        there are multiple libraries to link."
+      puts "  --link-dir            Add a directory to the native library link path"
+      puts "                        (equivalent to passing -L to the linker).  May be"
+      puts "                        specified multiple times to add multiple directories."
+      puts "  --extra-include       Specify an additional header file to be included by"
+      puts "                        fivmc-generated native code at compile time.  This may"
+      puts "                        be necessary if you need to reference native types or"
+      puts "                        defines from Java code.  THIS MAY BE DANGEROUS.  May be"
+      puts "                        specified multiple times if there are multiple includes"
+      puts "                        to be added."
+      puts "  --extra-include-dir   Add a directory to the include search path (equivalent"
+      puts "                        to passing -I to the C preprocessor).  This may be"
+      puts "                        necessary in conjunction with --extra-include-dir, and"
+      puts "                        may be specified more than once."
+      puts "  --rc-internal         Like --rc, but the path is relative to the fivm"
+      puts "                        directory."
+      puts "  --ignore-errors       Specifies that the given file contains summaries of"
+      puts "                        errors that should not be reported."
+      puts "  --ign-err-internal    Like --ignore-errors, but the path is relative to the"
+      puts "                        fivm directory."
+      puts "  --types-only          Stop after performing just the type computation stage"
+      puts "                        of compilation.  Only useful for testing."
+      puts "  --no-regen            Do not rerun the bytecode-to-C compiler (useful if"
+      puts "                        you're hacking on the runtime, and would like to just"
+      puts "                        recompile that)."
+      puts "  --no-make             Don't run make on the resulting code (useful if you're"
+      puts "                        just testing the bytecode-to-C compiler)."
+      puts "  --no-scripts          Do not create 'rebuild' or 'remake' scripts in the"
+      puts "                        build directory."
+      puts "  --make-clean          Run \"make clean\" before running make."
+      puts "  --c-opt               Determines whether or not to optimize C code.  Options"
+      puts "                        are either SPEED, SIZE, NONE, or a string containing"
+      puts "                        the specific C compiler options to use for enabling"
+      puts "                        optimization.  Default is SPEED."
+      puts "  --no-c-opt            Equivalent to --c-opt none."
+      puts "  --c-debug             Specifies whether or not to have C debugging info."
+      puts "                        Possible options are 'yes' or 'no'."
+      puts "  --allow-c-inline      Allow the C compiler to perform additional inlining of"
+      puts "                        generated code.  For this to have full effect, turn up"
+      puts "                        the setting of --c-file-size."
+      puts "  --dump-call-graph     Dump the whole program call graph."
+      puts "  --dump-asm            Instruct the C compiler to dump assembly code."
+      puts "  --rt-verbosity-limit  Specify the upper bound on verbosity of the runtime."
+      puts "                        The lower this number, the smaller the code, and the"
+      puts "                        fewer verbosity checks there will be (since they will"
+      puts "                        be statically eliminated).  The default is 10."
+      puts "                        Anything higher will result in significant slow-downs."
+      puts "                        NOTE: on RTEMS configurations, the default is 0."
+      puts "  --rt-assertions       Specify whether to enable assertions in the runtime."
+      puts "                        Use YES to enable them, NO to disable them."
+      puts "  --rt-flowlog-enable   Enable the runtime flow control logging mechanism."
+      puts "                        This will cause the runtime to create a flow control"
+      puts "                        log containing method entries and exits, monitor"
+      puts "                        events, and other runtime behaviors.  It may negatively"
+      puts "                        affect predictability and realtime response."
+      puts "  --rt-flowlog-bufsize  Specify the number of events per thread-specific flowlog"
+      puts "                        buffer."
+      puts "  --process-cmacros     Instead of doing normal compilation, extract the C"
+      puts "                        macros used by the Java code and generate a Java-usable"
+      puts "                        definition file."
+      puts "  --extract-ctypes      Instead of doing normal compilation, extract the C"
+      puts "                        typesystem references used by both the Java code and by"
+      puts "                        the compiler."
+      puts "  --ct-compute-offsets  Additional option that can be used with"
+      puts "                        --extract-ctypes.  In addition to extracting C types,"
+      puts "                        also compute the offsets of fields and the sizes of"
+      puts "                        types."
+      puts "  --ct-incl-generated   Specify whether or not to include variables that were"
+      puts "                        generated by the compiler itself.  Default is NO."
+      puts "  --cmacro-file         Read the given file for information about which C"
+      puts "                        macros are defined."
+      puts "  --sys-arch            The name of the system architecture.  This can be"
+      puts "                        anything; it's used for constructing the system name"
+      puts "                        only."
+      puts "  --sys-backend-arch    The name of the architecture to use for the backend."
+      puts "                        Currently valid options are either 'x86' or 'none'."
+      puts "  --sys-stk-grws-dwn    YES if the stack grows down on the target architecture"
+      puts "                        or NO otherwise."
+      puts "  --sys-os              The name of the operating system.  This can be"
+      puts "                        anything; it's used for constructing the system name"
+      puts "                        only."
+      puts "  --sys-osflavor        The flavor of the operating system.  Possible options"
+      puts "                        are POSIX or RTEMS."
+      puts "  --sys-sync-type       How to do synchronization.  Possible options are"
+      puts "                        x86-gcc, ppc-gcc, gcc-intrinsic, or rtems."
+      puts "  --sys-ptrsize         The size of pointers in bytes."
+      puts "  --sys-endianness      The system endianness, either BIG or LITTLE."
+      puts "  --sys-log-pagesize    The base-2 logarithm of the page size in bytes."
+      puts "  --sys-cc              The command to use to run the C compiler."
+      puts "  --sys-make            The command to use to run 'make'."
+      puts "  --sys-debug-cflags    The set of CFLAGS to use to enable debugging."
+      puts "  --sys-opt-cflags      The set of CFLAGS to use to enable optimization."
+      puts "  --sys-size-cflags     The set of CFLAGS to add to opt-cflags to optimize for"
+      puts "                        size."
+      puts "  --sys-arch-cflags     The set of CFLAGS that are specific to the"
+      puts "                        architecture.  This is typically something like -m32."
+      puts "  --sys-warn-cflags     The set of CFLAGS to use to enable more warnings."
+      puts "  --sys-nowarn-cflags   The set of CFLAGS to use to disable all warnings."
+      puts "  --sys-cppflags        The CPPFLAGS to use."
+      puts "  --sys-ldflags         The LDFLAGS to use."
+      puts "  --sys-libs            The LIBS to use."
+      puts "  --sys-noinline-attr   The no-inline attribute to use.  This is either the"
+      puts "                        empty string or '__attribute__((noinline))'."
+      puts "  --sys-jni-prefix      The prefix to use for JNI library names."
+      puts "  --sys-jni-suffix      The suffix to use for JNI library names."
+      puts "  --home                Print the Fiji VM home directory."
+      puts "  --cc                  Print the C compiler command used for compiling and"
+      puts "                        linking."
+      puts "  --cppflags            Print the CPPFLAGS that fivmc will use to compile C"
+      puts "                        code.  Note that some of the CPPFLAGS - especially ones"
+      puts "                        dealing with runtime features - are sensitive to fivmc"
+      puts "                        command-line options, and thus may change from one use"
+      puts "                        of fivmc to the next."
+      puts "  --cflags              Print The CFLAGS that fivmc will use to compile C code."
+      puts "  --cxxflags            Print The CXXFLAGS that fivmc would use to compile C++"
+      puts "                        code (currently fivmc does not compile C++ code; but"
+      puts "                        this is handy if you plan on linking C++ code to fivm"
+      puts "                        executables)."
+      puts "  --ldflags             Print the LDFLAGS that fivmc will use to link C code."
+      puts "  --32-works            Print whether or not 32-bit support is available."
+      puts "  --64-works            Print whether or not 64-bit support is available."
+      puts "  --cl-works            Print whether or not class loading is available."
+      puts "  --libs                Print the LIBS that fivmc will use to link C code."
+      puts "  --jni-prefix          Print the JNI prefix."
+      puts "  --jni-suffix          Print the JNI suffix."
+      puts "  --if-32-works         If 32-bit support works, run the following command and"
+      puts "                        exit.  Otherwise just exit immediately."
+      puts "  --if-64-works         If 64-bit support works, run the following command and"
+      puts "                        exit.  Otherwise just exit immediately."
+      puts "  --if-cl-works         If class loading support works, run the following"
+      puts "                        command and exit.  Otherwise just exit immediately."
+      puts "  --std-rc              Replace the default rc file with the given one.  This"
+      puts "                        option MUST appear before all other options in order"
+      puts "                        to be recognized."
+      puts "  --no-srd-rc           Do not read a default rc file.  This option MUST"
+      puts "                        appear before all other options in order to be"
+      puts "                        recognized."
+      puts "  --dollar-zero         Change the name by which the compiler identifies"
+      puts "                        itself."
+    end
+    puts 
+    puts "Example #1: #{$dollarZero} -o hello hello.jar"
+    puts
+    puts "This will compile the classes in hello.jar, starting with whatever class in"
+    puts "hello.jar has a main(String[]) method.  If there is more than one such class,"
+    puts "you'll get an error.  Any standard library classes that are required will be"
+    puts "pulled in automatically.  The result will be an executable named \"hello\"."
+    puts "The E0CFA analysis will be used, with the default reflection database.  Note"
+    puts "that compilation will be silent (unless you use --verbose), and will only"
+    puts "use one processor (unless you use --jobs)."
+    puts
+    puts "Example #2: #{$dollarZero} -m hello -o hello hello.jar -A CHA -j 2 --no-big-inline"
+    puts
+    puts "Same as example #1, except that we've specified the main class manually,"
+    puts "we'll use CHA as the analysis, use two processors to compile, and don't"
+    puts "inline large methods."
+    puts
+    puts "For additional information, use --more-help." unless addl
+    exit 0
+  end
+
+  def noArgs
+    $stderr.puts "#{$dollarZero}: not enough arguments"
+    $stderr.puts
+    $stderr.puts "You must specify the name of the binary to produce (use --output or -o"
+    $stderr.puts "option) and at least one Jar file to include in compilation.  Unless you"
+    $stderr.puts "want fivmc to look for the main method, you should specify it (using the"
+    $stderr.puts "--main or -m option).  No need to specify standard library Jar files on"
+    $stderr.puts "the command line."
+    $stderr.puts
+    $stderr.puts "Example: #{$dollarZero} -o hello hello.jar"
+    $stderr.puts
+    fail("not enough arguments")
+  end
+  
+  if ($homedir+"REVISION").exist?
+    File.open($homedir+"REVISION") {
+      | inp |
+      $version+="-r"+inp.readline.chomp
+    }
+  else
+    mychdir($homedir) {
+      mypiperead("sh "+(Pathname.new("localbin")+"hgversion").to_s.inspect) {
+        | inp |
+        $version+="-r"+inp.readline.chomp
+      }
+    }
+  end
+
+  class Roots
+    def initialize
+      @called={}
+      @dynCalled={}
+      @accessed={}
+      @alloced={}
+      @used={}
+    end
+    def call(name)
+      @called[name]=true
+    end
+    def dynCall(name)
+      @dynCalled[name]=true
+    end
+    def access(name)
+      @accessed[name]=true
+    end
+    def alloc(name)
+      @alloced[name]=true
+    end
+    def use(name)
+      @used[name]=true
+    end
+    def doKind(kind,name)
+      kind=kind.downcase
+      if kind=="used" or kind=="use"
+        use(name)
+      elsif kind=="accessed" or kind=="access"
+        access(name)
+      elsif kind=="called" or kind=="call"
+        call(name)
+      elsif kind=="dynamically called" or kind=="dynamically call" or
+          kind=="dyncall" or kind=="dyncalled"
+        dynCall(name)
+      elsif kind=="alloced" or kind=="alloc" or kind=="allocated" or
+          kind=="allocate"
+        alloc(name)
+      else
+        if $verbosity>=1
+          $stderr.puts "Warning: ignoring reflect kind: #{kind}"
+        end
+      end
+    end
+    def called
+      @called.keys
+    end
+    def dynCalled
+      @dynCalled.keys
+    end
+    def accessed
+      @accessed.keys
+    end
+    def alloced
+      @alloced.keys
+    end
+    def used
+      @used.keys
+    end
+    def generateConf(cause)
+      result=[]
+      ["called", "dynCalled", "accessed", "alloced", "used"].each {
+        | kind |
+        self.method(kind).call.each {
+          | target |
+          map={}
+          map[:kind]=kind
+          map[:target]=target
+          if cause
+            map[:cause]=cause
+          end
+          result << map
+        }
+      }
+      result
+    end
+  end
+
+  class RootsRepo
+    def initialize
+      @root=Roots.new
+      @map={}
+    end
+    def withCause(cause)
+      if !cause
+        @root
+      else
+        result=@map[cause]
+        unless result
+          result=@map[cause]=Roots.new
+        end
+        result
+      end
+    end
+    def generateConf
+      result=[]
+      result+=@root.generateConf(nil)
+      @map.each_pair {
+        | cause, roots |
+        result+=roots.generateConf(cause)
+      }
+      result
+    end
+    def parse(file)
+      File.open(file) {
+        | inp |
+        inp.each_line {
+          | line |
+	  # FIXME something is fishy here:
+          if line =~ /(L[_$a-zA-Z0-9\/;()\[<>]+) (used|accessed|called|dynamically called|alloced) (L[_$a-zA-Z0-9\/;()\[<>]+)/
+            withCause($1).doKind($2,$3)
+          elsif line =~ /(used|accessed|called|dynamically called|alloced) (L[_$a-zA-Z0-9\/;()\[<>]+)/
+            @root.doKind($2,$3)
+          else
+            if $verbosity>=1
+              $stderr.puts "Warning: ignoring line: #{line}"
+            end
+          end
+        }
+      }
+    end
+  end
+  
+  class TargetNotFound < Exception
+    attr_reader :target
+    
+    def initialize(target)
+      @target=target
+    end
+  end
+
+  class TargetNotUnique < Exception
+    attr_reader :target
+    attr_reader :aliases
+    
+    def initialize(target,aliases)
+      @target=target
+      @aliases=aliases
+    end
+  end
+  
+  def findTarget(target)
+    if ($libdir+"targets"+target).directory? and
+        ($libdir+"targets"+target+"target.conf").file?
+      return target
+    else
+      found=[]
+      Dir.open($libdir+"targets") {
+        | dir |
+        dir.each {
+          | entry |
+          next if entry =~ /^\./
+          next unless ($libdir+"targets"+entry).directory?
+          next unless ($libdir+"targets"+entry+"target.conf").file?
+          if entry.upcase==target.upcase
+            found << entry
+          end
+          FijiConfig::parse(IO::read($libdir+"targets"+entry+"target.conf"))["aliases"].each {
+            | theAlias |
+            if theAlias.upcase==target.upcase
+              found << entry
+            end
+          }
+        }
+      }
+      if found.size>1
+        raise TargetNotUnique.new(target,found)
+      end
+      if found.size==1
+        return found[0]
+      end
+    end
+    raise TargetNotFound.new(target)
+  end
+  
+  def setTargetImpl(target)
+    target=findTarget(target)
+    $stdRC=$libdir+"targets"+target+"fivmcrc"
+    $target=target
+  end
+  
+  def getTargets
+    Dir.open($libdir+"targets") {
+      | dir |
+      targets={}
+      dir.each {
+        | entry |
+        next if entry =~ /^\./
+        next if entry == "null"
+        next unless ($libdir+"targets"+entry).directory?
+        next unless ($libdir+"targets"+entry+"target.conf").file?
+        if targets[entry]
+          targets[entry]+=1
+        else
+          targets[entry]=1
+        end
+        FijiConfig::parse(IO::read($libdir+"targets"+entry+"target.conf"))["aliases"].each {
+          | theAlias |
+          if targets[theAlias]
+            targets[theAlias]+=1
+          else
+            targets[theAlias]=1
+          end
+        }
+      }
+      
+      # this skips over duplicate entries.  except, it also skips if a target is duplicated
+      # by an alias.  that should be fixed.  so, umm, FIXME?
+      
+      list=[]
+      targets.each_pair {
+        | key, val |
+        if val==1
+          list << key
+        end
+      }
+      return list.sort
+    }
+  end
+  
+  def listTargets(outp)
+    getTargets.each {
+      | entry |
+      outp.puts "#{entry}"
+    }
+  end
+
+  def setTarget(target)
+    begin
+      setTargetImpl(target)
+    rescue Exception => e
+      $stderr.puts "#{$dollarZero}: wrong argument to --target: #{target}"
+      $stderr.puts
+      if e.is_a? TargetNotFound
+        $stderr.puts "There is no target with the alias #{e.target}."
+        $stderr.puts
+      end
+      if e.is_a? TargetNotUnique
+        $stderr.puts "There are multiple targets with the alias #{e.target}.  Please"
+        $stderr.puts "select one of them directly:"
+        $stderr.puts
+        e.aliases.each {
+          | entry |
+          $stderr.puts entry
+        }
+      else
+        $stderr.puts "The possible arguments for --target are:"
+        $stderr.puts
+        listTargets($stderr)
+      end
+      $stderr.puts
+      fail "Invalid argument for command-line option"
+    end
+  end
+  
+  def hasAltPtrSize(ptrSize)
+    begin
+      if $target=~/-32$/ or $target=~/-64$/
+        findTarget($~.pre_match+"-"+(ptrSize.to_s))
+      else
+        return false
+      end
+    rescue TargetNotFound
+      return false
+    end
+  end
+  
+  def setAltPtrSize(ptrSize)
+    begin
+      if $target=~/-32$/ or $target=~/-64$/
+        setTargetImpl($~.pre_match+"-"+(ptrSize.to_s))
+      else
+        raise
+      end
+    rescue
+      $stderr.puts "#{$dollarZero}: could not find #{ptrSize}-bit version of target #{$target}"
+      $stderr.puts
+      $stderr.puts "To change the pointer size, please select a target directly using"
+      $stderr.puts "--target.  The possible arguments for --target are:"
+      $stderr.puts
+      listTargets($stderr)
+      $stderr.puts
+      fail "Failed to change pointer size"
+    end
+  end
+
+  def boolArg(argName,arg)
+    if arg.upcase=="YES" || arg.upcase=="TRUE" || arg.upcase=="T"
+      true
+    elsif arg.upcase=="NO" || arg.upcase=="FALSE" || arg.upcase=="F"
+      false
+    else
+      $stderr.puts "#{$dollarZero}: Expected a boolean (YES or NO) value for #{argName}."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+  end
+  
+  def intArg(argName,arg,min,max)
+    result=arg.to_i
+    unless result.to_s == arg
+      $stderr.puts "#{$dollarZero}: Expected an integer value for #{argName}."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+    if min and result<min
+      $stderr.puts "#{$dollarZero}: Argument for #{argName} cannot be smaller than #{min}."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+    if max and result>max
+      $stderr.puts "#{$dollarZero}: Argument for #{argName} cannot be greater than #{max}."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+    result
+  end
+
+  def sizeArg(argName,arg)
+    mult=1
+    if arg=~/K$/i
+      mult=2**10
+      arg=arg.chop
+    elsif arg=~/M$/i
+      mult=2**20
+      arg=arg.chop
+    elsif arg=~/G$/i
+      mult=2**30
+      arg=arg.chop
+    end
+    result=arg.to_i
+    unless result.to_s == arg
+      $stderr.puts "#{$dollarZero}: Expected a size value for #{argName}."
+      $stderr.puts
+      $stderr.puts "A size value is a non-negative integer, which may be suffixed by K, M, or"
+      $stderr.puts "G to indicate kilobytes, megabytes, or gigabytes, respectively."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+    if result<0
+      $stderr.puts "#{$dollarZero}: Argument for #{argName} cannot be negative."
+      $stderr.puts
+      fail("Invalid argument for command-line option")
+    end
+    result*mult
+  end
+
+  def escapeForShell(str)
+    result=''
+    if $isWindows
+      result+='"'
+      str.to_s.each_byte {
+        | b |
+        b=b.chr
+        if b=='"'
+          result+='""'
+        elsif b=='%'
+          result+='%%'
+        else
+          result+=b
+        end
+      }
+      result+='"'
+    else
+      str.to_s.inspect.each_byte {
+        | b |
+        b=b.chr
+        if b=="$"
+          result+="\\"
+        end
+        result+=b
+      }
+    end
+    result
+  end
+
+  def escapeForMake(str)
+    result=''
+    str.to_s.inspect.each_byte {
+      | b |
+      b=b.chr
+      if b=="#"
+        result+="\\"
+      elsif b=="$"
+        result+="\\$"
+      end
+      result+=b
+    }
+    result
+  end
+  
+  def escapeForShellAsNecessary(str)
+    if str !~ /\s/ and str !~ /[;]/ and escapeForShell(str)[1..-2]==str
+      str
+    else
+      escapeForShell(str)
+    end
+  end
+  
+  def escapeForSymbol(str)
+    def hex(num)
+      "%x"%num
+    end
+    
+    result=''
+    str.to_s.each_byte {
+      | b |
+      c=b.chr
+      if c=~/[a-z0-9]/i
+        result+=c
+      else
+        result+="_#{hex(b/16/16/16%16)}#{hex(b/16/16%16)}#{hex(b/16%16)}#{hex(b%16)}"
+      end
+    }
+    result
+  end
+  
+  # save the command string before any options processing
+  $cmdStr=([$cmdDollarZero.to_s]+ARGV).collect{|x| escapeForShellAsNecessary(x)}.join(' ')
+
+  opts=GetoptLong.new([ '--build', '-b', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--payload', '-p', GetoptLong::NO_ARGUMENT ],
+                      [ '--phase-timings', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--main', '-m', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--main-literal', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--config', '-c', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--skip-config', GetoptLong::NO_ARGUMENT ],
+                      [ '--java-config', GetoptLong::NO_ARGUMENT ],
+                      [ '--std-rc', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--no-std-rc', GetoptLong::NO_ARGUMENT ],
+                      [ '--verbosity', '-v', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sanity-check', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--library', '-L', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--analysis', '-A', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--cl', GetoptLong::NO_ARGUMENT ],
+                      [ '--gc', '-G', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--64', GetoptLong::NO_ARGUMENT ],
+                      [ '--32', GetoptLong::NO_ARGUMENT ],
+                      [ '--rt-library', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--scope-style', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--scj-safelet', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--link-payload', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--specialize-runtime', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--one-shot-payload', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--scj', GetoptLong::NO_ARGUMENT ],
+                      [ '--backend', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--code-repo', GetoptLong::REQUIRED_ARGUMENT ], 
+                      [ '--0-log-access', GetoptLong::NO_ARGUMENT ],
+                      [ '--0-preload', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--0-preload-internal', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--noisy-method', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--c-file-size', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--host-vm-cmd', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--host-vm-args', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--add-host-vm-args', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--host-jar-cmd', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--no-regen', GetoptLong::NO_ARGUMENT ],
+                      [ '--types-only', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-make', GetoptLong::NO_ARGUMENT ],
+                      [ '--c-prefix', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--build-dir', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--del-build-dir', GetoptLong::NO_ARGUMENT ],
+                      [ '--output', '-o', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--no-extra-jars', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-default-jars', GetoptLong::NO_ARGUMENT ],
+                      [ '--jobs', '-j', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--reflect', '-R', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--make-clean', GetoptLong::NO_ARGUMENT],
+                      [ '--no-opt', GetoptLong::NO_ARGUMENT],
+                      [ '--c-opt', GetoptLong::REQUIRED_ARGUMENT],
+                      [ '--no-c-opt', GetoptLong::NO_ARGUMENT],
+                      [ '--no-default-reflect', GetoptLong::NO_ARGUMENT], 
+                      [ '--rt-verbosity-limit', GetoptLong::REQUIRED_ARGUMENT],
+                      [ '--rt-assertions', GetoptLong::REQUIRED_ARGUMENT],
+                      [ '--rt-flowlog-enable', GetoptLong::NO_ARGUMENT],
+                      [ '--rt-flowlog-bufsize', GetoptLong::REQUIRED_ARGUMENT],
+                      [ '--rt-flowlog-nosmall', GetoptLong::NO_ARGUMENT ],
+                      [ '--rt-flowlog-fat-events', GetoptLong::NO_ARGUMENT ],
+                      [ '--header-model', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--object-model', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--force-arraylets', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-inline', GetoptLong::NO_ARGUMENT ],
+                      [ '--late-rce', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--forward-motion', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--rce', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--rce-distance', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--opt-cm-barriers', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--filt-cm-barriers', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--i-max-fixpoint', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--i-max-recurse', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--i-max-caller-blocks', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--om-blocks-max', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--i-max-size', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--reduce-vars', GetoptLong::NO_ARGUMENT ],
+                      [ '--more-opt', '-O', GetoptLong::NO_ARGUMENT ],
+                      [ '--opt-size', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-big-inline', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-implicit-inline', GetoptLong::NO_ARGUMENT ],
+                      [ '--more-opt-size', GetoptLong::NO_ARGUMENT ],
+                      [ '--quickly', GetoptLong::NO_ARGUMENT ],
+                      [ '--default-opt', GetoptLong::NO_ARGUMENT ],
+                      [ '--light-throw', GetoptLong::NO_ARGUMENT ],
+                      [ '--pollcheck-mode', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--pollcheck-budget', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--unroll-budget', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--peel-budget', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--p-checkinit', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-subtype', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-nullcheck', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-arraystore', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-arraybounds', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-checkdiv', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-invokes', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-monitor', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-monitor-heavy', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-gc', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-gc-heavy', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-stack-height', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-reflection', GetoptLong::NO_ARGUMENT ],
+                      [ '--p-all', GetoptLong::NO_ARGUMENT ],
+                      [ '--coverage', GetoptLong::NO_ARGUMENT ],
+                      [ '--c-debug', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--allow-c-inline', GetoptLong::NO_ARGUMENT ],
+                      [ '--rc', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--rc-internal', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--ignore-errors', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--ign-err-internal', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--dump-asm', GetoptLong::NO_ARGUMENT ],
+                      [ '--dump-call-graph', GetoptLong::NO_ARGUMENT ],
+                      [ '--target', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--type-epochs', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--patch-points', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--use-ctypes-info', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--indirect-god-givens', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--rt-search-root', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--track-direct-subs', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--env-sys-props', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--itable-compression', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--r-thr-stack-size', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--r-nanos-per-tick', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--r-ticks-per-slice', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--r-max-os-threads', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--r-int-stack-size', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--r-max-fds', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-arch', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-backend-arch', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-stk-grws-dwn', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--32-works', GetoptLong::NO_ARGUMENT ],
+                      [ '--64-works', GetoptLong::NO_ARGUMENT ],
+                      [ '--if-32-works', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--if-64-works', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--cl-works', GetoptLong::NO_ARGUMENT ],
+                      [ '--if-cl-works', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-sync-type', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-os', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-osflavor', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-ptrsize', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-endiannness', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-log-pagesize', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-cc', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-make', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-debug-cflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-opt-cflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-size-cflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-arch-cflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-warn-cflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-nowarn-cflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-cppflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-ldflags', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-libs', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-noinline-attr', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-jni-prefix', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sys-jni-suffix', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--jni-prefix', GetoptLong::NO_ARGUMENT ],
+                      [ '--jni-suffix', GetoptLong::NO_ARGUMENT ],
+                      [ '--scj-scope-backing', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-finalization', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-log-mark-traps', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-def-trigger', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-def-max-mem', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-debug', GetoptLong::NO_ARGUMENT ],
+                      [ '--g-self-man-mem', GetoptLong::NO_ARGUMENT ],
+                      [ '--g-heap-in-image', GetoptLong::NO_ARGUMENT ],
+                      [ '--g-thread-priority', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-pred-level', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-scoped-memory', GetoptLong::NO_ARGUMENT ],
+                      [ '--g-scope-checks', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-shared-scopes', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-def-immortal-mem', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-def-log', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-def-log-sync', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--max-threads', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--sa-size', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--static-jni', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-dyn-loading', GetoptLong::NO_ARGUMENT ],
+                      [ '--jni-on-load', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--link', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--link-internal', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--link-dynamic', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--link-dir', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--extra-include', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--extra-include-dir', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--home', GetoptLong::NO_ARGUMENT ],
+                      [ '--cc', GetoptLong::NO_ARGUMENT ],
+                      [ '--cppflags', GetoptLong::NO_ARGUMENT ],
+                      [ '--cflags', GetoptLong::NO_ARGUMENT ],
+                      [ '--cxxflags', GetoptLong::NO_ARGUMENT ],
+                      [ '--ldflags', GetoptLong::NO_ARGUMENT ],
+                      [ '--libs', GetoptLong::NO_ARGUMENT ],
+                      [ '--sys-name', GetoptLong::NO_ARGUMENT ],
+                      [ '--main-in-thread', GetoptLong::NO_ARGUMENT ],
+                      [ '--arith-helper', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--trace-exec', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--dumb-hash-code', GetoptLong::NO_ARGUMENT ],
+                      [ '--process-cmacros', GetoptLong::NO_ARGUMENT ],
+                      [ '--extract-ctypes', GetoptLong::NO_ARGUMENT ],
+                      [ '--ct-compute-offsets', GetoptLong::NO_ARGUMENT ],
+                      [ '--ct-incl-generated', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--cmacro-file', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--obj-loc-analysis', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--uniprocessor', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-scripts', GetoptLong::NO_ARGUMENT ],
+                      [ '--ref-map-opt', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--opt-pollcheck', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--g-black-stack', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--exclude-profiler', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-sigquit-debug', GetoptLong::NO_ARGUMENT ],
+                      [ '--lock-impl', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--lock-mode', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--parallel-c1', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--no-cat-rt-code', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-line-pragma', GetoptLong::NO_ARGUMENT ],
+                      [ '--internal-inst', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--all-barrier', GetoptLong::NO_ARGUMENT ],
+                      [ '--simple-comp', GetoptLong::NO_ARGUMENT ],
+                      [ '--nb-reg-alloc', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--nb-omit-fp', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--dollar-zero', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--file', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--boot-file', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--boot-file-override', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--version', GetoptLong::NO_ARGUMENT],
+                      [ '--help', '-h', GetoptLong::NO_ARGUMENT],
+                      [ '--more-help', GetoptLong::NO_ARGUMENT])
+
+  $java="java"
+  $jar="jar"
+  $main=nil
+  $sanityCheck=0
+  $verbosity=0
+  $vmargs="-Xms800M -Xmx800M"
+  $regen=true
+  $runMake=true
+  $scripts=true
+  $builddir=nil
+  $output=nil
+  $outputSym=nil
+  $noExtraJars=false
+  $preprocessOnce=true
+  $classPreloadList=[]
+  $zeroLogAccess=false
+  $noisyMethods=[]
+  $noDefaultJars=false
+  $analysis="E0CFA"
+  $jobs=nil
+  $cFileSize=400
+  $makeClean=false
+  $noDefaultReflect=false
+  $rootsRepo=RootsRepo.new
+  $rtVerbosityLimit=nil
+  $reduceRuntimeVerbosity=false
+  $rtAssertions=true
+  $rtFlowLogging=false
+  $rtFlowLogBufsize=48
+  $rtFlowLogNoSmallInlines=false
+  $rtFlowLogFatEvents=false
+  $maxInlineFixpoint=2
+  $maxInlineRecurse=0
+  $maxInlineCallerBlocks=1000
+  $omBlocksMax=4000
+  $maxInlineableSize=50
+  $doInline=true
+  $dumpAsm=false
+  $profileCheckInit=false
+  $profileSubtype=false
+  $profileNullCheck=false
+  $profileArrayStore=false
+  $profileArrayBounds=false
+  $profileCheckDiv=false
+  $profileInvokes=false
+  $spcEnabled=false
+  $profileMonitor=false
+  $profileGC=false
+  $profileReflection=false
+  $profileStackHeight=false
+  $stdRC=nil
+  $sysArch=nil
+  $sysStackGrowsDown=true
+  $target=""
+  $sysSyncType="gcc-intrinsic"
+  $sysOS="Darwin"
+  $sysOSFlavor="POSIX"
+  $sysPtrSize=4
+  $sysEndianness="LITTLE"
+  $sysLogPagesize=12
+  $sysCC="gcc"
+  $sysMake="make"
+  $sysDebugCflags="-g"
+  $sysSizeCflags="-Os"
+  $sysOptCflags="-O3 -fno-strict-aliasing -fno-optimize-sibling-calls -fomit-frame-pointer -momit-leaf-frame-pointer -falign-loops -mdynamic-no-pic"
+  $sysArchCflags="-m32"
+  $sysWarnCflags="-W"
+  $sysNowarnCflags="-w"
+  $sysCppflags="-D_REENTRANT"
+  $sysLdflags="-m32"
+  $sysLibs="-liconv"
+  $sysNoinline="__attribute__((noinline))"
+  $sysJniPrefix="lib"
+  $sysJniSuffix=".so"
+  $noinline=nil
+  $coverage=false
+  $throwDebug=true
+  $reduceVars=false
+  $pollcheckMode="PORTABLE"
+  $pollcheckBudget=200
+  $unrollBudget=10
+  $peelBudget=100
+  $gc=nil
+  $gcFinalization=true
+  $gcDefTrigger=nil
+  $gcDefMaxMem=nil
+  $gcDefLog=false
+  $gcDefLogSync=false
+  $gcDebug=false
+  $gcSelfManageMem=false
+  $gcThreadPriority=false
+  $gcScopedMemory=false
+  $gcSharedScopes=true
+  $gcScopeChecks=true
+  $gcDefImmortalMem=100*1024
+  $dynLoading=true
+  $staticJNI=false
+  $link=[]
+  $linkDynamic=[]
+  $linkDir=[]
+  $jniOnLoad=[]
+  $extraInclude=[]
+  $extraIncludeDir=[]
+  $print64=false
+  $print32=false
+  $printCL=false
+  $printCC=false
+  $printCppflags=false
+  $printCflags=false
+  $printCxxflags=false
+  $printLdflags=false
+  $printLibs=false
+  $printSysName=false
+  $printHome=false
+  $printJniPrefix=false
+  $printJniSuffix=false
+  $mainInThread=nil
+  $arithHelpers=[]
+  $traceExec=''
+  $dumbHashCode=false
+  $headerModel="NARROW"
+  $objectModel="CONTIGUOUS"
+  $forceArraylets=false
+  $processCMacros=false
+  $parallelC1=true
+  $cmacroFile=nil
+  $library="FIJICORE"
+  $maxThreads=nil
+  $saSize=nil
+  $objLocAnalysis="FULL"
+  $uniprocessor=false
+  $doRefMapOpt=true
+  $optPollcheck=true
+  $blackStack=false
+  $includeProfiler=true
+  $sigquitDebug=true
+  $lockImpl="FAST"
+  $catRTCode=true
+  $linePragma=true
+  $internalInst=false
+  $allBarrier=false
+  $simpleComp=false
+  $rce=true
+  $lateRCE=true
+  $rceDistance=10000
+  $forwardMotion=0
+  $bootFileList=[]
+  $bootFileOverrideList=[]
+  $fileList=[]
+  $gcPredLevel='C'
+  $debugCflagsEnabled=true
+  $rtLibrary='NONE'
+  $scopeStyle='SCJ'
+  $scjSafelet=''
+  $optCflagsMode=:speed
+  $buildType='EXE'
+  $linkedPayloads=[]
+  $specializeRuntime=nil
+  $oneShotPayload=nil
+  $dumpCallGraph=false
+  $configMode=:java
+  $configFile=nil
+  $rtThreadStackSize=nil
+  $rtNanosPerTick=nil
+  $rtTicksPerTimeslice=nil
+  $rtMaxOSThreads=nil
+  $rtInterruptStackSize=nil
+  $rtMaxFileDescriptors=nil
+  $typeEpochs=false
+  $closedPatchPoints=true
+  $trackDirectSubs=false
+  $itableCompression=true
+  $typesOnly=false
+  $classloading=false
+  $ignoreErrors=[]
+  $backendArch=nil
+  $scjScopeBacking=1024*1024
+  $delBuildDir=false
+  $rtSearchRoot=false
+  $optCMBarriers=false
+  $filtCMBarriers=false
+  $envSysProps=false
+  $extractCTypes=false
+  $computeOffsets=false
+  $ctIncludeGenerated=false
+  $useCTypesInfo=false
+  $phaseTimings=false
+  $gcLogMarkTraps=false
+  $indirectGodGivens=false
+  $nativeBackend=false
+  $regAlloc="ITERATIVE_REGISTER_COALESCING"
+  $doRegCoalescing=true
+  $omitFramePointer=false
+  
+  def enableClassLoading
+    if $analysis != "OPEN" and $analysis != "O0CFA"
+      $analysis="O0CFA"
+      $rtSearchRoot=true
+    end
+    $closedPatchPoints=false
+    $typeEpochs=true
+    $itableCompression=false
+    $trackDirectSubs=true
+    $classloading=true
+    if $objLocAnalysis=="FULL"
+      $objLocAnalysis="TRUSTED"
+    end
+    $envSysProps=true
+  end
+  
+  def processOpt(opt, arg)
+    $stderr.puts "#{opt} => #{arg.inspect}" if $verbosity>=2
+    case opt
+    when '--file'
+      $fileList << Pathname.new(arg)
+    when /^--b/
+      case opt
+      when '--boot-file'
+        $bootFileList << Pathname.new(arg)
+      when '--boot-file-override'
+        $bootFileOverrideList << Pathname.new(arg)
+      when '--build-dir'
+        $builddir=Pathname.new(arg)
+      when '--build'
+        $buildType=arg.upcase
+      when '--backend'
+        if arg.upcase=="C"
+          $nativeBackend=false
+          $useCTypesInfo=false
+          $indirectGodGivens=false
+        elsif arg.upcase=="NATIVE"
+          $nativeBackend=true
+          $useCTypesInfo=true
+          $indirectGodGivens=true
+        else
+          $stderr.puts "#{$dollarZero}: unrecognized value for --backend."
+          $stderr.puts
+          $stderr.puts "Valid arguments for --backend are C or NATIVE."
+          $stderr.puts
+          fail("Invalid argument for command-line option")
+        end
+      else return false
+      end
+    when '--dollar-zero'
+      if false
+        $dollarZero=arg
+        # reset the $cmdStr
+        # FIXME - this is borked
+        #$cmdStr=([$dollarZero]+ARGV).collect{|x| escapeForShellAsNecessary(x)}.join(' ')
+      end
+    when '--del-build-dir'
+      $delBuildDir=true
+    when /^--m/
+      case opt
+      when '--main'
+        $main=arg.gsub(/\./,'/')
+      when '--main-literal'
+        $main=arg
+      when '--max-threads'
+        $maxThreads=intArg(opt,arg,1,nil)
+      when '--more-opt'
+        $doInline=true
+        $omitFramePointer=true
+        $includeProfiler=true
+        $sigquitDebug=true
+        $maxInlineFixpoint=3
+        $maxInlineableSize=100
+        $reduceRuntimeVerbosity=true
+        $rtAssertions=false
+        $debugCflagsEnabled=false
+        $lateRCE=true
+        $rce=true
+        $regAlloc="ITERATIVE_REGISTER_COALESCING"
+        $unrollBudget=30
+        $peelBudget=100
+        $optCflagsMode=:speed
+      when '--more-opt-size'
+        $doInline=true
+        $omitFramePointer=true
+        $reduceRuntimeVerbosity=true
+        $rtAssertions=false
+        $debugCflagsEnabled=false
+        $maxInlineFixpoint=0
+        $maxInlineableSize=50
+        $includeProfiler=false
+        $sigquitDebug=false
+        $unrollBudget=0
+        $regAlloc="ITERATIVE_REGISTER_COALESCING"
+        $peelBudget=40
+        $rce=true
+        $lateRCE=true
+        $optCflagsMode=:size
+      when '--make-clean'
+        $makeClean=true
+      when '--main-in-thread'
+        $mainInThread=boolArg(opt,arg)
+      when '--more-help'
+        usage(true)
+      else return false
+      end
+    when /^--c/
+      case opt
+      when '--ct-compute-offsets'
+        $computeOffsets=true
+      when '--ct-incl-generated'
+        $ctIncludeGenerated=boolArg(opt,arg)
+      when '--c-prefix'
+        $outputSym=arg
+      when '--cl'
+        enableClassLoading
+      when '--cl-works'
+        $printCL=true
+      when '--config'
+        $configMode=:file
+        $configFile=arg
+      when '--c-file-size'
+        $cFileSize=intArg(opt,arg,0,nil)
+      when '--code-repo'
+        if arg.downcase=="cache"
+          $preprocessOnce=true
+        elsif arg.downcase=="disk"
+          $preprocessOnce=false
+        else
+          $stderr.puts "#{$dollarZero}: wrong argument to --code-repo: #{arg.upcase}"
+          $stderr.puts
+          $stderr.puts "The possible arguments for --code-repo are CACHE or DISK."
+          $stderr.puts
+          fail("invalid argument for command-line option")
+        end
+      when '--c-opt'
+        if arg.upcase=='SPEED'
+          $optCflagsMode=:speed
+        elsif arg.upcase=='SIZE'
+          $optCflagsMode=:size
+        elsif arg.upcase=='NONE'
+          $optCflagsMode=:none
+        else
+          $stderr.puts "#{$dollarZero}: Expected one of: SPEED, SIZE, or NONE for --c-opt"
+          $stderr.puts
+          fail("Invalid argument for command-line option")
+        end
+      when '--c-debug'
+        $debugCflagsEnabled=boolArg(opt,arg)
+      when '--coverage'
+        $coverage=true
+      when '--cmacro-file'
+        $cmacroFile = $libdir+arg
+      when '--cc'
+        $printCC=true
+      when '--cppflags'
+        $printCppflags=true
+      when '--cflags'
+        $printCflags=true
+      when '--cxxflags'
+        $printCxxflags=true
+      else return false
+      end
+    when '--skip-config'
+      $configMode=:none
+    when '--java-config'
+      $configMode=:java
+    when '--jni-prefix'
+      $printJniPrefix=true
+    when '--jni-suffix'
+      $printJniSuffix=true
+    when '--output'
+      $output=Pathname.new(arg)
+    when '--opt-cm-barriers'
+      if arg.upcase=="YES" || arg.upcase=="TRUE" || arg.upcase=="T"
+        $optCMBarriers=true
+      elsif arg.upcase=="CHECKED" || arg.upcase=="CHECK"
+        $optCMBarriers=:checked
+      elsif arg.upcase=="AGGRESSIVE" || arg.upcase=="HEAVY"
+        $optCMBarriers=:aggressive
+      elsif arg.upcase=="CHECKED_AGGRESSIVE" || arg.upcase=="CHECK_AGGRESSIVE" ||
+          arg.upcase=="CHECKED_HEAVY" || arg.upcase=="CHECK_HEAVY"
+        $optCMBarriers=:checked_aggressive
+      elsif arg.upcase=="NO" || arg.upcase=="FALSE" || arg.upcase=="F"
+        $optCMBarriers=false
+      else
+        $stderr.puts "#{$dollarZero}: Expected one of NO, YES, AGGRESSIVE, CHECKED, or CHECKED_AGGRESSIVE for --opt-cm-barriers."
+        $stderr.puts
+        fail("Invalid argument for command-line option")
+      end
+    when '--filt-cm-barriers'
+      $filtCMBarriers=boolArg(opt,arg)
+    when '--verbosity'
+      $verbosity=intArg(opt,arg,0,100)
+    when '--sanity-check'
+      $sanityCheck=intArg(opt,arg,0,2)
+    when '--library'
+      $library=arg.upcase
+    when '--link-payload'
+      $linkedPayloads << arg
+    when '--specialize-runtime'
+      $specializeRuntime=boolArg(opt,arg)
+    when '--one-shot-payload'
+      $oneShotPayload=boolArg(opt,arg)
+    when '--analysis'
+      $analysis=arg.upcase
+      if $analysis=="OPEN" or $analysis=="O0CFA"
+        enableClassLoading
+      end
+      if $analysis=="OPEN"
+        $rtSearchRoot=false
+      elsif $analysis=="O0CFA"
+        $rtSearchRoot=true
+      end
+    when '--obj-loc-analysis'
+      $objLocAnalysis=arg.upcase
+    when /^--g/
+      case opt
+      when '--g-log-mark-traps'
+        $gcLogMarkTraps=boolArg(opt,arg)
+      when '--g-finalization'
+        $gcFinalization=boolArg(opt,arg)
+      when '--gc'
+        $gc=arg.upcase
+        if $gc=="HF"
+          $objectModel="FRAGMENTED"
+          $gcSelfManageMem=true
+        end
+      when '--g-def-log'
+        $gcDefLog=boolArg(opt,arg)
+      when '--g-def-log-sync'
+        $gcDefLogSync=boolArg(opt,arg)
+      when '--g-def-trigger'
+        if $gc and $gc=="NONE"
+          $stderr.puts "#{$dollarZero}: warning: --g-def-trigger ignored if you use --gc NONE"
+        end
+        $gcDefTrigger=sizeArg(opt,arg)
+      when '--g-def-max-mem'
+        if $gc and $gc=="NONE"
+          $stderr.puts "#{$dollarZero}: warning: --g-def-max-mem ignored if you use --gc NONE"
+        end
+        $gcDefMaxMem=sizeArg(opt,arg)
+      when '--g-debug'
+        if $gc and $gc=="NONE"
+          $stderr.puts "#{$dollarZero}: warning: --g-def-debug ignored if you use --gc NONE"
+        end
+        $gcDebug=true
+      when '--g-self-man-mem'
+        $gcSelfManageMem=true
+      when '--g-black-stack'
+        $blackStack=boolArg(opt,arg)
+      when '--g-thread-priority'
+        $gcThreadPriority=arg
+      when '--g-pred-level'
+        $gcPredLevel=arg.upcase
+      when '--g-scoped-memory'
+        $gcScopedMemory=true
+        $objLocAnalysis='SCJ'
+      when '--g-scope-checks'
+        $gcScopeChecks=boolArg(opt,arg)
+      when '--g-shared-scopes'
+        $gcSharedScopes=boolArg(opt,arg)
+      when '--g-def-immortal-mem'
+        $gcDefImmortalMem=sizeArg(opt,arg)
+      else return false
+      end
+    when '--64'
+      raise "cannot use --64 in rc scripts"
+    when '--rt-library'
+      $rtLibrary=arg.upcase
+      case $rtLibrary
+      when 'NONE'
+        # nop
+      when 'SCJ'
+        $gc='NONE'
+        $gcScopedMemory=true
+        $objLocAnalysis='SCJ'
+        $primordialRealtime=true
+        $scopeStyle='SCJ'
+      when 'RTSJ'
+        $gcScopedMemory=true
+        $objLocAnalysis='SCJ'
+        $scopeStyle='RTSJ'
+      else
+        $stderr.puts "#{dollarZero}: wrong argument to --rt-library: #{$rtLibrary}"
+        $stderr.puts
+        $stderr.puts "The possible arguments for --rt-library are NONE, SCJ, or RTSJ."
+        $stderr.puts
+        fail("invalid argument for command-line option")
+      end
+    when '--rt-search-root'
+      $rtSearchRoot=boolArg(opt,arg)
+    when '--scj-scope-backing'
+      $scjScopeBacking=sizeArg(opt,arg)
+    when '--scj'
+      $rtLibrary='SCJ'
+      $gc='NONE'
+      $gcScopedMemory=true
+      $objLocAnalysis='SCJ'
+      $primordialRealtime=true
+    when '--scj-L0'
+      $rtLibrary='SCJ'
+      $gc='NONE'
+      $gcScopedMemory=true
+      $objLocAnalysis='SCJ'
+      $primordialRealtime=true
+      $scjLevel=0
+    when '--scope-style'
+      $scopeStyle=arg.upcase
+    when '--scj-safelet'
+      $scjSafelet=arg.gsub(/\./,'/')
+    when '--sa-size'
+      $saSize=sizeArg(opt,arg)
+    when '--lock-impl'
+      $lockImpl=arg.upcase
+    when '--lock-mode'
+      $lockImpl=arg.upcase
+    when '--host-vm-cmd'
+      $java=arg
+    when '--host-vm-args'
+      $vmargs=arg
+    when '--add-host-vm-args'
+      $vmargs+=" "+arg
+    when '--host-jar-cmd'
+      $jar=arg
+    when '--types-only'
+      $typesOnly=true
+    when /^--n/
+      case opt
+      when '--no-regen'
+        $regen=false
+      when '--no-make'
+        $runMake=false
+      when '--no-scripts'
+        $scripts=false
+      when '--no-extra-jars'
+        $noExtraJars=true
+      when '--no-default-jars'
+        $noDefaultJars=true
+      when '--nb-reg-alloc'
+        if arg.upcase=="IRC"
+          $regAlloc="ITERATIVE_REGISTER_COALESCING"
+        elsif arg.upcase=="LLS"
+          $regAlloc="LOCAL_LINEAR_SCAN"
+        else
+          $stderr.puts "#{$dollarZero}: unrecognized value for --nb-reg-alloc."
+          $stderr.puts
+          $stderr.puts "Valid arguments for --nb-reg-alloc are LLS or IRC."
+          $stderr.puts
+          fail("Invalid argument for command-line option")
+        end
+      when '--nb-omit-fp'
+        $omitFramePointer=boolArg(opt,arg)
+      when '--noisy-method'
+        $noisyMethods << arg
+        $parallelC1=false
+      when '--no-c-opt'
+        $optCflagsMode=:none
+      when '--no-opt'
+        $includeProfiler=true
+        $sigquitDebug=true
+        $maxInlineFixpoint=2
+        $maxInlineableSize=50
+        $reduceRuntimeVerbosity=false
+        $rtAssertions=true
+        $debugCflagsEnabled=true
+        $lateRCE=false
+        $rce=false
+        $unrollBudget=0
+        $peelBudget=0
+        $optCflagsMode=:none
+        $doInline=false
+        $omitFramePointer=false
+        $regAlloc="LOCAL_LINEAR_SCAN"
+      when '--no-inline'
+        $doInline=false
+      when '--no-big-inline'
+        $maxInlineFixpoint=0
+      when '--no-implicit-inline'
+        $maxInlineFixpoint=0
+        $maxInlineableSize=0
+      when '--no-default-reflect'
+        $noDefaultReflect=true
+      when '--no-sigquit-debug'
+        $sigquitDebug=false
+      when '--no-cat-rt-code'
+        $catRTCode=false
+      when '--no-line-pragma'
+        $linePragma=false
+      when '--no-dyn-loading'
+        $dynLoading=false
+      else return false
+      end
+    when '--0-log-access'
+      $zeroLogAccess=true
+    when '--0-preload'
+      # FIXME change this to use FijiConfig
+      File.open(arg,'r') {
+        | inp |
+        inp.each_line {
+          | line |
+          $classPreloadList << line.chomp
+        }
+      }
+    when '--0-preload-internal'
+      # FIXME change this to use FijiConfig
+      flnm=Pathname.new($homedir+arg)
+      if flnm.exist?
+        File.open(flnm,'r') {
+          | inp |
+          inp.each_line {
+            | line |
+            $classPreloadList << line.chomp
+          }
+        }
+      else
+        $stderr.puts "Warning: --0-preload-internal #{flnm} not found.  Ignoring."
+      end
+    when '--jobs'
+      $jobs=intArg(opt,arg,1,nil)
+    when /^--r-/
+      case opt
+      when '--r-thr-stack-size'
+        $rtThreadStackSize=intArg(opt,arg,4096,32*1024*1024)
+      when '--r-nanos-per-tick'
+        $rtNanosPerTick=intArg(opt,arg,1000,10*1000*1000*1000)
+      when '--r-ticks-per-slice'
+        $rtTicksPerTimeslice=intArg(opt,arg,1,10000)
+      when '--r-max-os-threads'
+        $rtMaxOSThreads=intArg(opt,arg,1,10000)
+      when '--r-int-stack-size'
+        $rtIntStackSize=intArg(opt,arg,4096,1024*1024)
+      when '--r-max-fds'
+        $rtMaxFileDescriptors=intArg(opt,arg,3,10000)
+      else
+        return false
+      end
+    when '--ref-map-opt'
+      $doRefMapOpt=boolArg(opt,arg)
+    when '--opt-pollcheck'
+      $optPollcheck=boolArg(opt,arg)
+    when '--reflect'
+      $rootsRepo.parse(arg)
+    when '--rce'
+      $rce=boolArg(opt,arg)
+      if not $rce
+        $lateRCE=false
+      end
+    when '--rce-distance'
+      $rceDistance=intArg(opt,arg,0,nil)
+    when '--late-rce'
+      $lateRCE=boolArg(opt,arg)
+      if not $rce and $lateRCE
+        $stderr.puts "#{$dollarZero}: cannot set --late-rce to YES if --rce is NO"
+        $stderr.puts
+        $stderr.puts "In order to use --late-rce YES, you must also use --rce YES"
+        $stderr.puts
+        fail("invalid combination of command-line options")
+      end
+    when '--forward-motion'
+      $forwardMotion=intArg(opt,arg,0,nil)
+    when '--i-max-fixpoint'
+      $maxInlineFixpoint=intArg(opt,arg,0,nil)
+    when '--i-max-recurse'
+      $maxInlineRecurse=intArg(opt,arg,0,nil)
+    when '--i-max-caller-blocks'
+      $maxInlineCallerBlocks=intArg(opt,arg,0,nil)
+    when '--om-blocks-max'
+      $omBlocksMax=intArg(opt,arg,0,nil)
+    when '--i-max-size'
+      $maxInlineableSize=intArg(opt,arg,0,nil)
+    when '--env-sys-props'
+      $envSysProps=boolArg(opt,arg)
+    when '--extract-ctypes'
+      $extractCTypes=true
+      # Required to fetch types that are flow logging-related
+      $rtFlowLogging=true
+    when '--itable-compression'
+      $itableCompression=boolArg(opt,arg)
+    when '--ignore-errors'
+      $ignoreErrors+=FijiConfig::parse(IO::read(arg))
+    when '--ign-err-internal'
+      $ignoreErrors+=FijiConfig::parse(IO::read(Pathname.new($homedir+arg)))
+    when '--light-throw'
+      $throwDebug=false
+    when '--reduce-vars'
+      $reduceVars=true
+    when '--opt-size'
+      $doInline=true
+      $omitFramePointer=true
+      $includeProfiler=true
+      $sigquitDebug=true
+      $maxInlineFixpoint=2
+      $maxInlineableSize=50
+      $reduceRuntimeVerbosity=true
+      $rtAssertions=false
+      $debugCflagsEnabled=false
+      $lateRCE=true
+      $rce=true
+      $unrollBudget=10
+      $regAlloc="ITERATIVE_REGISTER_COALESCING"
+      $peelBudget=100
+      $optCflagsMode=:speed
+    when '--quickly'
+      $doInline=true
+      $omitFramePointer=false
+      $reduceRuntimeVerbosity=false
+      $rtAssertions=true
+      $debugCflagsEnabled=true
+      $maxInlineFixpoint=0
+      $maxInlineableSize=50
+      $includeProfiler=true
+      $sigquitDebug=true
+      $unrollBudget=0
+      $peelBudget=40
+      $regAlloc="ITERATIVE_REGISTER_COALESCING"
+      $rce=false
+      $lateRCE=false
+      $optCflagsMode=:size
+    when '--default-opt'
+      $doInline=true
+      $omitFramePointer=false
+      $includeProfiler=true
+      $sigquitDebug=true
+      $maxInlineFixpoint=2
+      $maxInlineableSize=50
+      $reduceRuntimeVerbosity=false
+      $rtAssertions=true
+      $debugCflagsEnabled=true
+      $lateRCE=true
+      $rce=true
+      $regAlloc="ITERATIVE_REGISTER_COALESCING"
+      $unrollBudget=10
+      $peelBudget=100
+      $optCflagsMode=:speed
+    when '--header-model'
+      $headerModel=arg.upcase
+    when '--object-model'
+      $objectModel=arg.upcase
+    when '--force-arraylets'
+      $forceArraylets=true
+    when '--rt-verbosity-limit'
+      # FIXME: when this changes and we're doing --no-regen, force a clean rebuild.
+      $rtVerbosityLimit=intArg(opt,arg,0,nil)
+    when '--rt-assertions'
+      $rtAssertions=boolArg(opt,arg)
+    when '--rt-flowlog-enable'
+      $rtFlowLogging=true
+    when '--rt-flowlog-bufsize'
+      $rtFlowLogBufsize=intArg(opt,arg,32,nil)
+    when '--rt-flowlog-nosmall'
+      $rtFlowLogNoSmallInlines=true
+    when '--rt-flowlog-fat-events'
+      $rtFlowLogFatEvents=true
+    when '--allow-c-inline'
+      $noinline=""
+    when '--dump-asm'
+      $dumpAsm=true
+    when '--dump-call-graph'
+      $dumpCallGraph=true
+    when '--exclude-profiler'
+      $includeProfiler=false
+    when '--unroll-budget'
+      $unrollBudget=intArg(opt,arg,0,nil)
+    when '--use-ctypes-info'
+      $useCTypesInfo=boolArg(opt,arg)
+    when '--indirect-god-givens'
+      $indirectGodGivens=boolArg(opt,arg)
+    when /^--p/
+      case opt
+      when '--phase-timings'
+        $phaseTimings=boolArg(opt,arg)
+      when '--patch-points'
+        if arg.upcase=='CLOSED'
+          $closedPatchPoints=true
+        elsif arg.upcase=='OPEN'
+          $closedPatchPoints=false
+        else
+          $stderr.puts "#{$dollarZero}: Expected either OPEN or CLOSED for --patch-points"
+          $stderr.puts
+          fail("Invalid argument for command-line option")
+        end
+      when '--payload'
+        $buildType="PAYLOAD"
+      when '--peel-budget'
+        $peelBudget=intArg(opt,arg,0,nil)
+      when '--process-cmacros'
+        $processCMacros=true
+      when '--pollcheck-mode'
+        $pollcheckMode=arg.upcase
+      when '--pollcheck-budget'
+        $pollcheckBudget=intArg(opt,arg,1,nil)
+      when '--parallel-c1'
+        $parallelC1=boolArg(opt,arg)
+      when '--p-checkinit'
+        $profileCheckInit=true
+      when '--p-subtype'
+        $profileSubtype=true
+      when '--p-nullcheck'
+        $profileNullCheck=true
+      when '--p-arraystore'
+        $profileArrayStore=true
+      when '--p-arraybounds'
+        $profileArrayBounds=true
+      when '--p-checkdiv'
+        $profileCheckDiv=true
+      when '--p-invokes'
+        $profileInvokes=true
+      when '--p-monitor'
+        $profileMonitor=:light
+      when '--p-monitor-heavy'
+        $profileMonitor=:heavy
+      when '--p-gc'
+        $profileGC=:light
+      when '--p-gc-heavy'
+        $profileGC=:heavy
+      when '--p-stack-height'
+        $profileStackHeight=true
+      when '--p-reflection'
+        $profileReflection=true
+      when '--p-all'
+        $profileCheckInit=true
+        $profileSubtype=true
+        $profileNullCheck=true
+        $profileArrayStore=true
+        $profileArrayBounds=true
+        $profileCheckDiv=true
+        $profileInvokes=true
+        $profileMonitor=:heavy
+        $profileGC=:heavy
+        $profileReflection=true
+      else return false
+      end
+    when '--target'
+      raise "Cannot use --target in rc scripts"
+    when '--type-epochs'
+      $typeEpochs=boolArg(opt,arg)
+    when '--track-direct-subs'
+      $trackDirectSubs=boolArg(opt,arg)
+    when /^--sys/
+      case opt
+      when '--sys-arch'
+        $sysArch=arg
+      when '--sys-backend-arch'
+        if arg.upcase=='X86'
+          $backendArch='X86'
+        elsif arg.upcase=='NONE'
+          $backendArch=nil
+        else
+          $stderr.puts "#{$dollarZero}: wrong argument to --sys-backend-arch: #{arg}"
+          $stderr.puts
+          $stderr.puts "Valid arguments are either x86 or none."
+          $stderr.puts
+          fail("invalid argument for command-line option")
+        end
+      when '--sys-stk-grws-dwn'
+        $sysStackGrowsDown=boolArg(opt,arg)
+      when '--sys-sync-type'
+        $sysSyncType=arg.downcase
+      when '--sys-os'
+        $sysOS=arg
+      when '--sys-osflavor'
+        $sysOSFlavor=arg.upcase
+      when '--sys-ptrsize'
+        $sysPtrSize=intArg(opt,arg,1,nil)
+      when '--sys-endianness'
+        $sysEndianness=arg.upcase
+      when '--sys-log-pagesize'
+        $sysLogPagesize=intArg(opt,arg,0,nil)
+      when '--sys-cc'
+        $sysCC=arg
+      when '--sys-make'
+        $sysMake=arg
+      when '--sys-debug-cflags'
+        $sysDebugCflags=arg
+      when '--sys-size-cflags'
+        $sysSizeCflags=arg
+      when '--sys-opt-cflags'
+        $sysOptCflags=arg
+      when '--sys-arch-cflags'
+        $sysArchCflags=arg
+      when '--sys-warn-cflags'
+        $sysWarnCflags=arg
+      when '--sys-nowarn-cflags'
+        $sysNowarnCflags=arg
+      when '--sys-cppflags'
+        $sysCppflags=arg
+      when '--sys-ldflags'
+        $sysLdflags=arg
+      when '--sys-libs'
+        $sysLibs=arg
+      when '--sys-noinline-attr'
+        $sysNoinline=arg
+      when '--sys-jni-prefix'
+        $sysJniPrefix=arg
+      when '--sys-jni-suffix'
+        $sysJniSuffix=arg
+      when '--sys-name'
+        $printSysName=true
+      else return false
+      end
+    when '--static-jni'
+      $staticJNI=true
+      $dynLoading=false # don't need dynamic loading if we don't have dynamic JNI
+    when '--jni-on-load'
+      $jniOnLoad << arg
+    when '--internal-inst'
+      $internalInst=Pathname.new(arg).realpath
+    when '--all-barrier'
+      $allBarrier=true
+    when '--simple-comp'
+      $simpleComp=true
+    when '--link'
+      $link << Pathname.new(arg).realpath
+    when '--link-internal'
+      $link << $homedir+arg
+    when '--link-dynamic'
+      $linkDynamic << arg
+    when '--link-dir'
+      $linkDir << arg
+    when '--extra-include'
+      $extraInclude << arg
+    when '--extra-include-dir'
+      $extraIncludeDir << arg
+    when '--home'
+      $printHome=true
+    when '--ldflags'
+      $printLdflags=true
+    when '--libs'
+      $printLibs=true
+    when '--32-works'
+      $print32=true
+    when '--64-works'
+      $print64=true
+    when '--if-64-works'
+      if hasAltPtrSize(64)
+        mysystem(arg)
+      else
+        $stderr.puts "#{$dollarZero}: not running #{arg.inspect} because 64-bit support is not present."
+      end
+      exit 0
+    when '--if-32-works'
+      if hasAltPtrSize(32)
+        mysystem(arg)
+      else
+        $stderr.puts "#{$dollarZero}: not running #{arg.inspect} because 32-bit support is not present."
+      end
+      exit 0
+    when '--if-cl-works'
+      if $backendArch
+        mysystem(arg)
+      else
+        $stderr.puts "#{$dollarZero}: not running #{arg.inspect} because class loading support is not present."
+      end
+      exit 0
+    when '--arith-helper'
+      if arg.downcase=="all"
+        # HACK!!
+        File.open(($homedir+"runtimec"+"src"+"fivmr_arith_helpers.c").to_s) {
+          | inp |
+          inp.each_line {
+            | line |
+            if line=~/fivmr_AH_([a-zA-Z_]+)/
+              $arithHelpers << $1
+            end
+          }
+        }
+      else
+        $arithHelpers << arg
+      end
+    when '--trace-exec'
+      $traceExec=arg
+    when '--uniprocessor'
+      $uniprocessor=arg
+    when '--dumb-hash-code'
+      $dumbHashCode=true
+    when '--rc'
+      parseOptFile(Pathname.new(arg))
+    when '--rc-internal'
+      parseOptFile($homedir+arg)
+    when '--version'
+      heading
+      exit 0
+    when '--help'
+      usage(false)
+    else return false
+    end
+    return true
+  end
+  
+  $optFiles=[]
+  
+  def parseOptFile(filename)
+    fail("Could not find #{filename}") unless filename.exist?
+    File.open(filename) {
+      | inp |
+      cnt=1
+      inp.each_line {
+        | line |
+        line.chomp!
+        line=$` if line=~Regexp.new('#')
+        if line.strip.empty?
+          # ignore this line
+        elsif line=~/^\s*(--[-a-z0-9]+)\s*(.*)$/
+          opt=$1
+          arg=$2
+          if arg=~/^\s*"/
+            tail=$'
+            arg=''
+            loop {
+              if tail.empty?
+                fail("#{filename}:#{cnt}: unterminated string literal")
+              elsif tail[0..0]=="\""
+                unless tail[1..-1]=~/^\s*$/
+                  fail("#{filename}:#{cnt}: junk after string literal")
+                end
+                break
+              elsif tail[0..0]=="\\"
+                tail=tail[1..-1]
+                if tail.empty?
+                  fail("#{filename}:#{cnt}: unterminated string literal after escape character")
+                end
+                case tail[0..0]
+                when "\\"
+                  arg+="\\"
+                when "n"
+                  arg+="\n"
+                when "r"
+                  arg+="\r"
+                when "x"
+                  if tail.size<3
+                    fail("#{filename}:#{cnt}: unterminated string literal in character "+
+                         "code escape sequence")
+                  end
+                  arg+=tail[1..2].hex.chr
+                  tail=tail[2..-1] # another character will be snipped below
+                else
+                  arg+=tail[0..0]
+                end
+              else
+                arg+=tail[0..0]
+              end
+              tail=tail[1..-1]
+            }
+          else
+            arg.strip!
+          end
+          unless processOpt(opt,arg)
+            fail("#{filename}:#{cnt}: unrecognized option: #{opt}  (NOTE: you should only use "+
+                 "the long form options in rc files, for example --verbosity instead of -v)")
+          end
+        else
+          fail("#{filename}:#{cnt}: badly formed line")
+        end
+        cnt+=1
+      }
+    }
+    
+    $optFiles << filename
+  end
+
+  $hostRC=$libdir+"host_fivmcrc"
+  
+  setTarget("default")
+
+  argpairs = []
+  begin
+    opts.each {
+      | opt, arg |
+      case opt
+      when '--target'
+        setTarget(arg)
+      when '--64'
+        setAltPtrSize(64)
+      when '--32'
+        setAltPtrSize(32)
+      when '--std-rc'
+        $stdRC=arg
+      when '--no-std-rc'
+        $stdRC=nil
+      else
+        argpairs << [opt, arg]
+      end
+    }
+  rescue GetoptLong::MissingArgument, GetoptLong::InvalidOption
+    $stderr.puts
+    fail("incorrect use of command-line options")
+  end
+
+  if $hostRC
+    parseOptFile($hostRC)
+  end
+  if $stdRC
+    parseOptFile($stdRC)
+  end
+  
+  homedir=ENV["HOME"] or ENV["USERPROFILE"]
+  if homedir
+    homeRc=Pathname.new(homedir)+".fivmcrc"
+    if FileTest.exist? homeRc
+      parseOptFile(homeRc)
+    end
+  end
+  
+  if ENV["FIVMCRC"]
+    parseOptFile(Pathname.new(ENV["FIVMCRC"]))
+  end
+
+  argpairs.each do
+    | opt, arg |
+    processOpt(opt,arg)
+  end
+
+  $fileList+=ARGV.collect{|flnm| Pathname.new(flnm)}
+  
+  unless $buildType=='EXE' or $buildType=='PAYLOAD'
+    $stderr.puts "#{$dollarZero}: wrong argument to --build: #{$buildType}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --build are EXE or PAYLOAD."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  if $buildType!='EXE' and not $linkedPayloads.empty?
+    $stderr.puts "#{$dollarZero}: cannot use --link-payload with --build PAYLOAD"
+    $stderr.puts
+    $stderr.puts "The --link-payload option is only valid when build build type (the"
+    $stderr.puts "argument to --build or -b) is EXE."
+    $stderr.puts
+    fail("invalid compiler settings for build type")
+  end
+  
+  if $specializeRuntime==nil
+    if $buildType=='EXE' and $linkedPayloads.empty?
+      $specializeRuntime=true
+    else
+      $specializeRuntime=false
+    end
+  end
+  
+  if $oneShotPayload==nil
+    if $buildType=='EXE'
+      $oneShotPayload=true
+    else
+      $oneShotPayload=false
+    end
+  end
+  
+  if $linkDynamic.length > 0 and not $buildType=='EXE'
+    $stderr.puts "#{$dollarZero}: invalid use of --link-dynamic"
+    $stderr.puts
+    $stderr.puts "Shared libraries can be linked only with --build-type EXE."
+    $stderr.puts
+    fail("invalid compiler settings for build type")
+  end
+
+  if ($buildType=='PAYLOAD' or not $linkedPayloads.empty?) and $specializeRuntime
+    $stderr.puts "#{$dollarZero}: invalid use of --specialize-runtime YES"
+    $stderr.puts
+    $stderr.puts "Cannot use --specialize-runtime YES when using --build PAYLOAD or"
+    $stderr.puts "when using the --link-payload option."
+    $stderr.puts
+    fail("invalid compiler settings for build type")
+  end
+  
+  unless $sysEndianness=="LITTLE" or $sysEndianness=="BIG"
+    $stderr.puts "#{$dollarZero}: wrong argument to --sys-endianness: #{$sysEndianness}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --sys-endianness are LITTLE or BIG."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+
+  unless $sysOSFlavor=="POSIX" or $sysOSFlavor=="RTEMS" or $sysOSFlavor=="WIN32"
+    $stderr.puts "#{$dollarZero}: wrong argument to --sys-osflavor: #{$sysOSFlavor}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --sys-osflavor are POSIX, WIN32, or RTEMS."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  if $isWindows and $sysOSFlavor!="WIN32"
+    $stderr.puts "#{$dollarZero}: wrong argument to --sys-osflavor: #{$sysOSFlavor}"
+    $stderr.puts
+    $stderr.puts "The Windows version of fivmc can only compile for Windows targets."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  if (not $isWindows) and $sysOSFlavor=="WIN32"
+    $stderr.puts "#{$dollarZero}: wrong argument to --sys-osflavor: #{$sysOSFlavor}"
+    $stderr.puts
+    $stderr.puts "Currently, fivmc cannot compile for a Windows target when not running"
+    $stderr.puts "on windows."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  unless $sysSyncType=="x86-gcc" or
+      $sysSyncType=="ppc-gcc" or
+      $sysSyncType=="gcc-intrinsic" or
+      $sysSyncType=="rtems"
+    $stderr.puts "#{$dollarZero}: wrong argument to --sys-sunc-type: #{$sysSyncType}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --sys-sync-type are x86-gcc,"
+    $stderr.puts "x86-gcc-intrinsic, ppc-gcc, ppc-gcc-intrinsic, gcc-intrinsic,"
+    $stderr.puts "or rtems."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+  
+  unless $headerModel=="NARROW" or $headerModel=="POISONED"
+    $stderr.puts "#{$dollarZero}: wrong argument to --header-model: #{$headerModel}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --header-model are NARROW or POISONED."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+  
+  unless $objectModel=="CONTIGUOUS" or $objectModel=="FRAGMENTED"
+    $stderr.puts "#{$dollarZero}: wrong argument to --object-model: #{$objectModel}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --object-model are CONTIGUOUS or FRAGMENTED."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+  
+  if (not $gcSelfManageMem) and $gc=="HF"
+    $stderr.puts "#{$dollarZero}: conflict between arguments to --gc and --g-self-man-mem"
+    $stderr.puts
+    $stderr.puts "When using --gc HF, --g-self-man-mem must be true."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+  
+  if $objectModel!="FRAGMENTED" and $gc=="HF"
+    $stderr.puts "#{$dollarZero}: conflict between arguments to --gc and --object-model"
+    $stderr.puts
+    $stderr.puts "When using --gc HF, the only valid value for --object-model is FRAGMENTED."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+  
+  unless $analysis=="0CFA" or $analysis=="CHA" or $analysis=="E0CFA" or $analysis=="OPEN" or
+      $analysis=="O0CFA"
+    $stderr.puts "#{$dollarZero}: wrong argument to --analysis: #{$analysis}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --analysis are E0CFA, 0CFA, CHA, OPEN, or O0CFA."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  if $zeroLogAccess and $analysis !~ /0CFA/
+    $stderr.puts "#{$dollarZero}: misuse of --0-log-access"
+    $stderr.puts
+    $stderr.puts "The --0-log-access option can only be used with --analysis 0CFA or"
+    $stderr.puts "--analysis E0CFA.  You should also use --code-repo cache for this"
+    $stderr.puts "option to work."
+    $stderr.puts
+    fail("invalid use of command-line option")
+  end
+  
+  if ($analysis=="OPEN" or $analysis=="O0CFA") and
+      ($closedPatchPoints or
+       not $typeEpochs or
+       $itableCompression or
+       not $trackDirectSubs or
+       $objLocAnalysis=="FULL")
+    $stderr.puts "#{$dollarZero}: misuse of --analysis #{$analysis}"
+    $stderr.puts
+    $stderr.puts "If you use --analysis #{$analysis} then you cannot use --patch-points CLOSED,"
+    $stderr.puts "--type-epochs NO, --itable-compression YES, --track-direct-subs NO, or"
+    $stderr.puts "--obj-loc-analysis FULL."
+    $stderr.puts
+    fail("invalid combination of command-line options")
+  end
+
+  if $zeroLogAccess and not $preprocessOnce
+    $stderr.puts "#{$dollarZero}: misuse of --0-log-access"
+    $stderr.puts
+    $stderr.puts "The --0-log-access option can only be used with --code-repo cache."
+    $stderr.puts
+    fail("invalid use of command-line option")
+  end
+
+  if $gcScopedMemory and $objLocAnalysis!="SCJ"
+    $stderr.puts "#{$dollarZero}: misuse of --obj-loc-analysis"
+    $stderr.puts
+    $stderr.puts "The use of --g-scoped-memory with an --obj-loc-analysis argument other"
+    $stderr.puts "than SCJ is unsafe."
+    $stderr.puts
+    fail("invalid use of command-line option")
+  end
+
+  unless $objLocAnalysis=="FULL" or $objLocAnalysis=="OPEN" or $objLocAnalysis=="SCJ" or
+      $objLocAnalysis=="TRUSTED"
+    $stderr.puts "#{$dollarZero}: wrong argument to --obj-loc-analysis: #{$objLocAnalysis}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --obj-loc-analysis are FULL, OPEN, SCJ, or TRUSTED."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  if $objLocAnalysis=="TRUSTED"
+    $gcScopeChecks=false
+  end
+
+  unless $lockImpl=="FAST" or $lockImpl=="BIASED" or $lockImpl=="PIP"
+    $stderr.puts "#{$dollarZero}: wrong argument to --lock-impl: #{$lockImpl}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --lock-impl are FAST, BIASED, or PIP."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+
+  unless (not $gc) or $gc=="NONE" or $gc=="CMR" or $gc=="HF"
+    $stderr.puts "#{$dollarZero}: wrong argument to --gc: #{$gc}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --gc are NONE, CMR, or HF."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  unless $library=="FIJICORE" or $library=="GLIBJ"
+    $stderr.puts "#{$dollarZero}: wrong argument to --library: #{$library}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --library are FIJICORE or GLIBJ."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  unless $pollcheckMode=="NONE" or $pollcheckMode=="PORTABLE"
+    $stderr.puts "#{$dollarZero}: wrong argument to --pollcheck-mode: #{$pollcheckMode}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --pollcheck-mode are NONE or"
+    $stderr.puts "PORTABLE."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+  
+  unless $gcPredLevel=='C' or $gcPredLevel=='B1' or $gcPredLevel=='B2' or
+      $gcPredLevel=='A1' or $gcPredLevel=='A' or $gcPredLevel=='CW' or
+      $gcPredLevel=='B1W' or $gcPredLevel=='B2W' or $gcPredLevel=='AW'
+    $stderr.puts "#{$dollarZero}: wrong argument to --g-pred-level: #{$gcPredLevel}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --g-pred-level are C, B1, B2, A, A1, CW,"
+    $stderr.puts "B1W, B2W, or AW."
+    $stderr.puts
+    fail("invalid argument for command-line option")
+  end
+
+  unless $scopeStyle=='SCJ' or $scopeStyle=='RTSJ'
+    $stderr.puts "#{$dollarZero}: wrong argument to --scope-style: #{$scopeStyle}"
+    $stderr.puts
+    $stderr.puts "The possible arguments for --scope-style are SCJ or RTSJ."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+
+  if $forceArraylets and $gc=="HF"
+    $stderr.puts "#{$dollarZero}: conflict between arguments to --gc and --force-arraylets"
+    $stderr.puts
+    $stderr.puts "When using --gc HF, you cannot use --force-arraylets."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+  
+  if $forceArraylets and $objectModel!="FRAGMENTED"
+    $stderr.puts "#{$dollarZero}: conflict between arguments to --object-model and --force-arraylets"
+    $stderr.puts
+    $stderr.puts "When using --object-model #{$objectModel}, you cannot use"
+    $stderr.puts "--force-arraylets."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end
+  
+  if $classloading and not $backendArch
+    $stderr.puts "#{$dollarZero}: class loading not supported on this target"
+    $stderr.puts
+    $stderr.puts "Cannot use class loading (--analysis open) on this target because"
+    $stderr.puts "the target-specific support code has not been implemented."
+    $stderr.puts
+    fail("Invalid argument for command-line option")
+  end    
+  
+  if $backendArch=="X86" and $sysPtrSize!=4
+    $stderr.puts "#{$dollarZero}: invalid pointer size for X86"
+    $stderr.puts
+    $stderr.puts "The configuration indicates X86 as the backend architecture but"
+    $stderr.puts "the pointer size is #{$sysPtrSize}."
+    $stderr.puts
+    fail("Invalid configuration")
+  end
+
+  if $rtFlowLogFatEvents and not $rtFlowLogging
+    $stderr.puts "#{$dollarZero}: fat events require flow logging"
+    $stderr.puts
+    $stderr.puts "Cannot emit fat flow logging events unless flow logging is"
+    $stderr.puts "enabled.  Include --rt-flowlog-enable to enable flow logging."
+    fail("invalid use of command-line option")
+  end
+  
+  if $sysOSFlavor=="POSIX" and $mainInThread==nil
+    $mainInThread=true
+  end
+    
+  if $profileCheckInit or $profileSubtype or $profileNullCheck or $profileArrayStore or
+      $profileArrayBounds or $profileCheckDiv or $profileInvokes
+    $spcEnabled=true
+  end
+  
+  if $debugCflagsEnabled
+    $debugCflags=" #{$sysDebugCflags} "
+  else
+    $debugCflags=" "
+  end
+  if $optCflagsMode==:speed
+    $optCflags=" #{$sysOptCflags} "
+  elsif $optCflagsMode==:size
+    $optCflags=" #{$sysOptCflags} #{$sysSizeCflags} "
+  elsif $optCflagsMode==:none
+    $optCflags=" "
+  else
+    raise # weird!
+  end
+  $archCflags=" #{$sysArchCflags} " unless $archCflags
+  $noinline=$sysNoinline unless $noinline
+
+  $sysName="#{$sysOSFlavor}-#{$sysOS}-#{$sysArch}-#{$sysPtrSize*8}"
+
+  # reset the cflags to incorporate changes to debugCflags, and other cflags
+  # FIXME: this should be smarter.  we should have the notion of different optCflags
+  # if optimizing for size versus for speed.
+  $cflags=$archCflags+$debugCflags+$optCflags
+  
+  unless $rtVerbosityLimit
+    if $sysOSFlavor=="RTEMS"
+      $rtVerbosityLimit=0
+    else
+      if $reduceRuntimeVerbosity
+        $rtVerbosityLimit=1
+      else
+        $rtVerbosityLimit=10
+      end
+    end
+  end
+  
+  if $gcDefMaxMem and not $gcDefTrigger
+    $gcDefTrigger=$gcDefMaxMem/2
+  end
+
+  $cppFlags=""
+  
+  # the system options
+  $cppFlags+=" #{$sysCppflags}"
+
+  # ... and the include directories:
+  $cppFlags+=" -I'#{$homedir+'runtimec'+'src'}' -I'#{$homedir+'lib'+'targets'+$target}' -I."
+  
+  def buildSettings
+    settings=[]
+    
+    if $nativeBackend
+      settings << "AOT_NATIVE_BACKEND"
+    end
+    
+    if $omitFramePointer
+      settings << "OMIT_FRAME_POINTER"
+    end
+    
+    if $envSysProps
+      settings << "SUPPORT_ENV_BASED_SYS_PROPS"
+    end
+    
+    if $optCMBarriers
+      settings << "OPT_CM_STORE_BARRIERS"
+    end
+    
+    if $optCMBarriers==:checked or $optCMBarriers==:checked_aggressive
+      settings << "CHECK_OPT_CM_STORE_BARRIERS"
+    end
+    
+    if $optCMBarriers==:aggressive or $optCMBarriers==:checked_aggressive
+      settings << "AGGRESSIVE_OPT_CM_STORE_BARRIERS"
+    end
+    
+    if $filtCMBarriers
+      settings << "FILTERED_CM_STORE_BARRIERS"
+    end
+    
+    if $gcFinalization and $gc!="NONE"
+      settings << "FINALIZATION_SUPPORTED"
+    end
+    
+    if $gcLogMarkTraps
+      settings << "LOG_GC_MARK_TRAPS"
+    end
+    
+    if $rtSearchRoot
+      settings << "SEARCH_ROOT_CLASSES_AT_RUNTIME"
+    end
+    
+    settings << "ROOT_OVERRIDES_ALL_APP"
+    settings << "FULL_CHECK_INIT_SEMANTICS"
+    
+    if $gcScopeChecks
+      settings << "HAVE_SCOPE_CHECKS"
+    end
+    
+    if $simpleComp
+      settings << "SIMPLE_COMP"
+      settings << "EXCEPTIONS_MAY_BE_NULL"
+    end
+    
+    if $analysis=="OPEN" or $analysis=="O0CFA"
+      settings << "OPEN_WORLD"
+    end
+    
+    settings << "#{$objLocAnalysis}_STACK_ANALYSIS"
+    
+    if $sysPtrSize==4
+      settings << "PTRSIZE_32"
+    elsif $sysPtrSize==8
+      settings << "PTRSIZE_64"
+    else
+      fail("bad pointer size: #{$sysPtrSize}")
+    end
+    
+    if $backendArch
+      settings << $backendArch
+      settings << "CAN_DO_CLASSLOADING"
+    end
+    
+    if $classloading
+      settings << "CLASSLOADING"
+    end
+    
+    if $closedPatchPoints
+      settings << "CLOSED_PATCH_POINTS"
+    else
+      settings << "OPEN_PATCH_POINTS"
+    end
+
+    if $typeEpochs
+      settings << "USE_TYPE_EPOCHS"
+    end
+    
+    if $trackDirectSubs
+      settings << "TRACK_DIRECT_SUBS"
+    end
+    
+    if $itableCompression
+      settings << "ITABLE_COMPRESSION"
+    end
+    
+    if $spcEnabled
+      settings << "SPC_ENABLED"
+    end
+    
+    if $sysStackGrowsDown
+      settings << "STACK_GROWS_DOWN"
+    end
+    
+    settings << "OM_#{$objectModel}"
+    
+    if $forceArraylets
+      settings << "FORCE_ARRAYLETS"
+    end
+    
+    if $gcPredLevel=~/C/
+      settings << "HFGC_PREDICT_NO_ARRAYLETS"
+      settings << "HFGC_TRY_CONTIGUOUS_ARRAYS"
+    elsif $gcPredLevel=~/B1/
+      settings << "HFGC_TRY_CONTIGUOUS_ARRAYS"
+    elsif $gcPredLevel=~/B2/
+      settings << "HFGC_PREDICT_NO_ARRAYLETS"
+    elsif $gcPredLevel=~/A/
+      settings << "HFGC_PREDICT_ARRAYLETS"
+      settings << "HFGC_ALL_ARRAYLETS"
+    end
+    if $gcPredLevel=~/W/
+      settings << "HFGC_FAIL_FAST_PATHS"
+    end
+    
+    if $rtAssertions
+      settings << "ASSERTS_ON"
+    end
+
+    if $rtFlowLogging
+      settings << "FLOW_LOGGING"
+    end
+
+    if $rtFlowLogNoSmallInlines
+      settings << "FLOW_LOGGING_NO_SMALL_INLINES"
+    end
+
+    if $rtFlowLogFatEvents
+      settings << "FLOW_LOGGING_FATEVENTS"
+    end
+
+    if $profileMonitor
+      settings << "PROFILE_MONITOR"
+      if $profileMonitor==:heavy
+        settings << "PROFILE_MONITOR_HEAVY"
+      end
+    end
+    if $profileGC
+      settings << "PROFILE_GC"
+      if $profileGC==:heavy
+        settings << "PROFILE_GC_HEAVY"
+      end
+    end
+    if $profileStackHeight
+      settings << "PROFILE_STACK_HEIGHT"
+    end
+    if $coverage
+      settings << "COVERAGE"
+    end
+    settings << "HM_"+$headerModel
+    settings << $sysOSFlavor
+    if $sysOSFlavor=="POSIX" or $sysOSFlavor=="RTEMS"
+      settings << "POSIX_IO"
+    end
+    if $staticJNI
+      settings << "STATIC_JNI"
+    end
+    if $dynLoading
+      settings << "DYN_LOADING"
+    end
+    if $mainInThread
+      settings << "MAIN_IN_THREAD"
+    end
+    unless $traceExec.empty?
+      settings << "VERBOSE_RUN_METHOD"
+    end
+    if $dumbHashCode
+      settings << "DUMB_HASH_CODE"
+    end
+    settings << $library
+    if $uniprocessor
+      settings << "UNIPROCESSOR"
+    end
+    if $lockImpl=="BIASED"
+      settings << "BIASED_LOCKING"
+    end
+    if $lockImpl=="PIP"
+      settings << "PIP_LOCKING"
+    end
+
+    if $gc
+      if $gc=="NONE"
+        settings << "NOGC"
+      elsif $gc=="CMR" or $gc=="HF"
+        settings << $gc+"GC"
+        if $gcDebug
+          settings << "GC_DEBUG"
+        end
+        settings << "PREDICTABLE_OOME"
+        if $gcSelfManageMem
+          settings << "SELF_MANAGE_MEM"
+        end
+        if $blackStack
+          settings << "GC_BLACK_STACK"
+        end
+      end
+    end
+    
+    if $gcDefLog
+      settings << "DEF_LOG_GC"
+    end
+    
+    if $gcDefLogSync or $gcDefLog
+      settings << "DEF_LOG_SYNC_GC"
+    end
+    
+    if $includeProfiler
+      settings << "INCLUDE_PROFILER"
+    end
+    
+    if $sigquitDebug
+      settings << "SUPPORT_SIGQUIT"
+    end
+    
+    if $internalInst
+      settings << "INTERNAL_INST"
+    end
+    
+    if $allBarrier
+      settings << "INTERCEPT_ALL_OBJ_ACCESSES"
+    end
+    
+    if $gcScopedMemory
+      settings << "SCOPED_MEMORY"
+      if $gcSharedScopes
+        settings << "HAVE_SHARED_SCOPES"
+      end
+    end
+    
+    if $parallelC1
+      settings << "PARALLEL_C1"
+    end
+    
+    if $zeroLogAccess
+      settings << "LOG_CODE_REPO_ACCESSES"
+    end
+    
+    settings << "IS_"+$sysEndianness+"_ENDIAN"
+    
+    if $profileReflection
+      settings << "PROFILE_REFLECTION"
+    end
+
+    if $rtLibrary == 'SCJ'
+      settings << 'SCJ'
+      if $scjLevel == 0
+        settings << 'SCJ_L0'
+      end
+    elsif $rtLibrary == 'RTSJ'
+      settings << 'RTSJ'
+    end
+
+    if $scopeStyle == 'SCJ'
+      settings << 'SCJ_SCOPES'
+    elsif $scopeStyle == 'RTSJ'
+      settings << 'RTSJ_SCOPES'
+    end
+
+    settings
+  end
+  
+  def asSet(array)
+    result={}
+    array.each {
+      | entry |
+      result[entry]=true
+    }
+    result
+  end
+  
+  settingSet=asSet(buildSettings)
+  if (($buildType=='PAYLOAD' or
+       ($buildType=='EXE' and not $linkedPayloads.empty?)) and
+      (settingSet['PROFILE_MONITOR'] or
+       settingSet['PROFILE_MONITOR_HEAVY'] or
+       settingSet['PROFILE_GC'] or
+       settingSet['PROFILE_GC_HEAVY'] or
+       settingSet['PROFILE_REFLECTION'] or
+       settingSet['COVERAGE'] or
+       not settingSet['POSIX_IO'] or
+       settingSet['WIN32'] or
+       settingSet['STATIC_JNI'] or
+       settingSet['PF_POLLCHECK'] or
+       settingSet['INTERNAL_INST'] or
+       settingSet['SPC_ENABLED']))
+    $stderr.puts "#{$dollarZero}: invalid compiler settings for payload build"
+    $stderr.puts
+    $stderr.puts "Payload builds, as well as executable builds that link external"
+    $stderr.puts "payloads, do not support profiling, coverage, static JNI, pagefault"
+    $stderr.puts "based pollchecks, or internal instrumentation."
+    $stderr.puts
+    fail("invalid compiler settings for build type")
+  end
+
+  if $verbosity>=1
+    heading
+    $stderr.puts("Parsed configuration files: "+$optFiles.collect{|x| osify(x)}.join(', '))
+  end
+
+  puts $homedir if $printHome
+  puts $sysCC if $printCC
+  puts $cppFlags if $printCppflags
+  puts $cflags if $printCflags
+  puts $cflags if $printCxxflags
+  puts $sysLdflags if $printLdflags
+  puts $sysLibs if $printLibs
+  if $print64
+    if hasAltPtrSize(64)
+      puts "yes"
+    else
+      puts "no"
+    end
+  end
+  if $print32
+    if hasAltPtrSize(32)
+      puts "yes"
+    else
+      puts "no"
+    end
+  end
+  if $printCL
+    if $backendArch
+      puts "yes"
+    else
+      puts "no"
+    end
+  end
+  puts $sysJniPrefix if $printJniPrefix
+  puts $sysJniSuffix if $printJniSuffix
+  
+  puts $sysName if $printSysName
+  
+  if $printCC or $printCppflags or $printCflags or
+      $printCxxflags or $printLdflags or $printLibs or
+      $printSysName or $print64 or $printHome or
+      $printCL or $printJniPrefix or $printJniSuffix or
+      $print32
+    exit 0
+  end
+
+  noArgs if (not $output) and $fileList.empty? and (not ($noExtraJars or $processCMacros or $extractCTypes))
+
+  unless $output
+    $stderr.puts "#{$dollarZero}: not enough arguments"
+    $stderr.puts
+    $stderr.puts "You must specify the name of the binary to produce (use --output or -o option)."
+    $stderr.puts
+    fail("not enough arguments")
+  end
+  
+  if $buildType=='PAYLOAD'
+    $binExt='.a'
+  end
+  
+  $origOutput=$output
+  
+  if (not $binExt.empty?) and $output.to_s !~ /#{$binExt}$/
+    $stderr.puts "Output file was specified as #{$output}; appending #{$binExt}" if $verbosity>=1
+    $output=Pathname.new($output.to_s+$binExt)
+    $stderr.puts "Output will be #{$output}" if $verbosity>=1
+  end
+  
+  unless FileTest.exist? $output.parent and FileTest.directory? $output.parent
+    $stderr.puts "#{$dollarZero}: cannot create files in '#{osify($output.parent)}'"
+    $stderr.puts
+    if FileTest.exist? $output.parent
+      $stderr.puts "The argument passed to --output (or -o) is not valid because its parent"
+      $stderr.puts "path is not a directory."
+    else
+      $stderr.puts "The argument passed to --output (or -o) is not valid because its parent"
+      $stderr.puts "path could not be found."
+    end
+    $stderr.puts
+    fail("cannot create output file")
+  end
+  
+  if FileTest.exist? $output
+    unless FileTest.file? $output
+      if FileTest.directory? $output
+        $stderr.puts "#{$dollarZero}: '#{osify($output)}' is a directory"
+        $stderr.puts
+        $stderr.puts "The argument passed to --output (or -o) refers to a directory.  Out"
+        $stderr.puts "of an abundance of caution, fivmc will not attempt to overwrite it."
+        $stderr.puts "Please either specify a different argument to --output, or else rename"
+        $stderr.puts "the directory."
+        $stderr.puts
+        fail("output file is a directory")
+      else
+        $stderr.puts "#{$dollarZero}: '#{osify($output)}' is not a regular file"
+        $stderr.puts
+        $stderr.puts "The argument passed to --output (or -o) refers to a special file.  Out"
+        $stderr.puts "of an abundance of caution, fivmc will not attempt to overwrite it."
+        $stderr.puts "Please either specify a different argument to --output, or else rename"
+        $stderr.puts "the special file."
+        $stderr.puts
+        fail("output file is not a regular file")
+      end
+    end
+    unless $output.writable?
+      $stderr.puts "#{$dollarZero}: '#{osify($output)}' exists and is read-only"
+      $stderr.puts
+      $stderr.puts "The argument passed to --output (or -o) refers to a read-only file."
+      $stderr.puts
+      fail("output file is read-only")
+    end
+    unless $output.executable? or $processCMacros or $extractCTypes or $buildType=='PAYLOAD'
+      $stderr.puts "#{$dollarZero}: '#{osify($output)}' exists and is not an executable"
+      $stderr.puts
+      $stderr.puts "The argument passed to --output (or -o) refers to a file that is not"
+      $stderr.puts "executable.  This implies that it is not a file previously generated"
+      $stderr.puts "by either fivmc or any other compiler.  Out of an abundance of"
+      $stderr.puts "caution, fivmc will not overwrite it.  Please either delete or rename the"
+      $stderr.puts "file, or else specify a different path to --output."
+      $stderr.puts
+      fail("output file is not executable")
+    end
+    unless not $output.executable? or (not $processCMacros and not $extractCTypes and not $buildType=='PAYLOAD')
+      $stderr.puts "#{$dollarZero}: '#{osify($output)}' exists and is an executable while doing --process-cmacros or --build PAYLOAD"
+      $stderr.puts
+      $stderr.puts "The argument passed to --output (or -o) refers to a file that is"
+      $stderr.puts "executable.  This implies that it is not a file previously generated"
+      $stderr.puts "by fivmc in either --process-cmacros or --build PAYLOAD mode.  Out of"
+      $stderr.puts "an abundance of caution, fivmc will not overwrite it.  Please either"
+      $stderr.puts "delete or rename the file, or else specify a different path to"
+      $stderr.puts "--output."
+      $stderr.puts
+      fail("output file is an executable while doing --process-cmacros or --build PAYLOAD")
+    end
+  end
+
+  if $noExtraJars and $noDefaultJars
+    $stderr.puts "#{$dollarZero}: --no-default-jars and --no-extra-jars are exclusive."
+    $stderr.puts
+    $stderr.puts "If you use --no-default-jars, then you MUST have a non-empty list of Jar files,"
+    $stderr.puts "that includes first the fivmr.jar and fivmcommon.jar (or equivalent) followed"
+    $stderr.puts "by the fijicore.jar (or equivalent).  Hence, the --no-extra-jars option canot be"
+    $stderr.puts "used, as its purpose (to allow compilation with an empty Jar list) is"
+    $stderr.puts "superfluous."
+    $stderr.puts
+    fail("invalid options")
+  end
+
+  if $fileList.empty? and not ($noExtraJars or $processCMacros or $extractCTypes)
+    $stderr.puts "#{$dollarZero}: not enough arguments"
+    $stderr.puts
+    if $noDefaultJars
+      $stderr.puts "You should give at least one Jar file to include in compilation.  Since you"
+      $stderr.puts "used the --no-default-jars option, that must include first the fivmr.jar and"
+      $stderr.puts "fivmcommon.jar (or equivalent) followed by the fijicore.jar (or equivalent),"
+      $stderr.puts "followed by whatever Jars contain your application code."
+    else
+      $stderr.puts "You should give at least one Jar file to include in compilation.  The standard"
+      $stderr.puts "libraries are included by default, so no need to specify those.  If you'd"
+      $stderr.puts "really like to compile just what is in the standard library, use the"
+      $stderr.puts "--no-extra-jars option."
+    end
+    $stderr.puts
+    fail("not enough arguments")
+  end
+  
+  notExist=[]
+  $fileList.each {
+    | file |
+    unless FileTest.exist? file
+      notExist << file
+    end
+  }
+  unless notExist.empty?
+    if notExist.size==1
+      $stderr.puts "#{$dollarZero}: '#{osify(notExist[0])}' could not be found"
+    else
+      $stderr.puts "#{$dollarZero}: one or more input files could not be found"
+    end
+    $stderr.puts
+    $stderr.puts "Cannot compile because the following input files could not be found:"
+    $stderr.puts
+    notExist.each {
+      | file |
+      $stderr.puts "#{osify(file)}"
+    }
+    $stderr.puts
+    fail("one or more input files could not be found")
+  end
+  
+  unless $main or (not $fileList.empty?) or $processCMacros or $extractCTypes
+    $stderr.puts "#{$dollarZero}: not enough arguments"
+    $stderr.puts
+    $stderr.puts "You must specify a main method (use --main or -m option) unless you specify Jar"
+    $stderr.puts "files on the command line, which are then searched for a main method."
+    $stderr.puts
+    fail("not enough arguments")
+  end
+
+  $builddir=Pathname.new($output.to_s+".build") unless $builddir
+  
+  unless $outputSym
+    $outputSym=escapeForSymbol($origOutput.basename.to_s)
+  end
+
+  assertions="-ea"
+  if $sanityCheck==0
+    runSanityCheck=false
+    runWriteReadTest=false
+  elsif $sanityCheck==1
+    runSanityCheck=true
+    runWriteReadTest=false
+  elsif $sanityCheck==2
+    runSanityCheck=true
+    runWriteReadTest=true
+  end
+
+  unless $noDefaultReflect
+    $rootsRepo.parse("#{$libdir+'unified.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'hello.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'fivmtest.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'fivmtest-extended.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_compress.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_db.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_mpegaudio.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_mtrt.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_jess.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_javac.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_jack.reflectLog'}")
+    #$rootsRepo.parse("#{$libdir+'spec_jbb2000.reflectLog'}")
+  end
+  
+  fivmclibs=['fiji-asm.jar',
+             'fivmcommon.jar',
+             'fivmc.jar',
+             'fijirt.jar',
+             'fast-md5.jar',
+             'fivmutil.jar',
+	     'rtsj.jar'].collect {
+    | jarname |
+    osify($libdir+jarname)
+  }.join(if $isWindows then ';' else ':' end)
+
+  if $verbosity==0
+    timecmd=""
+  else
+    timecmd=$timecmd
+  end
+
+  # at this point it would be good to know how many jobs to use
+  unless $jobs
+    # what follows is allowed to fail.
+    
+    # this will work on GNU systems
+    getNumProcs=$homedir+'util'+'c'+'getNumProcs'+'getNumProcs'
+    if getNumProcs.exist?
+      IO.popen("'#{getNumProcs.to_s}'",'r') {
+        | inp |
+        $jobs=inp.read.to_i
+        if $verbosity>=1
+          $stderr.puts "Detected #{$jobs} processors using util/c/getNumProcs/getNumProcs"
+        end
+        if $jobs<=0
+          $jobs=nil
+        end
+      }
+    end
+    
+    unless $jobs
+      # try a different way
+      
+      # this will work on BSD systems
+      IO.popen("sysctl hw.ncpu",'r') {
+        | inp |
+        $jobs=inp.read.split[1].to_i
+        if $verbosity>=1
+          $stderr.puts "Detected #{$jobs} processors using sysctl hw.ncpu"
+        end
+        if $jobs<=0
+          $jobs=nil
+        end
+      }
+      
+      unless $jobs
+        # this will work pretty much everywhere, but is slower
+        mypiperead("#{timecmd}#{$java} #{$vmargs} #{assertions} -classpath '#{fivmclibs}' com.fiji.fivm.util.PrintAvailableProcs") {
+          | inp |
+          $jobs=inp.read.to_i
+          if $verbosity>=1
+            $stderr.puts "Detected #{$jobs} processors using Java"
+          end
+          if $jobs<=0
+            $jobs=nil
+          end
+        }
+      end
+    end
+  end
+  
+  # should not get here!
+  unless $jobs
+    $jobs=1
+  end
+  
+  if $verbosity>=1
+    $stderr.puts "Will use #{$jobs} processors."
+  end
+  
+  if $regen
+    mysystem "rm -rf #{escapeForShell($builddir)}"
+    mysystem "mkdir #{escapeForShell(osify($builddir))}"
+  end
+  workingDir=Pathname.getwd
+  mychdir($builddir) {
+    # could do some epic hack here to invoke ecj...  the main issue is
+    # that we take .class files on the command-line, which is kind of
+    # nutty.  we should replace the Prune thing with a jar-maker, which
+    # converts all inputs into a single jar file.  or something.
+    
+    otherjars=[]
+    $fileList.each{
+      | arg |
+      flnm = (workingDir+arg).realpath
+      if flnm.directory?
+        $stderr.puts ">> searching #{osify(flnm)}" if $verbosity>=1
+        def recurse(list,dir)
+          Dir.new(dir).each {
+            | flnm2 |
+            if flnm2=='.' or flnm2=='..'
+              next
+            end
+            flnm2=Pathname.new(dir)+flnm2
+            if flnm2.directory?
+              recurse(list,flnm2)
+            elsif flnm2.basename.to_s=~/\.class$/
+              list << flnm2
+            end
+          }
+        end
+        list=[]
+        recurse(list,flnm)
+        mywrite("pruneArglist.txt") {
+          | outp |
+          list.each {
+            | flnm2 |
+            outp.puts osify(flnm2)
+          }
+        }
+        newlist=[]
+        mypiperead("#{timecmd}#{$java} #{$vmargs} #{assertions} -classpath '#{fivmclibs}' com.fiji.fivm.util.Prune #{escapeForShell(osify(flnm))} pruneArglist.txt") {
+          | inp |
+          inp.each_line {
+            | line |
+            newlist << line.chomp
+          }
+        }
+        if newlist.empty?
+          $stderr.puts "Warning: no classes found in #{osify(flnm)}"
+        end
+        otherjars+=newlist
+      else
+        otherjars << flnm
+      end
+    }
+
+    if otherjars.empty? and not ($noExtraJars or $processCMacros or $extractCTypes)
+      $stderr.puts "#{$dollarZero}: no classes found."
+      $stderr.puts
+      $stderr.puts "No Java classes were found in the given argument list."
+      $stderr.puts
+      fail("no classes found")
+    end
+    
+    unless $rtLibrary=='SCJ' or $main or $processCMacros or $extractCTypes
+      mains=[]
+      mywrite("findmainArglist.txt") {
+        | outp |
+        otherjars.each {
+          | flnm |
+          outp.puts osify(flnm)
+        }
+      }
+      mypiperead("#{timecmd}#{$java} #{$vmargs} #{assertions} -classpath '#{fivmclibs}' com.fiji.fivm.util.FindMain findmainArglist.txt") {
+        | inp |
+        inp.each_line {
+          | line |
+          mains << line.chomp
+        }
+      }
+      if $verbosity>=2
+        $stderr.puts "Found main class candidates: "+mains.inspect
+      end
+      if mains.size!=1
+        $stderr.puts "#{$dollarZero}: could not infer main class"
+        $stderr.puts
+        if mains.size==0
+          $stderr.puts "Could not find a class with a Java-style main method in the given list of Jar"
+          $stderr.puts "files.  If you are sure that such a method exists, you may specify it using"
+          $stderr.puts "the --main (or -m) option."
+        else
+          $stderr.puts "Found multiple possible main methods in the given list of Jar files:"
+          $stderr.puts
+          mains.sort.each {
+            | main |
+            $stderr.puts main
+          }
+          $stderr.puts
+          $stderr.puts "Please use the --main (or -m) option to specify which one of them you'd like"
+          $stderr.puts "to use as an entrypoint."
+        end
+        $stderr.puts
+        fail("could not infer main class")
+      end
+      $main=mains[0]
+    end
+
+    if $rtLibrary=='SCJ' and $scjSafelet.length == 0 and not $main
+      safelets=[]
+      mywrite("findsafeletArglist.txt") {
+        | outp |
+        otherjars.each {
+          | flnm |
+          outp.puts osify(flnm)
+        }
+      }
+      cp=fivmclibs+($isWindows? ';' : ':')+osify($libdir+'scj.jar')
+      mypiperead("#{timecmd}#{$java} #{$vmargs} #{assertions} -classpath '#{cp}' com.fiji.fivm.util.FindSafelet findsafeletArglist.txt") {
+        | inp |
+        inp.each_line {
+          | line |
+          safelets << line.chomp
+        }
+      }
+      if safelets.size!=1
+        $stderr.puts"#{$dollarZero}: could not infer Safelet class"
+        if safelets.size==0
+          $stderr.puts "Could not find a class implementing the javax.realtime.Safelet interface"
+          $stderr.puts "in the given list of Jar files.  If you are sure that such a class exists,"
+          $stderr.puts "you may specify it using the --scj-safelet option."
+        else
+          $stderr.puts "Found multiple possible Safelet classes in the given list of Jar files:"
+          $stderr.puts
+          safelets.sort.each { |safelet| $stderr.puts safelet }
+          $stderr.puts
+          $stderr.puts "Please use the --scj-safelet option to specify which one of them you'd like"
+          $stderr.puts "to use as an entrypoint."
+        end
+        $stderr.puts
+        fail("could not infer Safelet class")
+      end
+      $scjSafelet=safelets[0]
+      if ($verbosity>=1)
+        $stderr.puts "Using detected Safelet #{$scjSafelet}"
+      end
+    end
+
+    if $rtLibrary=='SCJ' and not $main
+      if $verbosity>=1
+        $stderr.puts "Using fivmc-supplied SCJ wrapper"
+      end
+      $main='com/fiji/fivm/SCJMain'
+      mysystem "mkdir -p jbuild/com/fiji/fivm"
+      mysystem "#{$java} -cp #{fivmclibs} com.fiji.fivm.util.SCJWrapperGenerator jbuild/com/fiji/fivm/SCJMain.class #{$scjSafelet} #{$scjScopeBacking}"
+      mysystem "#{$jar} cf jbuild.jar -C jbuild ."
+      otherjars << 'jbuild.jar'
+    end
+
+    if $processCMacros or $extractCTypes
+      # set this to prevent pukage
+      $gc="CMR" unless $gc
+    else
+      if $verbosity>=1
+        $stderr.puts "Using main class: #{$main}"
+      end
+      
+      if $configMode==:java or $configMode==:none
+        mywrite("confextractorConfig.conf") {
+          | outp |
+          conf={
+            :hasMain => true,
+            :output => 'confextractor',
+            :main => $main,
+            :verbosity => $verbosity,
+            :osFlavor => $sysOSFlavor,
+            :logPageSize => $sysLogPagesize,
+            :fileList => otherjars.collect{|jar| osify(jar)},
+            :configMode => $configMode
+          }
+          outp.puts FijiConfig::dumpPrettyWithMsg(conf,"generated by fivmc #{$version}")
+        }
+        mysystem "#{timecmd}#{$java} #{$vmargs} #{assertions} -classpath '#{fivmclibs}' com.fiji.fivm.util.ConfExtractor confextractorConfig.conf"
+        
+        jconf=FijiConfig::parse(IO::read("jconf.conf"))
+      elsif $configMode==:file
+        jconf=FijiConfig::parse(IO::read($configFile))
+      else
+        raise
+      end
+      
+      $gcDefTrigger=jconf['gcParams']['defTrigger'].to_i unless $gcDefTrigger
+      $gcDefMaxMem=jconf['gcParams']['defMaxMem'].to_i unless $gcDefMaxMem
+      $gcThreadPriority=jconf['gcParams']['threadPriority'].to_i unless $gcThreadPriority
+      $maxThreads=jconf['maxThreads'].to_i unless $maxThreads
+      $saSize=jconf['saSize'].to_i unless $saSize
+      $gcScopedMemory=FijiConfig::toBoolean(jconf['gcScopedMemory']) unless $gcScopedMemory
+      $gc=jconf['gc'] unless $gc
+
+      if $sysOSFlavor=='RTEMS'
+        def extractRTOptionInt(jconf,opt)
+          copt=opt[0..0].upcase+opt[1..-1]
+          eval("$rt#{copt}=jconf['rtosConfig']['#{opt}'].to_i unless $rt#{copt}")
+        end
+        extractRTOptionInt(jconf,'interruptStackSize')
+        extractRTOptionInt(jconf,'threadStackSize')
+        extractRTOptionInt(jconf,'nanosPerTick')
+        extractRTOptionInt(jconf,'ticksPerTimeslice')
+        extractRTOptionInt(jconf,'maxOSThreads')
+        extractRTOptionInt(jconf,'maxFileDescriptors')
+      end
+      
+      if $verbosity>=1
+        $stderr.puts("Statically linking: "+$link.collect{|x| osify(x)}.join(', '))
+        $stderr.puts("Statically calling JNI on-load: "+$jniOnLoad.join(', '))
+      end
+    end
+    
+    if $buildType=='EXE'
+      $cppFlags+=" -DFIVMBUILD_SPECIALIZING=1"
+    end
+    $cppFlags+=" -DFIVMC_COMPILE=1"
+      
+    $jobs=1 unless $jobs
+
+    if $regen and $runMake and $scripts
+      verboseCmdStr=$cmdStr
+      if $verbosity==0
+        verboseCmdStr+=" -v 1"
+      end
+      if $isWindows
+        # FIXME would be nice to have these on Windows
+      else
+        mywrite("rebuild") {
+          | outp |
+          outp.puts "#!/bin/sh"
+          outp.puts "set -e"
+          outp.puts "#{verboseCmdStr} \"$@\""
+        }
+        mysystem("chmod 755 rebuild")
+        mywrite("remake") {
+          | outp |
+          outp.puts "#!/bin/sh"
+          outp.puts "set -e"
+          outp.puts "#{verboseCmdStr} --no-regen --no-scripts \"$@\""
+        }
+        mysystem("chmod 755 remake")
+      end
+    end
+    if $processCMacros
+      mywrite("inputFiles") {
+        | outp |
+        ['fivmr.jar',
+         'hardrtj.jar',
+         'fijicore.jar',
+         'fivmcommon.jar',
+	 'rtsj.jar'].each {
+          | jar |
+          outp.puts(osify($libdir+jar))
+        }
+      }
+      mysystem "#{timecmd}#{$java} #{$vmargs} #{assertions} -classpath '#{fivmclibs}' com.fiji.fivm.util.GenCMacrosProperties inputFiles > cmacros.conf.c"
+    else
+      mywrite("config.conf") {
+        | outp |
+        conf={}
+        conf[:revision]=$version
+        conf[:fivmcHomeDir]=$homedir
+        conf[:output]=$outputSym
+        if $main
+          conf[:hasMain]=true
+          conf[:main]=$main
+        else
+          conf[:hasMain]=false
+        end
+        if $rtLibrary=='SCJ'
+          conf[:scjSafelet]=$scjSafelet
+        end
+        conf[:verbosity]=$verbosity
+        conf[:library]=$library
+        conf[:analysis]=$analysis
+        conf[:objLocAnalysis]=$objLocAnalysis
+        conf[:gc]=$gc
+        conf[:gcScopedMemory]=$gcScopedMemory
+        conf[:headerModel]=$headerModel.downcase
+        conf[:objectModel]=$objectModel
+        
+        bootFileList=[]
+        bootFileList += $bootFileOverrideList.reverse
+        unless $noDefaultJars
+          bootFileList << osify($libdir+'fivmcommon.jar')
+          if $library=="GLIBJ"
+            bootFileList << osify($libdir+'cpruntime.jar')
+          end
+          bootFileList << osify($libdir+'fivmr.jar')
+          bootFileList << osify($libdir+'fijirt.jar')
+          if $rtLibrary=='RTSJ'
+            bootFileList << osify($libdir+'rtsj.jar')
+          end
+          if $library=="FIJICORE"
+            bootFileList << osify($libdir+'fijicore.jar')
+          elsif $library=="GLIBJ"
+            bootFileList << osify($libdir+'glibj.zip')
+          end
+          bootFileList << osify($libdir+'fast-md5.jar')
+          # FIXME: I'm not sure this is necessary or correct -- elb
+          if $gcScopedMemory and not $rtLibrary=='SCJ'
+            bootFileList << osify($libdir+'fijiscj.jar')
+          end
+          if $rtLibrary=='SCJ'
+            begin
+              File.stat($libdir+'scj.jar')
+            rescue
+              $stderr.puts "Warning: --rt-library SCJ specified but scj.jar not present."
+              bootFileList << osify($libdir+'fijiscj.jar')
+            else
+              bootFileList << osify($libdir+'scj.jar')
+            end
+          end
+          bootFileList << osify($libdir+'fiji-asm.jar')
+        end
+        bootFileList += $bootFileList
+        fileList=[]
+        otherjars.each {
+          | jar |
+          fileList << osify(jar)
+        }
+        conf[:contexts]={
+          'Root'=>{
+            :fileList=>bootFileList
+          },
+          'App'=>{
+            :fileList=>fileList
+          }
+        }
+        
+        conf[:stopAfterTypes]=$typesOnly
+        conf[:preprocessOnce]=$preprocessOnce
+        conf[:noisyMethods]=$noisyMethods
+        conf[:buildType]=$buildType
+        conf[:oneShotPayload]=$oneShotPayload
+        conf[:noInlineAttribute]=$noinline
+        conf[:rtVerbosityLimit]=$rtVerbosityLimit
+        conf[:logPageSize]=$sysLogPagesize
+        conf[:syncTypeMacroName]=$sysSyncType.gsub(/-/,'_').upcase
+        conf[:jobs]=$jobs
+        conf[:numLinkablesPerFile]=$cFileSize
+        conf[:runSanityCheck]=runSanityCheck
+        conf[:runWriteReadTest]=runWriteReadTest
+        conf[:pointerSize]=$sysPtrSize
+        conf[:endianness]=$sysEndianness.downcase
+        conf[:maxInlineFixpoint]=$maxInlineFixpoint
+        conf[:maxInlineRecurse]=$maxInlineRecurse
+        conf[:maxInlineCallerBlocks]=$maxInlineCallerBlocks
+        conf[:omBlocksMax]=$omBlocksMax
+        conf[:maxInlineableSize]=$maxInlineableSize
+        conf[:doInline]=$doInline
+        conf[:rce]=$rce
+        conf[:lateRCE]=$lateRCE
+        conf[:rceDistance]=$rceDistance
+        conf[:numForwardPasses]=$forwardMotion
+        conf[:reduceVars]=$reduceVars
+        conf[:noPollcheck]=($pollcheckNode=="NONE")
+        conf[:optPollcheck]=$optPollcheck
+        conf[:pollcheckBudget]=$pollcheckBudget
+        conf[:unrollBudget]=$unrollBudget
+        conf[:peelBudget]=$peelBudget
+        conf[:profileCheckInit]=$profileCheckInit
+        conf[:profileSubtype]=$profileSubtype
+        conf[:profileNullCheck]=$profileNullCheck
+        conf[:profileArrayStore]=$profileArrayStore
+        conf[:profileArrayBounds]=$profileArrayBounds
+        conf[:profileCheckDiv]=$profileCheckDiv
+        conf[:profileInvokes]=$profileInvokes
+        conf[:profileStackHeight]=$profileStackHeight
+        conf[:coverage]=$coverage
+        conf[:throwDebug]=$throwDebug
+        conf[:staticJNI]=$staticJNI
+        conf[:dynLoading]=$dynLoading
+        conf[:dumbHashCode]=$dumbHashCode
+        conf[:doRefMapOpt]=$doRefMapOpt
+        conf[:osFlavor]=$sysOSFlavor
+        conf[:blackStack]=$blackStack
+        conf[:arithHelpers]=$arithHelpers
+        conf[:verboseRunMethod]=$traceExec
+        conf[:reflect]=$rootsRepo.generateConf
+        conf[:extractPoundDefines]=$processCMacros
+        unless $processCMacros
+          File.open($cmacroFile,'r') {
+            | inp |
+            conf[:poundDefines]=FijiConfig::parse(inp.read)
+          }
+        end
+        conf[:extractCTypesystemReferences]=$extractCTypes
+        conf[:settings]=buildSettings
+        conf[:preload]=$classPreloadList
+        conf[:dumpCallGraph]=$dumpCallGraph
+        conf[:linkedPayloads]=$linkedPayloads.collect{|lp| escapeForSymbol(lp)}
+        conf[:ignoreErrors]=$ignoreErrors
+        conf[:rtFlowLogBufsize]=$rtFlowLogBufsize
+        conf[:haveCOffsetsAndSizes]=$useCTypesInfo
+        if $useCTypesInfo
+          conf[:ctypes]=FijiConfig::parse(IO::read($libdir+"ctypes-#{$sysPtrSize*8}.conf"))
+        end
+        conf[:indirectGodGivens]=$indirectGodGivens
+        conf[:nativeBackend]=$nativeBackend
+        conf[:regAlloc]=$regAlloc
+        conf[:doRegCoalescing]=$doRegCoalescing
+        conf[:measurePhaseTimings]=$phaseTimings
+        outp.puts FijiConfig::dumpPrettyWithMsg(conf,"generated by fivmc #{$version}")
+      }
+      # FIXME: have a super clever thingy where if we see that this dude failed with an OOME
+      # then we delete all "gen*" files and reinvoke with -j 1
+      gencmd="#{timecmd}#{$java} #{$vmargs} #{assertions} -classpath '#{fivmclibs}' com.fiji.fivm.util.RunC1 config.conf"
+      mywrite("gencmd.sh") {
+        | outp |
+        outp.puts(gencmd)
+      }
+      if $regen
+        mysystem gencmd
+      end
+      if $typesOnly
+        exit 0
+      end
+      if $extractCTypes
+        $ctypes=FijiConfig::parse(IO::read("ctypesystemReferences.conf"))
+        if $ctIncludeGenerated==false
+          $ctypes.each_value {
+            | val |
+            val.delete_if {
+              | entry |
+              FijiConfig::toBoolean(entry['generated'])
+            }
+          }
+        end
+      end
+          
+      if $buildType=='PAYLOAD'
+        mywrite("fivmc_tag_dep_config.h") {
+          | outp |
+          outp.puts "/* generated by fivmc */"
+          outp.puts "/* DO NOT EDIT!! */"
+          outp.puts "#undef FIVMR_ASSERTS_ON"
+          outp.puts "#undef FIVMR_LOG_LEVEL"
+          outp.puts "#undef FIVMR_FLOW_LOGGING"
+          outp.puts "#define FIVMR_ASSERTS_ON #{if $rtAssertions then 1 else 0 end}"
+          outp.puts "#define FIVMR_LOG_LEVEL #{$rtVerbosityLimit}"
+          outp.puts "#define FIVMR_FLOW_LOGGING #{if $rtFlowLogging then 1 else 0 end}"
+        }
+      end
+      if $sysOSFlavor=='RTEMS'
+        mywrite("fivmr_rtos_config.h") {
+          | outp |
+          outp.puts "/* generated by fivmc */"
+          outp.puts "/* DO NOT EDIT!! */"
+          outp.puts "#define FIVMR_THREAD_STACK_SIZE #{$rtThreadStackSize}"
+          outp.puts "#define FIVMR_NANOS_PER_TICK #{$rtNanosPerTick}"
+          outp.puts "#define FIVMR_TICKS_PER_TIMESLICE #{$rtTicksPerTimeslice}"
+          outp.puts "#define FIVMR_MAX_OS_THREADS #{$rtMaxOSThreads}"
+          outp.puts "#define FIVMR_INTERRUPT_STACK_SIZE #{$rtInterruptStackSize}"
+          outp.puts "#define FIVMR_MAX_FILE_DESCRIPTORS #{$rtMaxFileDescriptors}"
+        }
+      end
+      mywrite("fivmc_compile_info.h") {
+        | outp |
+        outp.puts "/* generated by fivmc */"
+        outp.puts "/* DO NOT EDIT!! */"
+        outp.puts "#define FIVMC_SYS_NAME #{$sysName.inspect}"
+        outp.puts "#define FIVMC_CMD #{$cmdStr.inspect}"
+        outp.puts "#define FIVMC_DIR #{workingDir.to_s.inspect}"
+        hostinfo="<unavailable>"
+        IO.popen("uname -a","r") {
+          | inp |
+          hostinfo=inp.readline.chomp
+        }
+        outp.puts "#define FIVMC_HOSTINFO #{hostinfo.inspect}"
+        outp.puts "#define FIVMC_DATE #{Time.new.to_s.inspect}"
+        outp.puts "#define FIVMC_HOMEDIR #{$homedir.to_s.inspect}"
+        outp.puts "#define FIVMC_OUTPUT #{$outputSym}"
+      }
+      mywrite("fivmc_extra_includes.h") {
+        |outp|
+        outp.puts "/* generated by fivmc */"
+        outp.puts "/* DO NOT EDIT!! */"
+        $extraInclude.each do |inc|
+          outp.puts "#include <#{inc}>"
+        end
+      }
+      if $buildType=='EXE'
+        mywrite("fivmc_config.h") {
+          | outp |
+          outp.puts "/* generated by fivmc */"
+          outp.puts "/* DO NOT EDIT!! */"
+          outp.puts "#include \"fivmc_c1_config.h\""
+          outp.puts "#define FIVMSYS_ARCH #{$sysArch.inspect}"
+          outp.puts "#define FIVMSYS_OS #{$sysOS.inspect}"
+          # FIXME: this script should just *know* what helpers are needed
+          # by what configuration of what system.
+          $arithHelpers.each {
+            | helper |
+            outp.puts "#define FIVMR_NEED_"+helper.upcase+"_HELPER"
+          }
+        }
+      end
+      if $extractCTypes
+        mywrite("computeOffsets.c") {
+          | outp |
+          outp.puts "/* generated by fivmc */"
+          outp.puts "/* DO NOT EDIT!! */"
+          outp.puts "#include <fivmr.h>"
+          outp.puts "int main(int c,char **v) {"
+          outp.puts "   printf(\"{\\n\");"
+          outp.puts "   printf(\"cfields = (\\n\");"
+          
+          $ctypes['cfields'].each {
+            | entry |
+            outp.puts "   printf(\"{ basetype = %s; name = %s; offsetof = %u; struct = %s }\\n\","
+            outp.puts "          #{entry['basetype'].inspect.inspect},"
+            outp.puts "          #{entry['name'].inspect.inspect},"
+            outp.puts "          (unsigned)fivmr_offsetof(#{entry['struct']},#{entry['name']}),"
+            outp.puts "          #{entry['struct'].inspect.inspect});"
+          }
+          
+          outp.puts "   printf(\")\\n\");"
+          outp.puts "   printf(\"ctypes = (\\n\");"
+          
+          $ctypes['ctypes'].each {
+            | entry |
+            outp.puts "   printf(\"{ name = %s; sizeof = %u }\\n\","
+            outp.puts "          #{entry['name'].inspect.inspect},"
+            outp.puts "          (unsigned)sizeof(#{entry['name']}));"
+          }
+          
+          outp.puts "   printf(\")\\n\");"
+          outp.puts "   printf(\"}\\n\");"
+          
+          outp.puts "}"
+        }
+      else # not $extractCTypes
+        mywrite("genjnionload.c") {
+          | outp |
+          outp.puts "/* generated by fivmc */"
+          outp.puts "/* DO NOT EDIT!! */"
+          outp.puts "#include <fivmr.h>"
+          outp.puts "#include <fivmr_jni.h>"
+          $jniOnLoad.each {
+            | funcname |
+            outp.puts "jint #{funcname}(JavaVM *vm,void *arg);"
+          }
+          outp.puts "bool "+$outputSym+"_postThreadInitCback(fivmr_ThreadState *ts) {"
+          $jniOnLoad.each {
+            | funcname |
+            outp.puts "   if (!fivmr_JNI_runOnLoad(ts,ts->vm->baseContexts[0],#{funcname})) return false;"
+          }
+          outp.puts "   return true;"
+          outp.puts "}"
+        }
+        if $internalInst
+          mywrite("fivmr_intinst.h") {
+            | outp |
+            outp.puts "/* generated by fivmc */"
+            outp.puts "/* DO NOT EDIT!! */"
+            outp.puts "#define FIVMR_INTINST_HEADER 1"
+            outp.puts "#define FIVMR_INTINST_BODY 0"
+            outp.puts(readall($internalInst))
+          }
+          mywrite("genintinst.c") {
+            | outp |
+            outp.puts "/* generated by fivmc */"
+            outp.puts "/* DO NOT EDIT!! */"
+            outp.puts "#include <fivmr.h>"
+            outp.puts "#define FIVMR_INTINST_HEADER 0"
+            outp.puts "#define FIVMR_INTINST_BODY 1"
+            outp.puts(readall($internalInst))
+          }
+        end
+        mywrite("genconfig.c") {
+          | outp |
+          outp.puts "/* generated by fivmc */"
+          outp.puts "/* DO NOT EDIT!! */"
+          outp.puts "#include <fivmr.h>"
+          outp.puts "fivmr_Configuration #{$outputSym}_config = {"
+          outp.puts "   #{$gcDefTrigger},"
+          outp.puts "   #{$gcDefMaxMem},"
+          outp.puts "   #{$gcDefImmortalMem},"
+          outp.puts "   #{$maxThreads},"
+          outp.puts "   #{$saSize},"
+          outp.puts "   #{$gcThreadPriority},"
+          outp.puts "   false" # enableHardRTJ=false for now
+          outp.puts "};"
+        }
+      end
+    end
+    if not $extractCTypes or $computeOffsets
+      mywrite("Makefile") {
+        | outp |
+        outp.puts "CC=#{$sysCC}"
+        outp.puts "CPPFLAGS=#{$cppFlags}"
+        outp.puts "CFLAGS=#{$cflags}"
+        outp.puts "LDFLAGS=#{$sysLdflags}"
+        outp.puts "LIBS=#{$sysLibs}"
+        outp.puts "HOMEDIR=#{$homedir}"
+        if $specializeRuntime
+          outp.puts "RTTARGS="
+        else
+          tag=nil
+          if $debugCflagsEnabled or $rtVerbosityLimit>1 or $rtAssertions
+            tag='debug'
+          else
+            if $optCflagsMode==:speed
+              tag='opt'
+            else
+              tag='small'
+            end
+          end
+          outp.puts "RTTARGS=#{$homedir+'lib'+'targets'+$target+('libfivmr_'+tag+'.a')}"
+        end
+        outp.write "LINKDYNAMIC="
+        $linkDir.each do |dir|
+          outp.write " -L#{dir}"
+        end
+        $linkDynamic.each do |lib|
+          outp.write " -l#{lib}"
+        end
+        outp.puts
+        outp.write "EXTRAINCLUDES="
+        $extraIncludeDir.each do |dir|
+          outp.write " -I#{dir}"
+        end
+        outp.puts
+        
+        genTargets=[]
+        genAsmTargets=[]
+        headers=[]
+        Dir.foreach('.') {
+          | filename |
+          if filename=~/^gen([0-9a-z]+)\.c$/
+            genTargets << $1
+          elsif filename=~/^gen([0-9a-z]+)\.S$/
+            genAsmTargets << $1
+          elsif filename=~/^fivm._([0-9a-z_]+)\.h$/
+            headers << $&
+          end
+        }
+        rtTargets=[]
+        unless $extractCTypes
+          Dir.foreach("#{$homedir+'runtimec'+'src'}") {
+            | filename |
+            if filename=~/^fivmr_([0-9a-z_]+)\.c$/
+              rtTargets << "fivmr_#{$1}.c"
+            elsif $backendArch and filename=~/^fivmr_([0-9a-z_]+)_#{$backendArch.downcase}\.S$/
+              rtTargets << "fivmr_#{$1}_#{$backendArch.downcase}.S"
+            elsif filename=~/^fivmr([0-9a-z_]*)\.h$/
+              headers << "#{$homedir+'runtimec'+'src'+$&}"
+            end
+          }
+        end
+        
+        headerList=headers.join(' ')
+
+        if $processCMacros
+          outp.puts "all: cmacros.conf"
+          outp.puts "clean:"
+          outp.puts "\trm -f cmacros.conf"
+          outp.puts "cmacros.conf: cmacros.conf.c"
+          outp.puts "\techo \"# generated by fivmc #{$version} --process-cmacros\" > cmacros.conf"
+          outp.puts "\techo \"{\" >> cmacros.conf"
+          outp.puts "\t$(CC) -E cmacros.conf.c $(CPPFLAGS) | grep -v -e '^\\(#.*\\|$$\\)' >> cmacros.conf"
+          outp.puts "\techo \"}\" >> cmacros.conf"
+        elsif $extractCTypes
+          outp.puts "all: computeOffsets"
+          outp.puts "clean:"
+          outp.puts "\trm -f computeOffsets *.o"
+          outp.puts "computeOffsets: computeOffsets.o"
+          outp.puts "\t$(CC) -o computeOffsets computeOffsets.o $(LDFLAGS) $(LIBS)"
+          outp.puts "computeOffsets.o: computeOffsets.c #{headerList}"
+          outp.puts "\t$(CC) -c -o computeOffsets.o computeOffsets.c ${CPPFLAGS} ${CFLAGS} ${addlcflags}"
+        else
+          outp.puts "TARGS=\\"
+          
+          if $specializeRuntime
+            if $catRTCode
+              mywrite("fivmr.c") {
+                | outp2 |
+                rtTargets.sort.each {
+                  | name |
+                  if name=~/\.c$/
+                    outp2.puts "# 1 \"#{name}\"" if $linePragma
+                    outp2.puts readall($homedir+'runtimec'+'src'+name)
+                  end
+                }
+              }
+              outp.puts "fivmr.o\\"
+            end
+            rtTargets.sort.each {
+              | name |
+              if name=~/\.S$/ or not $catRTCode
+                outp.puts "#{cleanExt(name)}.o\\"
+              end
+            }
+          end
+          genTargets.sort.each {
+            | name |
+            if name =~ /code/
+              outp.puts "gen#{name}.o\\"
+            end
+          }
+          genTargets.sort.each {
+            | name |
+            if name !~ /code/
+              outp.puts "gen#{name}.o\\"
+            end
+          }
+          genAsmTargets.sort.each {
+            | name |
+            outp.puts "gen#{name}.o\\"
+          }
+          if $buildType=='EXE'
+            outp.puts "main.o\\"
+          end
+          $link.each {
+            | linkable |
+            outp.puts "#{linkable}\\"
+          }
+          $linkedPayloads.each {
+            | linkable |
+            outp.puts "#{workingDir+linkable}.a\\"
+          }
+          outp.puts
+          if $buildType=='EXE'
+            outp.puts "all: fivm#{$binExt}"
+            outp.puts "fivm#{$binExt}: $(TARGS)"
+            outp.puts "\t$(CC) -o fivm $(TARGS) $(RTTARGS) $(LDFLAGS) $(LIBS) $(LINKDYNAMIC)"
+            outp.puts "clean:"
+            outp.puts "\trm -f fivm#{$binExt} *.o"
+          elsif $buildType=='PAYLOAD'
+            outp.puts "all: libfivm.a"
+            outp.puts "libfivm.a: $(TARGS)"
+            outp.puts "\t$(AR) cr libfivm.a $(TARGS)"
+            outp.puts "\tranlib libfivm.a" # FIXME!  need to find ranlib
+            outp.puts "clean:"
+            outp.puts "\trm -f libfivm.a *.o"
+          end
+          
+          def cctarget(outp,targname,srcname,headerList,addlcflags)
+            outp.puts "#{targname}.o: #{srcname} #{headerList}"
+            if $dumpAsm and srcname.to_s !~ /[sS]$/
+              outp.puts "\t$(CC) -S -o #{targname}.s #{srcname} $(CPPFLAGS) $(CFLAGS) $(EXTRAINCLUDES) #{addlcflags}"
+              outp.puts "\t$(CC) -c -o #{targname}.o #{targname}.s $(CPPFLAGS) $(CFLAGS) $(EXTRAINCLUDES) #{addlcflags}"
+            else
+              outp.puts "\t$(CC) -c -o #{targname}.o #{srcname} $(CPPFLAGS) $(CFLAGS) $(EXTRAINCLUDES) #{addlcflags}"
+            end
+            outp.puts "\t@echo done with #{targname}.o"
+          end
+          
+          if $buildType=='EXE'
+            cctarget(outp,"main",
+                     $homedir+'runtimec'+'mains'+('fivmr_'+$sysOSFlavor.downcase+'_main.c'),
+                     headerList,$sysWarnCflags)
+          end
+          genTargets.each {
+            | name |
+            cctarget(outp,"gen#{name}","gen#{name}.c",headerList,$sysNowarnCflags)
+          }
+          genAsmTargets.each {
+            | name |
+            cctarget(outp,"gen#{name}","gen#{name}.S",headerList,$sysNowarnCflags)
+          }
+          if $buildType=='EXE'
+            if $catRTCode
+              cctarget(outp,"fivmr","fivmr.c",headerList,$sysWarnCflags)
+            end
+            rtTargets.each {
+              | name |
+              if name=~/\.S$/ or not $catRTCode
+                cctarget(outp,cleanExt(name),$homedir+'runtimec'+'src'+name,headerList,$sysWarnCflags)
+              end
+            }
+          end
+        end
+      }
+      mymake("clean") if $makeClean
+      mymake("all") if $runMake
+    end
+  }
+  if $runMake and not $processCMacros and not $extractCTypes
+    if $buildType=='EXE'
+      mysystem("mv #{escapeForShell($builddir+('fivm'+$binExt))} #{escapeForShell($output)}")
+    else
+      mysystem("mv #{escapeForShell($builddir+('libfivm.a'))} #{escapeForShell($output)}")
+    end
+  end
+  if $processCMacros
+    # mysystem("#{escapeForShell($builddir+'poundDefineExtractor')} > #{escapeForShell($output)}")
+    mysystem("mv #{escapeForShell($builddir+'cmacros.conf')} #{escapeForShell($output)}")
+  end
+  if $extractCTypes
+    if $computeOffsets
+      mypiperead(escapeForShell($builddir+'computeOffsets')) {
+        | inp |
+        $ctypeData=FijiConfig::parse(inp.read)
+      }
+      
+      $ctypeData['cfields'].each {
+        | entry |
+        $ctypes['cfields'].each {
+          | entry2 |
+          if entry2['name']==entry['name'] and
+              entry2['struct']==entry['struct']
+            entry2['offsetof']=entry['offsetof']
+          end
+        }
+      }
+      
+      $ctypeData['ctypes'].each {
+        | entry |
+        $ctypes['ctypes'].each {
+          | entry2 |
+          if entry2['name']==entry['name']
+            entry2['sizeof']=entry['sizeof']
+          end
+        }
+      }
+    end
+    
+    mywrite($output) {
+      | outp |
+      outp.puts FijiConfig::dumpPrettyWithMsg($ctypes,"generated by fivmc #{$version}")
+    }
+  end
+  
+  if $delBuildDir
+    mysystem "rm -rf #{escapeForShell($builddir)}"
+  end
+rescue => e
+  fail(e)
+end
+
+

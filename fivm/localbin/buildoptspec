@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -e
+
+localbindir=`dirname $0`
+
+echo "Compiling compress..."
+$localbindir/../bin/fivmc -o compress . -m SpecApplication -G cmr --more-opt --no-default-reflect --reflect $localbindir/../lib/spec_compress.reflectLog
+
+echo "Compiling jess..."
+$localbindir/../bin/fivmc -o jess . -m SpecApplication -G cmr --more-opt --no-default-reflect --reflect $localbindir/../lib/spec_jess.reflectLog
+
+echo "Compiling db..."
+$localbindir/../bin/fivmc -o db . -m SpecApplication -G cmr --more-opt --no-default-reflect --reflect $localbindir/../lib/spec_db.reflectLog
+
+echo "Compiling javac..."
+$localbindir/../bin/fivmc -o javac . -m SpecApplication -G cmr --more-opt --no-default-reflect --reflect $localbindir/../lib/spec_javac.reflectLog
+
+echo "Compiling mpegaudio..."
+$localbindir/../bin/fivmc -o mpegaudio . -m SpecApplication -G cmr --more-opt --no-default-reflect --reflect $localbindir/../lib/spec_mpegaudio.reflectLog
+
+echo "Compiling mtrt..."
+$localbindir/../bin/fivmc -o mtrt . -m SpecApplication -G cmr --more-opt --no-default-reflect --reflect $localbindir/../lib/spec_mtrt.reflectLog
+
+echo "Compiling jack..."
+$localbindir/../bin/fivmc -o jack . -m SpecApplication -G cmr --more-opt --no-default-reflect --reflect $localbindir/../lib/spec_jack.reflectLog
+
+./compress _201_compress
+./jess _202_jess
+./db _209_db
+./javac _213_javac
+./mpegaudio _222_mpegaudio
+./mtrt _227_mtrt
+./jack _228_jack
+
+
