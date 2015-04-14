@@ -4,6 +4,8 @@
       <root url="jar://$PROJECT_DIR$/../../fivm/lib/fivmcommon.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../fivm/lib/fivmr.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../fivm/lib/fivmtest.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../fivm/lib/rtsj.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
