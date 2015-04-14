@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="fivmcommon">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../fivm/lib/fivmcommon.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../fivm/lib/fivmr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
