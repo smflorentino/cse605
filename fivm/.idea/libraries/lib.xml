@@ -23,6 +23,42 @@
     <SOURCES>
       <root url="file://$PROJECT_DIR$/fijicore/src" />
       <root url="file://$PROJECT_DIR$/runtimej/src" />
+      <root url="file://$PROJECT_DIR$/RTSJ/src" />
+      <root url="file://$PROJECT_DIR$/bottomup/generated" />
+      <root url="file://$PROJECT_DIR$/bottomup/src" />
+      <root url="file://$PROJECT_DIR$/common/src" />
+      <root url="file://$PROJECT_DIR$/compiler/generated" />
+      <root url="file://$PROJECT_DIR$/compiler/src" />
+      <root url="file://$PROJECT_DIR$/cpopt/src" />
+      <root url="file://$PROJECT_DIR$/cpruntime/src" />
+      <root url="file://$PROJECT_DIR$/fast-md5/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/adapt/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/analysis/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/annotations/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/attributes/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/compile/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/dependencies/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/helloworld/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/examples/jbfc/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/src" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/test/conform" />
+      <root url="file://$PROJECT_DIR$/fiji-asm/test/perf" />
+      <root url="file://$PROJECT_DIR$/fijicore/src" />
+      <root url="file://$PROJECT_DIR$/fijirt/src" />
+      <root url="file://$PROJECT_DIR$/hardrtj/src" />
+      <root url="file://$PROJECT_DIR$/jdk/java/src" />
+      <root url="file://$PROJECT_DIR$/runner/src" />
+      <root url="file://$PROJECT_DIR$/runtimej/src" />
+      <root url="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/common/src" />
+      <root url="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/fiji/src" />
+      <root url="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/s3/ovm/src" />
+      <root url="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/spec/common/src" />
+      <root url="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/spec/fiji/src" />
+      <root url="file://$PROJECT_DIR$/scjruntime/src" />
+      <root url="file://$PROJECT_DIR$/test/java/generated" />
+      <root url="file://$PROJECT_DIR$/test/java/src" />
+      <root url="file://$PROJECT_DIR$/testhardrtj" />
+      <root url="file://$PROJECT_DIR$/util/java/src" />
     </SOURCES>
   </library>
 </component>

@@ -1,3 +1,0 @@
-#!/bin/sh
-set -e
-/home/scottflo/fivm/bin/fivmc -o hello src/build/test/HelloArray.class src/build/test/Kaymar.class --no-opt -v 1 "$@"

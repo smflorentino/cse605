@@ -427,7 +427,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/scottflo/fivm'
+ac_pwd='/home/scottflo/repos/cse605/fivm'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 test -n "$AWK" || AWK=awk
@@ -603,9 +603,9 @@ S["FIJI_CLASSPATH_FETCH"]=""
 S["URL_FETCH"]=""
 S["_fiji_have_curl"]=""
 S["_fiji_have_wget"]=""
-S["FIJI_JAVA_COMPILER"]="/home/scottflo/fivm/ecj/ecj"
+S["FIJI_JAVA_COMPILER"]="/home/scottflo/repos/cse605/fivm/ecj/ecj"
 S["RUBY"]="ruby"
-S["FIJI_ECJ_JAR"]="/home/scottflo/fivm/ecj/ecj-3.5.1.jar"
+S["FIJI_ECJ_JAR"]="/home/scottflo/repos/cse605/fivm/ecj/ecj-3.5.1.jar"
 S["JAR"]="jar"
 S["JAVA"]="java"
 S["INSTALL_DATA"]="${INSTALL} -m 644"

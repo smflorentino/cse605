@@ -5765,13 +5765,13 @@ isError = yes
 #undef _0
 _0 = yes
 #endif
-#ifdef putField
-#undef putField
-putField = yes
-#endif
 #ifdef fivmr_VM_resetSettings
 #undef fivmr_VM_resetSettings
 fivmr_VM_resetSettings = yes
+#endif
+#ifdef putField
+#undef putField
+putField = yes
 #endif
 #ifdef _1
 #undef _1
@@ -12677,13 +12677,13 @@ nthrowable = yes
 #undef fivmr_GC_resetStats
 fivmr_GC_resetStats = yes
 #endif
-#ifdef throwExceptionInInitializerError
-#undef throwExceptionInInitializerError
-throwExceptionInInitializerError = yes
-#endif
 #ifdef fivmr_MethodRec_result
 #undef fivmr_MethodRec_result
 fivmr_MethodRec_result = yes
+#endif
+#ifdef throwExceptionInInitializerError
+#undef throwExceptionInInitializerError
+throwExceptionInInitializerError = yes
 #endif
 #ifdef breakpoint
 #undef breakpoint
@@ -12781,13 +12781,13 @@ period_ = yes
 #undef HOUR_OF_DAY
 HOUR_OF_DAY = yes
 #endif
-#ifdef getArguments
-#undef getArguments
-getArguments = yes
-#endif
 #ifdef loadLong
 #undef loadLong
 loadLong = yes
+#endif
+#ifdef getArguments
+#undef getArguments
+getArguments = yes
 #endif
 #ifdef stackHeight
 #undef stackHeight
@@ -13925,13 +13925,13 @@ matchedNewLine = yes
 #undef csUnicode
 csUnicode = yes
 #endif
-#ifdef abortOOME
-#undef abortOOME
-abortOOME = yes
-#endif
 #ifdef fivmr_SPC_incBarrierFastPath
 #undef fivmr_SPC_incBarrierFastPath
 fivmr_SPC_incBarrierFastPath = yes
+#endif
+#ifdef abortOOME
+#undef abortOOME
+abortOOME = yes
 #endif
 #ifdef True
 #undef True

@@ -1,2 +1,0 @@
-/home/scottflo/scratch/src/build/test/HelloArray.class
-/home/scottflo/scratch/src/build/test/Kaymar.class

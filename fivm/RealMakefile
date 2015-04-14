@@ -13,7 +13,7 @@ RUBY=ruby
 TARGETALIAS=$(TARGET)
 URL_FETCH=
 
-FIJI_JAVA_COMPILER="/home/scottflo/fivm/ecj/ecj"
+FIJI_JAVA_COMPILER="/home/scottflo/repos/cse605/fivm/ecj/ecj"
 
 FIJI_CLASSPATH_FETCH=
 FIJI_CLASSPATH_VERSION=

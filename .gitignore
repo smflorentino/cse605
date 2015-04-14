@@ -32,3 +32,4 @@
 *.dSYM/
 
 tools/hello.build
+tools/myprog.build

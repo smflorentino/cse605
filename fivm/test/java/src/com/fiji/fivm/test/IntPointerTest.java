@@ -8,9 +8,9 @@ import com.fiji.fivm.r1.Pointer;
 public class IntPointerTest {
     public static void main(String[] args)
     {
-        Pointer p = Pointer.parsePointer("asd");
-        int x = (int) p.zero();
-
+//        Pointer p = Pointer.parsePointer("asd");
+//        int x = (int) p.zero();
+//
     }
 
 }

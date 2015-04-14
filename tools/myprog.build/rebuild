@@ -1,3 +1,0 @@
-#!/bin/sh
-set -e
-/home/scottflo/fivm/bin/fivmc -o myprog -m com/fiji/fivm/test/GetIntFieldTest /home/scottflo/fivm/lib/fivmtest.jar -v 1 "$@"
