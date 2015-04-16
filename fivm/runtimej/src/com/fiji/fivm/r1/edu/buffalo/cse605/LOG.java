@@ -13,10 +13,20 @@ public class LOG {
     private static int debugLevel;
 
     static {
+        initialize();
+    }
+
+    public static void initialize()
+    {
         debugLevel = 0x00000000;
+        String debugEnv = System.getenv("FIVMR_JAVA_DEBUG_LEVEL");
+        if(debugEnv == null || debugEnv.equals(""))
+        {
+            debugEnv = "0";
+        }
         try
         {
-            debugLevel = Integer.parseInt(System.getenv("FIVMR_JAVA_DEBUG_LEVEL"));
+            debugLevel = Integer.parseInt(debugEnv);
         }
         catch(NumberFormatException e)
         {
@@ -27,6 +37,7 @@ public class LOG {
 
     public static void info(int msgLevel, String msg)
     {
+//        fivmr_Log_javaLockedPrint(msgLevel, msg);
         if((debugLevel & msgLevel) > 0)
         {
             message = msg;
@@ -37,4 +48,6 @@ public class LOG {
         }
     }
 
+//    @RuntimeImport
+//    public static native void fivmr_Log_javaLockedPrint(final int level, final String msg);
 }

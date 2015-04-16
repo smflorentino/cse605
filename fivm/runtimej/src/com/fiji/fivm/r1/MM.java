@@ -1490,7 +1490,7 @@ public class MM {
                 allocSpace,typeData,numEle,eleSize,
                 computeArrayPayloadSize(allocSpace,numEle,eleSize));
 	} else if (Settings.SCOPED_MEMORY&&sharedArea(allocSpace)) {
-        LOG.info(LOG.DEBUG_MM, "Attempting Slow ArrayAlloc - MM.java:1494");
+//        LOG.info(LOG.DEBUG_MM, "Attempting Slow ArrayAlloc - MM.java:1494");
 	    object=allocArraySlow(allocSpace,typeData,numEle);
         } else {
             Pointer unalignedSize=computeArraySize(allocSpace,numEle,eleSize);
@@ -1517,7 +1517,7 @@ public class MM {
 						     typeData,
 						     numEle);
 		}
-        LOG.info(LOG.DEBUG_MM, "Attempting slow array alloc - MM.java:1520");
+//        LOG.info(LOG.DEBUG_MM, "Attempting slow array alloc - MM.java:1520");
 		object=allocArraySlow(allocSpace,typeData,numEle);
 		if (Settings.INTERNAL_INST && !Settings.HFGC_ALL_ARRAYLETS) {
 		    FIVMR_II_AFTER_ALLOC_ARRAY_SLOW(Magic.curThreadState(),

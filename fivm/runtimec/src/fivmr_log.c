@@ -39,6 +39,7 @@
  */
 
 #include <fivmr.h>
+#include <fivmr_util.h>
 
 void fivmr_Log_printf(const char *msg,...) {
     va_list lst;
@@ -62,4 +63,10 @@ void fivmr_Log_lockedPrintf(const char *msg,...) {
 
 void fivmr_Log_lockedPrint(const char *msg) {
     fivmr_Log_lockedPrintf("%s",msg);
+}
+
+void fivmr_Log_javaLockedPrint(const int level, const char *msg) {
+    if(DEBUGGING(level)) {
+        fivmr_Log_lockedPrint(msg);
+    }
 }

@@ -121,6 +121,7 @@ void fivmr_Log_printf(const char *msg,...);
 void fivmr_Log_print(const char *msg);
 void fivmr_Log_lockedPrintf(const char *msg,...);
 void fivmr_Log_lockedPrint(const char *msg);
+void fivmr_Log_javaLockedPrint(const int level, const char *msg);
 
 static inline int fivmr_Log_getLevel(void) {
 #if !FIVMR_POSIX
