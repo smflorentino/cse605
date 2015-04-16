@@ -1,0 +1,110 @@
+Fiji VM Instructions
+
+I have given you an account on the Fiji source repository. This will
+allow you to check out a development version of the Fiji VM that we will
+keep up to date with changes on our end that would affect your work.
+
+ 
+
+The URL to your repository is for non RTDroid groups is:
+
+ 
+
+ssh://hg@hg.fiji-systems.com/edu/buffalo/fivm-academic
+
+ 
+
+For the RTDroid groups your repository is:
+
+ 
+
+ssh://hg@hg.fiji-systems.com/edu/buffalo/android/fivm-rtdroid
+
+ 
+
+You can use the attached fetchfivm script to check it and some
+associated sources out into a working directory, using the command:
+
+ 
+
+./fetchfivm <URL> <destdir>
+
+ 
+
+The <URL> parameter is the URL above (or another Fiji VM repository, if
+you have access to more than one), and <destdir> is the directory into
+which to perform the checkout, defaulting to 'fivm' in the current
+directory.
+
+ 
+
+Building the Fiji VM will require:
+
+ 
+
+* A working C compiler
+* Ruby 1.8.x or 1.9.x
+* A Java runtime and jar command
+* GNU autoconf
+* GNU automake (for aclocal)
+* The 'time' command
+
+ 
+
+These are all available on any modern Linux distribution. On a
+Debian-derived distribution (including Ubuntu, Mint, etc.), you can
+fetch the requirements with:
+
+ 
+
+sudo apt-get install build-essential ruby default-jdk autoconf time
+
+ 
+
+Note that several Fiji features assume that a 32-bit build environment
+is available for the local host architecture. If you are using a 64-bit
+
+ 
+
+Linux environment, this means you will need to install the 32-bit
+compiler and minimal runtime support. Again, for a Debian-derived
+distribution, you can accomplish this by:
+
+ 
+
+sudo apt-get install gcc-multilib
+
+ 
+
+Once you have checked out the Fiji VM and satisfied the build
+dependencies, build the VM by changing to the checkout directory you
+created above and issuing these commands:
+
+ 
+
+autoreconf -i
+./configure
+make
+
+ 
+
+You will probably want to configure the compiler at this point; see the
+toplevel README file for details. In particular, the Java VM selection,
+processor configuration, and memory configuration options in the
+INSTALLATION section can have a large impact on the performance of the
+compiler (that is, how long it takes to compile your programs; the
+resulting code is unaffected).
+
+ 
+
+You may want to optionally run 'make check' at this point to verify the
+correctness of your build. Be aware that this takes quite some time to
+complete, and will work your machine hard. You probably do NOT want to
+run 'make install', as the Fiji VM runs normally from its build
+directory.
+
+ 
+
+The Fiji VM is now built and ready to go! See the toplevel README file,
+section BASIC USE, for instructions on how to use the compiler. You may
+also find 'fivmc --help' and 'fivmc --more-help' valuable.
