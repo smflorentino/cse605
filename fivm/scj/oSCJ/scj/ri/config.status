@@ -427,7 +427,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/scottflo/fivm/scj/oSCJ/scj/ri'
+ac_pwd='/home/scottflo/repos/cse605/fivm/scj/oSCJ/scj/ri'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 test -n "$AWK" || AWK=awk
@@ -585,7 +585,7 @@ echo 'BEGIN {' >"$ac_tmp/subs1.awk" &&
 cat >>"$ac_tmp/subs1.awk" <<\_ACAWK &&
 S["LTLIBOBJS"]=""
 S["LIBOBJS"]=""
-S["JAVAC"]="/home/scottflo/fivm/ecj/ecj"
+S["JAVAC"]="javac"
 S["JAR"]="jar"
 S["JAVA"]="java"
 S["INSTALL_DATA"]="${INSTALL} -m 644"

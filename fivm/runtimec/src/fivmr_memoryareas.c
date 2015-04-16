@@ -96,6 +96,7 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
 
     if (!ts->gc.scopeBacking) {
         LOG(3,("Thread does not have a backing store."));
+        DEBUG(DB_MEMAREA,("Thread does not have a backing store"));
         return 0;
     }
     /* NB: This must point to the fivmr_MemoryArea created below */

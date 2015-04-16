@@ -1,9 +1,9 @@
 CC=gcc
-CPPFLAGS= -DHAVE_CONFIG_H   -D_REENTRANT -D_GNU_SOURCE -I'/home/scottflo/fivm/runtimec/src' -I'/home/scottflo/fivm/lib/targets/POSIX-linux-gnu-i686-32' -I. -DFIVMBUILD_SPECIALIZING=1 -DFIVMC_COMPILE=1
+CPPFLAGS= -DHAVE_CONFIG_H   -D_REENTRANT -D_GNU_SOURCE -I'/home/scottflo/repos/cse605/fivm/runtimec/src' -I'/home/scottflo/repos/cse605/fivm/lib/targets/POSIX-linux-gnu-i686-32' -I. -DFIVMBUILD_SPECIALIZING=1 -DFIVMC_COMPILE=1
 CFLAGS=  -m32 -m32 -march=i686   -g   -Wno-unused-command-line-argument -O3 -fno-strict-aliasing -fno-optimize-sibling-calls -fomit-frame-pointer -falign-loops -fwrapv -momit-leaf-frame-pointer -msse2 -mfpmath=sse -fno-pic 
 LDFLAGS=   -m32 -m32 -march=i686
 LIBS=-lpthread -ldl -lm 
-HOMEDIR=/home/scottflo/fivm
+HOMEDIR=/home/scottflo/repos/cse605/fivm
 RTTARGS=
 LINKDYNAMIC=
 EXTRAINCLUDES=

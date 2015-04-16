@@ -35,6 +35,10 @@ PATH: /sbin
 PATH: /bin
 PATH: /usr/games
 PATH: /usr/local/games
+PATH: /opt/sublime/sublime
+PATH: /home/scottflo/repos/cse605/fivm/bin
+PATH: /home/scottflo/Downloads/idea-IC-139.1117.1/bin
+PATH: /home/scottflo/apache-maven-3.3.1/bin
 
 
 ## ----------- ##

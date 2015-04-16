@@ -80,6 +80,10 @@ extern int32_t fivmr_logLevel;
 #endif
 
 #if FIVMR_POSIX || FIVMR_WIN32
+extern uint32_t fivmr_debugLevel;
+#endif
+
+#if FIVMR_POSIX || FIVMR_WIN32
 extern const char *fivmr_logFile;
 #endif
 #if FIVMR_POSIX
@@ -149,6 +153,23 @@ static inline int fivmr_Log_getLevel(void) {
 	    fivmr_Log_unlock();						\
 	}								\
     } while (0)
+
+#define DB_MEMAREA 0x001
+
+#define DEBUGGING(level) \
+    ((level & fivmr_debugLevel))
+
+#define DEBUG(level,printfargs) do {          \
+  if (DEBUGGING(level)) {           \
+    fivmr_Log_lock();           \
+    fivmr_Log_printf("fivmr log: (%s:%d) ",__FILE__,__LINE__);  \
+    fivmr_Log_printf printfargs;        \
+    fivmr_Log_printf("\n");         \
+    fivmr_Log_unlock();           \
+  }               \
+    } while (0)
+
+
 
 #define LOGptrconst(level,constName) do {			\
 	LOG(level,(#constName " = %" PRIuPTR,constName));	\

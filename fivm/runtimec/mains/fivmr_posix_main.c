@@ -240,6 +240,8 @@ int main(int c,char **v) {
 
     fivmr_logFile=parseEnvOpt("FIVMR_LOG_FILE",NULL);
     fivmr_logLevel=parseEnvIntOpt("FIVMR_LOG_LEVEL",0);
+    fivmr_debugLevel=parseEnvIntOpt("FIVMR_DEBUG_LEVEL",0);
+    // printf("Debug Level %d",fivmr_debugLevel);
     
     fivmr_fakeRTPriorities=parseEnvBoolOpt("FIVMR_FAKE_RT_PRIORITIES",false);
     

@@ -7669,13 +7669,13 @@ checkName = yes
 #undef ts
 ts = yes
 #endif
-#ifdef detailMessage
-#undef detailMessage
-detailMessage = yes
-#endif
 #ifdef HAVE_SETSOCKOPT
 #undef HAVE_SETSOCKOPT
 HAVE_SETSOCKOPT = yes
+#endif
+#ifdef detailMessage
+#undef detailMessage
+detailMessage = yes
 #endif
 #ifdef payloadsByEntrypoint
 #undef payloadsByEntrypoint
@@ -10053,6 +10053,10 @@ subRM = yes
 #undef OFFSET_FROM_OA_RA_TO_JMP_ADDR
 OFFSET_FROM_OA_RA_TO_JMP_ADDR = yes
 #endif
+#ifdef info
+#undef info
+info = yes
+#endif
 #ifdef INIT_STATE
 #undef INIT_STATE
 INIT_STATE = yes
@@ -10896,6 +10900,10 @@ fivmr_ThreadState_javaThreadObject = yes
 #ifdef getDisplayName
 #undef getDisplayName
 getDisplayName = yes
+#endif
+#ifdef debugLevel
+#undef debugLevel
+debugLevel = yes
 #endif
 #ifdef poke
 #undef poke
@@ -12020,6 +12028,10 @@ sbbRM = yes
 #ifdef jcc_unlinked
 #undef jcc_unlinked
 jcc_unlinked = yes
+#endif
+#ifdef FIVMR_JAVA_DEBUG_LEVEL
+#undef FIVMR_JAVA_DEBUG_LEVEL
+FIVMR_JAVA_DEBUG_LEVEL = yes
 #endif
 #ifdef lookahead
 #undef lookahead

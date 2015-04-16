@@ -42,11 +42,11 @@ package com.fiji.fivm.r1;
 
 import static com.fiji.fivm.Constants.*;
 import com.fiji.fivm.Settings;
+import com.fiji.fivm.r1.edu.buffalo.cse605.LOG;
+
 import static com.fiji.fivm.r1.fivmOptions.*;
 import static com.fiji.fivm.r1.fivmRuntime.*;
 import static com.fiji.fivm.om.OMData.*;
-
-import com.fiji.fivm.r1.FlowLog;
 
 /**
  * The memory management entrypoint implementation.  Memory management is mostly
@@ -463,6 +463,7 @@ public class MM {
     @NoReturn
     @Reflect
     private static void throwOOME() {
+        LOG.info(LOG.DEBUG_MM, "Throwing OOME from MM.java");
         throwOutOfMemoryError_inJava();
     }
     
@@ -480,6 +481,7 @@ public class MM {
         if (numEle<0) {
             throwNASE();
         } else {
+            LOG.info(LOG.DEBUG_MM, "Threw OOME from MM.java:485");
             throwOOME();
         }
     }
@@ -818,6 +820,7 @@ public class MM {
 		    .greaterThan(CType.getPointer(area,
 						  "fivmr_MemoryArea","size"))) {
 		    Magic.unlikely();
+            LOG.info(LOG.DEBUG_MM, "Threw OOME from MM.java:843 - Scope full when allocating Pointer?");
 		    throwOOME();
 		}
 		if (bumpPtr.weakCAS(bump,newBump)) {
@@ -842,6 +845,7 @@ public class MM {
 	}
 
 	if (Settings.SCOPED_MEMORY && !heapArea(allocSpace)) {
+        LOG.info(LOG.DEBUG_MM, "Threw OOME from MM.java:848");
 	    throwOOME();
 	}
 
@@ -852,6 +856,7 @@ public class MM {
         
 	if (allocSpace == stackAllocSpace() ||
 	    CType.getBoolean(getGC(),"fivmr_GC","noMoreHeapAlloc")) {
+        LOG.info(LOG.DEBUG_MM, "Threw OOME from MM.java:859");
 	    throwOOME();
 	    return null; // not reached
         } else if (Settings.HFGC) {
@@ -908,11 +913,13 @@ public class MM {
         }
 	if (Settings.SCOPED_MEMORY && !heapArea(allocSpace)
 	    && !sharedArea(allocSpace)) {
+        LOG.info(LOG.DEBUG_MM, "Threw OOME from MM.java:917");
 	    throwOOME();
 	}
         
 	if (allocSpace == stackAllocSpace() ||
 	    CType.getBoolean(getGC(),"fivmr_GC","noMoreHeapAlloc")) {
+        LOG.info(LOG.DEBUG_MM, "Threw OOME from MM.java:920");
 	    throwOOME();
 	    return null; // not reached
         }
@@ -971,6 +978,7 @@ public class MM {
 		    .greaterThan(CType.getPointer(area,"fivmr_MemoryArea",
 						  "size"))) {
 		    Magic.unlikely();
+            LOG.info(LOG.DEBUG_MM, "Threw OOME from MM.java:979 - Shared Memory Area Exhausted?");
 		    throwOOME();
 		}
 		if (bumpPtr.weakCAS(bump,newBump)) {
@@ -1482,6 +1490,7 @@ public class MM {
                 allocSpace,typeData,numEle,eleSize,
                 computeArrayPayloadSize(allocSpace,numEle,eleSize));
 	} else if (Settings.SCOPED_MEMORY&&sharedArea(allocSpace)) {
+        LOG.info(LOG.DEBUG_MM, "Attempting Slow ArrayAlloc - MM.java:1494");
 	    object=allocArraySlow(allocSpace,typeData,numEle);
         } else {
             Pointer unalignedSize=computeArraySize(allocSpace,numEle,eleSize);
@@ -1508,6 +1517,7 @@ public class MM {
 						     typeData,
 						     numEle);
 		}
+        LOG.info(LOG.DEBUG_MM, "Attempting slow array alloc - MM.java:1520");
 		object=allocArraySlow(allocSpace,typeData,numEle);
 		if (Settings.INTERNAL_INST && !Settings.HFGC_ALL_ARRAYLETS) {
 		    FIVMR_II_AFTER_ALLOC_ARRAY_SLOW(Magic.curThreadState(),

@@ -44,6 +44,7 @@
 
 static pthread_mutex_t logLock;
 int32_t fivmr_logLevel=0;
+uint32_t fivmr_debugLevel=0;
 const char *fivmr_logFile;
 FILE *fivmr_log;
 

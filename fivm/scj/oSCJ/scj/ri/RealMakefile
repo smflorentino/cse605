@@ -1,4 +1,4 @@
-JAVAC=/home/scottflo/fivm/ecj/ecj
+JAVAC=javac
 JAR=jar
 
 include depend.mk

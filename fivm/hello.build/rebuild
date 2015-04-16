@@ -1,3 +1,0 @@
-#!/bin/sh
-set -e
-/home/scottflo/fivm/bin/fivmc -o hello lib/hello.class --sanity-check 1 --quickly -v 1 "$@"

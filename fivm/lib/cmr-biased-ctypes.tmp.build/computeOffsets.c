@@ -371,14 +371,14 @@ int main(int c,char **v) {
           "\"fivmr_MemoryArea\"");
    printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
           "\"POINTER\"",
-          "\"first\"",
-          (unsigned)fivmr_offsetof(fivmr_AllThreadStackTraces,first),
-          "\"fivmr_AllThreadStackTraces\"");
-   printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
-          "\"POINTER\"",
           "\"td_charArr\"",
           (unsigned)fivmr_offsetof(fivmr_Payload,td_charArr),
           "\"fivmr_Payload\"");
+   printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
+          "\"POINTER\"",
+          "\"first\"",
+          (unsigned)fivmr_offsetof(fivmr_AllThreadStackTraces,first),
+          "\"fivmr_AllThreadStackTraces\"");
    printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
           "\"VOID\"",
           "\"gc\"",
@@ -1135,15 +1135,15 @@ int main(int c,char **v) {
           (unsigned)fivmr_offsetof(fivmr_VM,gc),
           "\"fivmr_VM\"");
    printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
-          "\"VOID\"",
-          "\"settings\"",
-          (unsigned)fivmr_offsetof(fivmr_Payload,settings),
-          "\"fivmr_Payload\"");
-   printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
           "\"POINTER\"",
           "\"invCurShaded\"",
           (unsigned)fivmr_offsetof(fivmr_GCData,invCurShaded),
           "\"fivmr_GCData\"");
+   printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
+          "\"VOID\"",
+          "\"settings\"",
+          (unsigned)fivmr_offsetof(fivmr_Payload,settings),
+          "\"fivmr_Payload\"");
    printf("{ basetype = %s; name = %s; offsetof = %u; struct = %s }\n",
           "\"POINTER\"",
           "\"zero\"",
