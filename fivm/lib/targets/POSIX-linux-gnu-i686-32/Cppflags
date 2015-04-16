@@ -1,1 +1,0 @@
-CPPFLAGS= -DHAVE_CONFIG_H   -D_REENTRANT -D_GNU_SOURCE -I'/home/scottflo/repos/cse605/fivm/runtimec/src' -I'/home/scottflo/repos/cse605/fivm/lib/targets/POSIX-linux-gnu-i686-32' -I.

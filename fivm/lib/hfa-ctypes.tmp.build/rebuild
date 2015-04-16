@@ -1,3 +1,3 @@
 #!/bin/sh
 set -e
-/home/scottflo/repos/cse605/fivm/bin/fivmc --target local-32 -o lib/hfa-ctypes.tmp --extract-ctypes --ct-compute-offsets --ct-incl-generated no -A cha -G hf --g-pred-level a -v 1 "$@"
+/home/scottflo/repos/cse605/fivm/bin/fivmc --target local-64 -o lib/hfa-ctypes.tmp --extract-ctypes --ct-compute-offsets --ct-incl-generated no -A cha -G hf --g-pred-level a -v 1 "$@"

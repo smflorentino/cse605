@@ -1,4 +1,4 @@
-#define FIVMSYS_ARCH "i686"
+#define FIVMSYS_ARCH "x86_64"
 #define FIVMSYS_OS "linux-gnu"
 
 #define FIVMR_PROFILE_MONITOR 0
@@ -44,13 +44,13 @@
 #include "fivmc_tag_dep_config.h"
 
 #ifndef FIVMSYS_PTRSIZE
-#define FIVMSYS_PTRSIZE 4
+#define FIVMSYS_PTRSIZE 8
 #endif
 #ifndef FIVMSYS_LOG_PAGE_SIZE
 #define FIVMSYS_LOG_PAGE_SIZE 12
 #endif
 
-#define FIVMR_BACKEND_X86 1
+#define FIVMR_BACKEND_NONE 1
 #ifdef FIVMR_BACKEND_
 #undef FIVMR_BACKEND_
 #endif

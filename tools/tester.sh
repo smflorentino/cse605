@@ -31,7 +31,7 @@ JARS=$FIVM_LIB_DIR/fivmtest.jar
 JARS+=" "
 #JARS+=$FIVM_LIB_DIR/rtsj.jar
 echo "Compiling Bytecode to Native Code..."
-fivmc --jobs 2 --g-scoped-memory -o hello src/build/common/*.class src/build/test1/*.class --no-opt -m test1/FibMain
+fivmc --jobs 4 --g-scoped-memory -o hello src/build/common/*.class src/build/test1/*.class --no-opt -m test1/FibMain
 echo "Done!"
 
 #Unused....

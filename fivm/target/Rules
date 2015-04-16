@@ -87,7 +87,7 @@ fivmr_memoryareas.o\
 fivmr_typeaux.o\
 fivmr_object.o\
 fivmr_logger.o\
-fivmr_asm_x86.o\
+\
 $(POSIXTARGS)
 
 include ../Cppflags

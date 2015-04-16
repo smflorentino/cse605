@@ -350,4 +350,10 @@ int64_t fivmr_MemoryArea_consumed(fivmr_ThreadState *ts,
     }
 }
 
+uintptr_t fivmr_MemoryArea_allocateInt(int32_t val)
+{
+    printf("Hello World!!!!!");
+    return (uintptr_t) NULL;
+}
+
 

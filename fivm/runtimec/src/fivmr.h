@@ -4966,6 +4966,9 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
     }
 }
 
+/* Support for Unmanaged Data in Memory Areas */
+uintptr_t fivmr_MemoryArea_allocateInt(int32_t val);
+
 void fivmr_ScopeBacking_alloc(fivmr_ThreadState *ts, uintptr_t size);
 
 void fivmr_ScopeBacking_free(fivmr_ThreadState *ts);

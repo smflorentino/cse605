@@ -1,4 +1,4 @@
-#define FIVMSYS_ARCH "i686"
+#define FIVMSYS_ARCH "x86_64"
 #define FIVMSYS_OS "linux-gnu"
 
 #define FIVMR_PROFILE_MONITOR 0
