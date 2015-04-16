@@ -36,3 +36,4 @@ tools/myprog.build
 tools/hello
 tools/myprog
 *~
+tools/src/build
