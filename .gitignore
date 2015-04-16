@@ -44,4 +44,4 @@ fivm/runtimej/build/*
 fivm/lib/targets/*
 fivm/config.log/*
 fivm/bottomup/generated/*
-
+fivm/lib/ctypes-64.conf
