@@ -1,4 +1,6 @@
 #/bin/bash
+#Specify Fiji Home
+FIJI_HOME=/home/scottflo/repos/cse605/fivm
 #Specify the Java compiler to use
 FIJI_JAVA_COMPILER=$FIJI_HOME/ecj/ecj
 
