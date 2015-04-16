@@ -33,3 +33,6 @@
 
 tools/hello.build
 tools/myprog.build
+tools/hello
+tools/myprog
+
