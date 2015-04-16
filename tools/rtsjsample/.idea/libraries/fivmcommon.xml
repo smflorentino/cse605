@@ -6,8 +6,12 @@
       <root url="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../fivm/lib/fivmtest.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../fivm/lib/rtsj.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../fivm/lib/fijiscj.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../../fivm/runtimej/src" />
+      <root url="file://$PROJECT_DIR$/../../fivm/runtimej/src" />
+    </SOURCES>
   </library>
 </component>
