@@ -37,3 +37,11 @@ tools/hello
 tools/myprog
 *~
 tools/src/build
+fivm/lib/targets
+fivm/target
+fivm/test/java/build
+fivm/runtimej/build
+fivm/lib/targets
+fivm/config.log
+fivm/bottomup/generated
+
