@@ -45,3 +45,6 @@ fivm/lib/targets/*
 fivm/config.log/*
 fivm/bottomup/generated/*
 fivm/lib/ctypes-64.conf
+fivm/config.log
+fivm/bottomup/generated/com/fiji/fivm/bottomup/*.java
+tools/src/build/test1/*.class
