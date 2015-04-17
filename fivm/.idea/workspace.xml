@@ -2,204 +2,75 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c996f1da-94e5-438a-ab25-760b13f24423" name="Default" comment="">
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\Cppflags" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\cmacros.conf" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\small\fivmc_tag_dep_config.h" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\cmacros.conf.build\Makefile" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\target.conf" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\small\Makefile" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\Rules" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\fivmcrc" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\cmacros.conf.build\cmacros.conf.c" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\target-results.conf" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\debug\fivmc_tag_dep_config.h" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\cmacros.conf.build\inputFiles" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\opt\fivmc_tag_dep_config.h" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\opt\Makefile" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\cmacros.conf.build\makeLog" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\fivmr_target.h" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\debug\Makefile" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\fivmr_asm_defs.h" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\cmacros.conf.build\remake" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\cmacros.conf.build\rebuild" afterPath="" />
-      <change type="DELETED" beforePath="G:\repos\cse605\fivm\lib\targets\POSIX-linux-gnu-i686-32\fivmc_def_config.h" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/changeversion" afterPath="$PROJECT_DIR$/localbin/changeversion" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/depend.mk" afterPath="$PROJECT_DIR$/depend.mk" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport1.conf" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport1.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecLexer.java" afterPath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecLexer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/verifyspec" afterPath="$PROJECT_DIR$/localbin/verifyspec" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/pullcleanscj" afterPath="$PROJECT_DIR$/localbin/pullcleanscj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-hfgc-64-a" afterPath="$PROJECT_DIR$/localbin/testspec-hfgc-64-a" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/junkclean" afterPath="$PROJECT_DIR$/localbin/junkclean" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/lang/ref/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/lang/ref/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_config.h" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/scj.jar" afterPath="$PROJECT_DIR$/lib/scj.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/simplediff" afterPath="$PROJECT_DIR$/localbin/simplediff" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/util/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/util/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ctypes-32.conf" afterPath="$PROJECT_DIR$/lib/ctypes-32.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmrunner.jar" afterPath="$PROJECT_DIR$/lib/fivmrunner.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/until_fail.rb" afterPath="$PROJECT_DIR$/localbin/until_fail.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/configure" afterPath="$PROJECT_DIR$/configure" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/prettyPrintConfig" afterPath="$PROJECT_DIR$/localbin/prettyPrintConfig" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/verifysuccess-lenient" afterPath="$PROJECT_DIR$/localbin/verifysuccess-lenient" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/add-target" afterPath="$PROJECT_DIR$/bin/add-target" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ecj/ecj.in" afterPath="$PROJECT_DIR$/ecj/ecj.in" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/c/jni/configure" afterPath="$PROJECT_DIR$/test/c/jni/configure" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_config.h" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/mtgctest2-torture" afterPath="$PROJECT_DIR$/localbin/mtgctest2-torture" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/remake" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/remake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/localconf" afterPath="$PROJECT_DIR$/localbin/localconf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/tester.sh" afterPath="$PROJECT_DIR$/../tools/tester.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hardrtj.jar" afterPath="$PROJECT_DIR$/lib/hardrtj.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/bottomup" afterPath="$PROJECT_DIR$/localbin/bottomup" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/fijivm" afterPath="$PROJECT_DIR$/bin/fijivm" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/build/com/fiji/fivm/r1/MemoryAreas.class" afterPath="$PROJECT_DIR$/runtimej/build/com/fiji/fivm/r1/MemoryAreas.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/bottomup.jar" afterPath="$PROJECT_DIR$/lib/bottomup.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/replace_all.rb" afterPath="$PROJECT_DIR$/localbin/replace_all.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/config.conf" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/config.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmcommon.jar" afterPath="$PROJECT_DIR$/lib/fivmcommon.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_compile_info.h" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_compile_info.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-fijivm-debug-o0cfa" afterPath="$PROJECT_DIR$/localbin/testspec-fijivm-debug-o0cfa" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/rtemsifyFiles" afterPath="$PROJECT_DIR$/localbin/rtemsifyFiles" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-fijivm-debug" afterPath="$PROJECT_DIR$/localbin/testspec-fijivm-debug" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-noopt" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-noopt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/prependnotice.rb" afterPath="$PROJECT_DIR$/localbin/prependnotice.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/configure" afterPath="$PROJECT_DIR$/target/configure" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-fijivm-basic" afterPath="$PROJECT_DIR$/localbin/testspec-fijivm-basic" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/Rules" afterPath="$PROJECT_DIR$/target/Rules" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/computeOffsets" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/computeOffsets" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fiji-asm.jar" afterPath="$PROJECT_DIR$/lib/fiji-asm.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/makeLog" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/makeLog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-64" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-64" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-selfman" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-selfman" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/build/com/fiji/fivm/r1/unmanaged/UMInteger.class" afterPath="$PROJECT_DIR$/runtimej/build/com/fiji/fivm/r1/unmanaged/UMInteger.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/flowlog_dump" afterPath="$PROJECT_DIR$/localbin/flowlog_dump" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/remake" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/remake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/config.status" afterPath="$PROJECT_DIR$/target/config.status" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/nio/channels/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/nio/channels/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/remake" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/remake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/ctypesystemReferences.conf" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/ctypesystemReferences.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-noifacecomp" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-noifacecomp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/pullmake" afterPath="$PROJECT_DIR$/localbin/pullmake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-fragmented" afterPath="$PROJECT_DIR$/localbin/testspec-fragmented" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/pushto" afterPath="$PROJECT_DIR$/localbin/pushto" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport1.conf" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport1.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/resolutionReport1.conf" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/resolutionReport1.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.status" afterPath="$PROJECT_DIR$/config.status" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_config.h" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/debug/Makefile" afterPath="$PROJECT_DIR$/target/debug/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/lang/annotation/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/lang/annotation/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_c1_config.h" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_c1_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/lang/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/lang/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-typeepoch" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-typeepoch" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/config.log" afterPath="$PROJECT_DIR$/target/config.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-hfgc-simple" afterPath="$PROJECT_DIR$/localbin/testspec-hfgc-simple" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/ruby/genMultiANewArrayNDim.rb" afterPath="$PROJECT_DIR$/test/ruby/genMultiANewArrayNDim.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/makeLog" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/makeLog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/build/com/fiji/fivm/r1/MM.class" afterPath="$PROJECT_DIR$/runtimej/build/com/fiji/fivm/r1/MM.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/autom4te.cache/requests" afterPath="$PROJECT_DIR$/autom4te.cache/requests" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/c/mvm/configure" afterPath="$PROJECT_DIR$/test/c/mvm/configure" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fijicore.jar" afterPath="$PROJECT_DIR$/lib/fijicore.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fijirt.jar" afterPath="$PROJECT_DIR$/lib/fijirt.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fijiscj.jar" afterPath="$PROJECT_DIR$/lib/fijiscj.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmc.jar" afterPath="$PROJECT_DIR$/lib/fivmc.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmcommon.jar" afterPath="$PROJECT_DIR$/lib/fivmcommon.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmr.jar" afterPath="$PROJECT_DIR$/lib/fivmr.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmrunner.jar" afterPath="$PROJECT_DIR$/lib/fivmrunner.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmtest.jar" afterPath="$PROJECT_DIR$/lib/fivmtest.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmutil.jar" afterPath="$PROJECT_DIR$/lib/fivmutil.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hardrtj.jar" afterPath="$PROJECT_DIR$/lib/hardrtj.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/makeLog" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/makeLog" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/rtsj.jar" afterPath="$PROJECT_DIR$/lib/rtsj.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/scj.jar" afterPath="$PROJECT_DIR$/lib/scj.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.numberOfProcessors" afterPath="$PROJECT_DIR$/.numberOfProcessors" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecLexer.java" afterPath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecLexer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecParser.java" afterPath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/Makefile" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/Makefile" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/Makefile" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets.c" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets.c" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets.c" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/computeOffsets.c" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/computeOffsets.c" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/config.conf" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/config.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/rtsj.jar" afterPath="$PROJECT_DIR$/lib/rtsj.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/ruby/runAllocLock.rb" afterPath="$PROJECT_DIR$/test/ruby/runAllocLock.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/install-sh" afterPath="$PROJECT_DIR$/install-sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/c/tree/configure" afterPath="$PROJECT_DIR$/test/c/tree/configure" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/runspec" afterPath="$PROJECT_DIR$/localbin/runspec" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/mknotices.rb" afterPath="$PROJECT_DIR$/localbin/mknotices.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmr.jar" afterPath="$PROJECT_DIR$/lib/fivmr.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-nogc" afterPath="$PROJECT_DIR$/localbin/testspec-nogc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-hfgc-glibj" afterPath="$PROJECT_DIR$/localbin/testspec-hfgc-glibj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/combineCTypes" afterPath="$PROJECT_DIR$/localbin/combineCTypes" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/net/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/net/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimec/src/fivmr.h" afterPath="$PROJECT_DIR$/runtimec/src/fivmr.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport2.conf" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport2.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/allsrc" afterPath="$PROJECT_DIR$/localbin/allsrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fijiscj.jar" afterPath="$PROJECT_DIR$/lib/fijiscj.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/Makefile" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_c1_config.h" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_c1_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-biased" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-biased" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/hgversion" afterPath="$PROJECT_DIR$/localbin/hgversion" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/ctypesystemReferences.conf" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/ctypesystemReferences.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/buildoptspec" afterPath="$PROJECT_DIR$/localbin/buildoptspec" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecParser.java" afterPath="$PROJECT_DIR$/bottomup/generated/com/fiji/fivm/bottomup/BottomUpVisitorSpecParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/cleanbuild" afterPath="$PROJECT_DIR$/localbin/cleanbuild" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimec/src/fivmr_memoryareas.c" afterPath="$PROJECT_DIR$/runtimec/src/fivmr_memoryareas.c" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-cha" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-cha" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/pullbuild" afterPath="$PROJECT_DIR$/localbin/pullbuild" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmc.jar" afterPath="$PROJECT_DIR$/lib/fivmc.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/opt/Makefile" afterPath="$PROJECT_DIR$/target/opt/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/fivmr_target.h" afterPath="$PROJECT_DIR$/target/fivmr_target.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/target-results.conf" afterPath="$PROJECT_DIR$/target/target-results.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets.c" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets.c" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/fivmcrc" afterPath="$PROJECT_DIR$/target/fivmcrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.log" afterPath="$PROJECT_DIR$/config.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/c/mt/install-sh" afterPath="$PROJECT_DIR$/test/c/mt/install-sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMPrimitive.java" afterPath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMPrimitive.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-custom" afterPath="$PROJECT_DIR$/localbin/testspec-custom" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util/c/getNumProcs/getNumProcs" afterPath="$PROJECT_DIR$/util/c/getNumProcs/getNumProcs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/small/Makefile" afterPath="$PROJECT_DIR$/target/small/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-fijivm-debug-hfa" afterPath="$PROJECT_DIR$/localbin/testspec-fijivm-debug-hfa" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-glibj" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-glibj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.sub" afterPath="$PROJECT_DIR$/config.sub" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/c/mvm/autom4te.cache/requests" afterPath="$PROJECT_DIR$/test/c/mvm/autom4te.cache/requests" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/java/build/jasmin.log" afterPath="$PROJECT_DIR$/test/java/build/jasmin.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport2.conf" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport2.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/rebuild" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/rebuild" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-cmrgc-simple" afterPath="$PROJECT_DIR$/localbin/testspec-cmrgc-simple" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/Makefile" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets.c" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/computeOffsets.c" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/rebuild" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/rebuild" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.numberOfProcessors" afterPath="$PROJECT_DIR$/.numberOfProcessors" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-hfgc-64" afterPath="$PROJECT_DIR$/localbin/testspec-hfgc-64" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/computeOffsets" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/computeOffsets" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/build-rtems-mtsg" afterPath="$PROJECT_DIR$/localbin/build-rtems-mtsg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_compile_info.h" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_compile_info.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/root-check" afterPath="$PROJECT_DIR$/localbin/root-check" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-fijivm-debug-hf" afterPath="$PROJECT_DIR$/localbin/testspec-fijivm-debug-hf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec" afterPath="$PROJECT_DIR$/localbin/testspec" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/lang/reflect/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/lang/reflect/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/emacs-format" afterPath="$PROJECT_DIR$/localbin/emacs-format" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmc_def_config.h" afterPath="$PROJECT_DIR$/lib/fivmc_def_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/uniq" afterPath="$PROJECT_DIR$/localbin/uniq" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/pullcleantestmake" afterPath="$PROJECT_DIR$/localbin/pullcleantestmake" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/target.conf" afterPath="$PROJECT_DIR$/target/target.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/computeOffsets" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-hfgc" afterPath="$PROJECT_DIR$/localbin/testspec-hfgc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/testspec-hfgc-noopt" afterPath="$PROJECT_DIR$/localbin/testspec-hfgc-noopt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/list-targets" afterPath="$PROJECT_DIR$/localbin/list-targets" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/ruby/runBiasedLockExplosion.rb" afterPath="$PROJECT_DIR$/test/ruby/runBiasedLockExplosion.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_compile_info.h" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_compile_info.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/nio/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/nio/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmutil.jar" afterPath="$PROJECT_DIR$/lib/fivmutil.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/rebuild" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/rebuild" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fijicore.jar" afterPath="$PROJECT_DIR$/lib/fijicore.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/makeLog" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/makeLog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/ctypesystemReferences.conf" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/ctypesystemReferences.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.guess" afterPath="$PROJECT_DIR$/config.guess" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fijirt.jar" afterPath="$PROJECT_DIR$/lib/fijirt.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/config.conf" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/config.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/config.conf" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/config.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.log" afterPath="$PROJECT_DIR$/config.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/config.log" afterPath="$PROJECT_DIR$/target/config.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.status" afterPath="$PROJECT_DIR$/config.status" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/config.status" afterPath="$PROJECT_DIR$/target/config.status" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ctypes-32.conf" afterPath="$PROJECT_DIR$/lib/ctypes-32.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/ctypesystemReferences.conf" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/ctypesystemReferences.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/ctypesystemReferences.conf" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/ctypesystemReferences.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/ctypesystemReferences.conf" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/ctypesystemReferences.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/depend.mk" afterPath="$PROJECT_DIR$/depend.mk" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_compile_info.h" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/fivmc_compile_info.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_compile_info.h" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_compile_info.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_compile_info.h" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/fivmc_compile_info.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/gencmd.sh" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/gencmd.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/gencmd.sh" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/gencmd.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/gencmd.sh" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/gencmd.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/java/build/jasmin.log" afterPath="$PROJECT_DIR$/test/java/build/jasmin.log" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/makeLog" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/makeLog" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/makeLog" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/makeLog" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/rebuild" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/rebuild" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/rebuild" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/rebuild" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/rebuild" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/rebuild" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/remake" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/remake" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/remake" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/remake" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/remake" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/remake" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/autom4te.cache/requests" afterPath="$PROJECT_DIR$/autom4te.cache/requests" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/autom4te.cache/requests" afterPath="$PROJECT_DIR$/target/autom4te.cache/requests" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/c/mvm/autom4te.cache/requests" afterPath="$PROJECT_DIR$/test/c/mvm/autom4te.cache/requests" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport1.conf" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport1.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport1.conf" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport1.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/resolutionReport1.conf" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/resolutionReport1.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport2.conf" afterPath="$PROJECT_DIR$/lib/cmr-biased-ctypes.tmp.build/resolutionReport2.conf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport2.conf" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/resolutionReport2.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/resolutionReport2.conf" afterPath="$PROJECT_DIR$/lib/hfa-ctypes.tmp.build/resolutionReport2.conf" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/Makefile" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fijicore/src/java/io/package.html" afterPath="$PROJECT_DIR$/fijicore/src/java/io/package.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/c/mt/configure" afterPath="$PROJECT_DIR$/test/c/mt/configure" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/verifysuccess" afterPath="$PROJECT_DIR$/localbin/verifysuccess" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/.idea/misc.xml" afterPath="$PROJECT_DIR$/../tools/rtsjsample/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/fivmc" afterPath="$PROJECT_DIR$/bin/fivmc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ecj/ecj" afterPath="$PROJECT_DIR$/ecj/ecj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/fivmtest.jar" afterPath="$PROJECT_DIR$/lib/fivmtest.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/add-default-targets" afterPath="$PROJECT_DIR$/localbin/add-default-targets" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/localbin/runspec-gctorture" afterPath="$PROJECT_DIR$/localbin/runspec-gctorture" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/fivmc_def_config.h" afterPath="$PROJECT_DIR$/target/fivmc_def_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_c1_config.h" afterPath="$PROJECT_DIR$/lib/hf-pip-ctypes.tmp.build/fivmc_c1_config.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fiji-asm/build.sh" afterPath="$PROJECT_DIR$/fiji-asm/build.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java" afterPath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" />
     </list>
     <ignored path="fivm.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -229,10 +100,9 @@
       <file leaf-file-name="UMInteger.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.37557605">
-              <caret line="27" column="34" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.7607573">
+              <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding>
-                <element signature="imports" expanded="true" />
                 <element signature="e#521#522#0" expanded="true" />
                 <element signature="e#577#578#0" expanded="true" />
               </folding>
@@ -245,30 +115,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="156" column="4" selection-start-line="156" selection-start-column="4" selection-end-line="156" selection-end-column="4" />
-              <folding>
-                <element signature="e#0#8287#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#3248#3249#0" expanded="false" />
-                <element signature="e#3319#3320#0" expanded="false" />
-                <element signature="e#3940#3941#0" expanded="false" />
-                <element signature="e#3972#3973#0" expanded="false" />
-                <element signature="e#4220#4221#0" expanded="false" />
-                <element signature="e#4252#4253#0" expanded="false" />
-                <element signature="e#6402#6403#0" expanded="false" />
-                <element signature="e#6459#6460#0" expanded="false" />
-                <element signature="e#6518#6519#0" expanded="false" />
-                <element signature="e#6575#6576#0" expanded="false" />
-                <element signature="e#6637#6638#0" expanded="false" />
-                <element signature="e#6677#6678#0" expanded="false" />
-                <element signature="e#6743#6744#0" expanded="false" />
-                <element signature="e#6787#6788#0" expanded="false" />
-                <element signature="e#6856#6857#0" expanded="false" />
-                <element signature="e#6897#6898#0" expanded="false" />
-                <element signature="e#7141#7142#0" expanded="false" />
-                <element signature="e#7197#7198#0" expanded="false" />
-                <element signature="e#7247#7248#0" expanded="false" />
-                <element signature="e#7303#7304#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -278,9 +125,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="42" column="15" selection-start-line="42" selection-start-column="15" selection-end-line="42" selection-end-column="15" />
-              <folding>
-                <element signature="e#0#4769#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -290,42 +135,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="60" column="13" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#27654#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#4924#4925#0" expanded="false" />
-                <element signature="e#4948#4949#0" expanded="false" />
-                <element signature="e#14000#14001#0" expanded="false" />
-                <element signature="e#14032#14033#0" expanded="false" />
-                <element signature="e#14863#14864#0" expanded="false" />
-                <element signature="e#14918#14919#0" expanded="false" />
-                <element signature="e#20215#20216#0" expanded="false" />
-                <element signature="e#20263#20264#0" expanded="false" />
-                <element signature="e#20458#20459#0" expanded="false" />
-                <element signature="e#20497#20498#0" expanded="false" />
-                <element signature="e#20698#20699#0" expanded="false" />
-                <element signature="e#20738#20739#0" expanded="false" />
-                <element signature="e#21095#21096#0" expanded="false" />
-                <element signature="e#21133#21134#0" expanded="false" />
-                <element signature="e#21451#21452#0" expanded="false" />
-                <element signature="e#21475#21476#0" expanded="false" />
-                <element signature="e#21779#21780#0" expanded="false" />
-                <element signature="e#21816#21817#0" expanded="false" />
-                <element signature="e#22142#22143#0" expanded="false" />
-                <element signature="e#22183#22184#0" expanded="false" />
-                <element signature="e#22494#22495#0" expanded="false" />
-                <element signature="e#22534#22535#0" expanded="false" />
-                <element signature="e#23168#23169#0" expanded="false" />
-                <element signature="e#23231#23232#0" expanded="false" />
-                <element signature="e#24104#24105#0" expanded="false" />
-                <element signature="e#24159#24160#0" expanded="false" />
-                <element signature="e#25714#25715#0" expanded="false" />
-                <element signature="e#25783#25784#0" expanded="false" />
-                <element signature="e#27133#27134#0" expanded="false" />
-                <element signature="e#27152#27153#0" expanded="false" />
-                <element signature="e#27613#27614#0" expanded="false" />
-                <element signature="e#27633#27634#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -335,9 +145,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#19839#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -347,9 +155,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="50" column="12" selection-start-line="50" selection-start-column="12" selection-end-line="50" selection-end-column="12" />
-              <folding>
-                <element signature="e#0#2066#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -359,9 +165,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="44" column="18" selection-start-line="44" selection-start-column="18" selection-end-line="44" selection-end-column="18" />
-              <folding>
-                <element signature="e#0#1950#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -371,9 +175,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="45" column="8" selection-start-line="45" selection-start-column="8" selection-end-line="45" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#3678#0" expanded="false" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -405,7 +207,34 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="1263" column="12" selection-start-line="1263" selection-start-column="12" selection-end-line="1263" selection-end-column="12" />
-              <folding />
+              <folding>
+                <element signature="e#0#72994#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#8487#8488#0" expanded="false" />
+                <element signature="e#8538#8539#0" expanded="false" />
+                <element signature="e#8639#8640#0" expanded="false" />
+                <element signature="e#8690#8691#0" expanded="false" />
+                <element signature="e#9060#9061#0" expanded="false" />
+                <element signature="e#9111#9112#0" expanded="false" />
+                <element signature="e#9213#9214#0" expanded="false" />
+                <element signature="e#9275#9276#0" expanded="false" />
+                <element signature="e#9377#9378#0" expanded="false" />
+                <element signature="e#9439#9440#0" expanded="false" />
+                <element signature="e#9724#9725#0" expanded="false" />
+                <element signature="e#9772#9773#0" expanded="false" />
+                <element signature="e#14202#14203#0" expanded="false" />
+                <element signature="e#14272#14273#0" expanded="false" />
+                <element signature="e#15168#15169#0" expanded="false" />
+                <element signature="e#15254#15255#0" expanded="false" />
+                <element signature="e#15530#15531#0" expanded="false" />
+                <element signature="e#15568#15569#0" expanded="false" />
+                <element signature="e#18670#18671#0" expanded="false" />
+                <element signature="e#18761#18762#0" expanded="false" />
+                <element signature="e#59621#59622#0" expanded="false" />
+                <element signature="e#59662#59663#0" expanded="false" />
+                <element signature="e#60752#60753#0" expanded="false" />
+                <element signature="e#60811#60812#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -460,10 +289,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-4" />
-    <option name="y" value="7" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="65" />
+    <option name="y" value="-4" />
+    <option name="width" value="1855" />
+    <option name="height" value="1084" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -489,6 +318,7 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -744,9 +574,22 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fivm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fivm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -839,6 +682,34 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration">
@@ -851,36 +722,43 @@
       <option name="number" value="Default" />
       <updated>1428672723555</updated>
     </task>
+    <task id="LOCAL-00001" summary="Update offset in runtimec caused by structures">
+      <created>1429304576802</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1429304576802</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="7" width="1936" height="1056" extended-state="0" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="false" />
     <layout>
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21162046" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36525613" sideWeight="0.5063966" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32990354" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.249309" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32890365" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31832796" sideWeight="0.49806523" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3281768" sideWeight="0.50193477" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4002211" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.249309" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32990354" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21669431" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36525613" sideWeight="0.4936034" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4002211" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -893,6 +771,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Update offset in runtimec caused by structures" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update offset in runtimec caused by structures" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1190,7 +1072,34 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1263" column="12" selection-start-line="1263" selection-start-column="12" selection-end-line="1263" selection-end-column="12" />
-          <folding />
+          <folding>
+            <element signature="e#0#72994#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#8487#8488#0" expanded="false" />
+            <element signature="e#8538#8539#0" expanded="false" />
+            <element signature="e#8639#8640#0" expanded="false" />
+            <element signature="e#8690#8691#0" expanded="false" />
+            <element signature="e#9060#9061#0" expanded="false" />
+            <element signature="e#9111#9112#0" expanded="false" />
+            <element signature="e#9213#9214#0" expanded="false" />
+            <element signature="e#9275#9276#0" expanded="false" />
+            <element signature="e#9377#9378#0" expanded="false" />
+            <element signature="e#9439#9440#0" expanded="false" />
+            <element signature="e#9724#9725#0" expanded="false" />
+            <element signature="e#9772#9773#0" expanded="false" />
+            <element signature="e#14202#14203#0" expanded="false" />
+            <element signature="e#14272#14273#0" expanded="false" />
+            <element signature="e#15168#15169#0" expanded="false" />
+            <element signature="e#15254#15255#0" expanded="false" />
+            <element signature="e#15530#15531#0" expanded="false" />
+            <element signature="e#15568#15569#0" expanded="false" />
+            <element signature="e#18670#18671#0" expanded="false" />
+            <element signature="e#18761#18762#0" expanded="false" />
+            <element signature="e#59621#59622#0" expanded="false" />
+            <element signature="e#59662#59663#0" expanded="false" />
+            <element signature="e#60752#60753#0" expanded="false" />
+            <element signature="e#60811#60812#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1198,30 +1107,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="156" column="4" selection-start-line="156" selection-start-column="4" selection-end-line="156" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#8287#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#3248#3249#0" expanded="false" />
-            <element signature="e#3319#3320#0" expanded="false" />
-            <element signature="e#3940#3941#0" expanded="false" />
-            <element signature="e#3972#3973#0" expanded="false" />
-            <element signature="e#4220#4221#0" expanded="false" />
-            <element signature="e#4252#4253#0" expanded="false" />
-            <element signature="e#6402#6403#0" expanded="false" />
-            <element signature="e#6459#6460#0" expanded="false" />
-            <element signature="e#6518#6519#0" expanded="false" />
-            <element signature="e#6575#6576#0" expanded="false" />
-            <element signature="e#6637#6638#0" expanded="false" />
-            <element signature="e#6677#6678#0" expanded="false" />
-            <element signature="e#6743#6744#0" expanded="false" />
-            <element signature="e#6787#6788#0" expanded="false" />
-            <element signature="e#6856#6857#0" expanded="false" />
-            <element signature="e#6897#6898#0" expanded="false" />
-            <element signature="e#7141#7142#0" expanded="false" />
-            <element signature="e#7197#7198#0" expanded="false" />
-            <element signature="e#7247#7248#0" expanded="false" />
-            <element signature="e#7303#7304#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1249,9 +1135,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="42" column="15" selection-start-line="42" selection-start-column="15" selection-end-line="42" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#4769#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1259,42 +1143,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="60" column="13" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#27654#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#4924#4925#0" expanded="false" />
-            <element signature="e#4948#4949#0" expanded="false" />
-            <element signature="e#14000#14001#0" expanded="false" />
-            <element signature="e#14032#14033#0" expanded="false" />
-            <element signature="e#14863#14864#0" expanded="false" />
-            <element signature="e#14918#14919#0" expanded="false" />
-            <element signature="e#20215#20216#0" expanded="false" />
-            <element signature="e#20263#20264#0" expanded="false" />
-            <element signature="e#20458#20459#0" expanded="false" />
-            <element signature="e#20497#20498#0" expanded="false" />
-            <element signature="e#20698#20699#0" expanded="false" />
-            <element signature="e#20738#20739#0" expanded="false" />
-            <element signature="e#21095#21096#0" expanded="false" />
-            <element signature="e#21133#21134#0" expanded="false" />
-            <element signature="e#21451#21452#0" expanded="false" />
-            <element signature="e#21475#21476#0" expanded="false" />
-            <element signature="e#21779#21780#0" expanded="false" />
-            <element signature="e#21816#21817#0" expanded="false" />
-            <element signature="e#22142#22143#0" expanded="false" />
-            <element signature="e#22183#22184#0" expanded="false" />
-            <element signature="e#22494#22495#0" expanded="false" />
-            <element signature="e#22534#22535#0" expanded="false" />
-            <element signature="e#23168#23169#0" expanded="false" />
-            <element signature="e#23231#23232#0" expanded="false" />
-            <element signature="e#24104#24105#0" expanded="false" />
-            <element signature="e#24159#24160#0" expanded="false" />
-            <element signature="e#25714#25715#0" expanded="false" />
-            <element signature="e#25783#25784#0" expanded="false" />
-            <element signature="e#27133#27134#0" expanded="false" />
-            <element signature="e#27152#27153#0" expanded="false" />
-            <element signature="e#27613#27614#0" expanded="false" />
-            <element signature="e#27633#27634#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1302,9 +1151,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#19839#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1312,9 +1159,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="50" column="12" selection-start-line="50" selection-start-column="12" selection-end-line="50" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#2066#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1322,9 +1167,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="44" column="18" selection-start-line="44" selection-start-column="18" selection-end-line="44" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#1950#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1332,18 +1175,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="45" column="8" selection-start-line="45" selection-start-column="8" selection-end-line="45" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#3678#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37557605">
-          <caret line="27" column="34" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.7607573">
+          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="e#521#522#0" expanded="true" />
             <element signature="e#577#578#0" expanded="true" />
           </folding>
