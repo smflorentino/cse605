@@ -72,7 +72,7 @@ static fivmr_MemoryArea *normalizeParentage(fivmr_ThreadState *ts,
 }
 
 uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
-                                 int32_t shared, fivmr_Object name)
+                                 int32_t shared, fivmr_Object name, int64_t unManagedSize)
 {
     fivmr_MemoryAreaStack *ms;
     fivmr_MemoryArea *area;
@@ -353,7 +353,9 @@ int64_t fivmr_MemoryArea_consumed(fivmr_ThreadState *ts,
 uintptr_t fivmr_MemoryArea_allocateInt(int32_t val)
 {
     printf("Hello World!!!!!");
-    return (uintptr_t) NULL;
+    int32_t *Int = (int32_t*) malloc(sizeof(int32_t));
+    *Int = val;
+    return (uintptr_t) Int;
 }
 
 

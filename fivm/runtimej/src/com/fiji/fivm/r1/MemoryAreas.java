@@ -55,7 +55,7 @@ public class MemoryAreas {
     }
     
     public static void allocScopeBacking(long size) {
-        allocScopeBacking(Magic.curThreadState(),size);
+        allocScopeBacking(Magic.curThreadState(), size);
     }
     
     /**
@@ -63,13 +63,28 @@ public class MemoryAreas {
      */
     @Inline
     public static Pointer alloc(long size, boolean shared, String name) {
-	Pointer area = fivmr_MemoryArea_alloc(Magic.curThreadState(),
-					      size, shared?1:0, name);
-	if (area == Pointer.zero()) {
-	    fivmRuntime.throwOutOfMemoryError_inJava();
-	}
-	return area;
+	    return alloc(size, shared, name, 0L);
     }
+
+    /**
+     * Allocate a MemoryArea from the current thread's scope backing.
+     *
+     * @param unManagedSize The amount of the MemoryArea that should be unmanaged.
+     */
+    @Inline
+    public static Pointer alloc(long size, boolean shared, String name, long unManagedSize) {
+        if(unManagedSize >= size && unManagedSize != 0L)
+        {
+            throw new IllegalArgumentException("Unmanaged size must be smaller than overall size");
+        }
+        Pointer area = fivmr_MemoryArea_alloc(Magic.curThreadState(),
+                                              size, shared?1:0, name, unManagedSize);
+        if (area == Pointer.zero()) {
+            fivmRuntime.throwOutOfMemoryError_inJava();
+        }
+        return area;
+    }
+
 
     /**
      * Free the given memory area and its backing
@@ -294,7 +309,7 @@ public class MemoryAreas {
     @RuntimeImport
     @NoSafepoint
     private static native Pointer fivmr_MemoryArea_alloc(Pointer ts, long size,
-							 int shared, Object name);
+							 int shared, Object name, long unManagedSize);
 
     @RuntimeImport
     @NoSafepoint

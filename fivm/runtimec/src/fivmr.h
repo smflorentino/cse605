@@ -1524,6 +1524,26 @@ struct fivmr_ScopeID_s {
     uintptr_t word;
 };
 
+/* Unmanaged Memory Structures*/
+
+/* A Linked List to represent unused memory */
+struct fivmr_um_node {
+  /* Pointer to next node */
+  struct fivmr_um_node* next;
+  /* Pad to make 64 byte size */
+  char fivmr_um_node_zero[60];
+};
+
+/* A Primitive Storage Block */
+struct fivmr_um_primitive_block {
+  /* Pointer to next Primitive Storage Block */
+  struct fivmr_um_primitive_block *next;
+  /* Bit Vector that determines which elements are free */
+  int32_t map;
+  /* Primitive Storage */
+  uint64_t storage[6];
+};
+
 struct fivmr_MemoryArea_s {
     uintptr_t start;
     uintptr_t bump;
@@ -1541,6 +1561,14 @@ struct fivmr_MemoryArea_s {
     fivmr_ScopeID scopeID_s;
 
     fivmr_MemoryArea *parent;
+
+    /* UnManaged Scoped Memory Support */
+    /* The head to the Linked List of Free Blocks */
+    struct fivmr_um_node *free_head;
+    /* The head to the Linked List of Primitive Blocks with Available Space */
+    struct fivmr_um_primitive_block *fr_head;
+    /* The head to the Linked List of Full Primitive Blocks */
+    struct fivmr_um_primitive_block *nfr_head;
 };
 
 #define FIVMR_MEMORYAREASTACK_GCINPROGRESS 0x1
@@ -4922,7 +4950,7 @@ static inline fivmr_Object fivmr_BackingStoreID_create(fivmr_ThreadState *ts,
 }
 
 uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
-                                 int32_t shared, fivmr_Object name);
+                                 int32_t shared, fivmr_Object name, int64_t unManagedSize);
 
 void fivmr_MemoryArea_free(fivmr_ThreadState *ts, fivmr_MemoryArea *area);
 

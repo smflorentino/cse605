@@ -3,6 +3,7 @@ package test1;
 import com.fiji.fivm.r1.Magic;
 import com.fiji.fivm.r1.MemoryAreas;
 import com.fiji.fivm.r1.Pointer;
+import com.fiji.fivm.r1.unmanaged.UMInteger;
 import common.LOG;
 import test2.ExampleRTThread;
 
@@ -21,7 +22,10 @@ public class FibMain {
     public static void main(String[] args)
     {
         LOG.info("Starting main");
-
+        Pointer p = UMInteger.allocate(2);
+        System.out.println(UMInteger.get(p));
+        UMInteger.set(p, 42);
+        System.out.println(UMInteger.get(p));
         MemoryAreas.allocScopeBacking(Magic.curThreadState(), totalBacking);
 
         Pointer scoped = MemoryAreas.alloc(SCOPE_SIZE,false,"scoped");
