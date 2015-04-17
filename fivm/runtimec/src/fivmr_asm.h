@@ -56,8 +56,11 @@
 
 /* FIXME: add more offset constants */
 
-#define FIVMR_OFFSETOF_REGSAVE_0   268
-#define FIVMR_OFFSETOF_REGSAVE_1   272
+// #define FIVMR_OFFSETOF_REGSAVE_0   268
+// #define FIVMR_OFFSETOF_REGSAVE_1   272
+/* Changing the size of the scoped memory struct requires adjusting the offsets */
+#define FIVMR_OFFSETOF_REGSAVE_0   280
+#define FIVMR_OFFSETOF_REGSAVE_1   284
 
 #endif
 

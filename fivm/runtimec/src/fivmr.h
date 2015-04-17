@@ -8,7 +8,7 @@
  * http://www.fiji-systems.com/FPL3.txt
  * 
  * By installing, reproducing, distributing, and/or using the FIJI VM Software
- * you agree to the terms of the FIJI PUBLIC LICENSE.  You may exercise the
+ * you agree to the termfs of the FIJI PUBLIC LICENSE.  You may exercise the
  * rights granted under the FIJI PUBLIC LICENSE subject to the conditions and
  * restrictions stated therein.  Among other conditions and restrictions, the
  * FIJI PUBLIC LICENSE states that:
@@ -1544,6 +1544,7 @@ struct fivmr_um_primitive_block {
   uint64_t storage[6];
 };
 
+/* Note that any additions to this struct must be reflected in FIVMR_OFFSETOF_REGSAVE */
 struct fivmr_MemoryArea_s {
     uintptr_t start;
     uintptr_t bump;

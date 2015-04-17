@@ -352,7 +352,7 @@ int64_t fivmr_MemoryArea_consumed(fivmr_ThreadState *ts,
 
 uintptr_t fivmr_MemoryArea_allocateInt(int32_t val)
 {
-    printf("Hello World!!!!!");
+    // printf("Hello World!!!!!");
     int32_t *Int = (int32_t*) malloc(sizeof(int32_t));
     *Int = val;
     return (uintptr_t) Int;

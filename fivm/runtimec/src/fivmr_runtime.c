@@ -239,6 +239,7 @@ void fivmr_VM_init(fivmr_VM *vm) {
         fivmr_assert(fivmr_offsetof(fivmr_ThreadState,vm)==12);
         fivmr_assert(fivmr_offsetof(fivmr_ThreadState,curF)==16);
         fivmr_assert((intptr_t)&((fivmr_ThreadState*)0)->gc.alloc[0].zero<=127);
+        int correct  = fivmr_offsetof(fivmr_ThreadState,regSave);
         fivmr_assert(fivmr_offsetof(fivmr_ThreadState,regSave)==FIVMR_OFFSETOF_REGSAVE_0);
         
         fivmr_assert(sizeof(fivmr_Frame)==sizeof(uintptr_t)*3);
