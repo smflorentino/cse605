@@ -1,5 +1,6 @@
 package test1;
 
+import com.fiji.fivm.r1.unmanaged.UMInteger;
 import common.LOG;
 
 /**
@@ -11,6 +12,7 @@ public class Fib implements Runnable {
         try {
             LOG.info("In fib.");
 //            long[] numbers = new long[FibMain.ARRAY_SIZE];
+			UMInteger.allocate(42);
             long[] numbers = new long[128];
             LOG.info("Done.");
             long[] numbers2 = new long[128];
