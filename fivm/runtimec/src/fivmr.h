@@ -5025,10 +5025,7 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
 //   itoa (number,buffer,2);
 //   printf ("binary: %s\n",buffer);
 // }
-
-uintptr_t fivmr_MemoryArea_allocateInteger(int32_t val, uintptr_t fivmrMemoryArea);
-
-uintptr_t fivmr_MemoryArea_allocatePrimitive(void* val, size_t size, uintptr_t fivmrMemoryArea);
+uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea);
 
 void fivmr_ScopeBacking_alloc(fivmr_ThreadState *ts, uintptr_t size);
 

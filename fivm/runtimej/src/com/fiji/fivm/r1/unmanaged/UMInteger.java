@@ -5,6 +5,8 @@ import com.fiji.fivm.r1.NoSafepoint;
 import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.RuntimeImport;
 
+import static com.fiji.fivm.r1.unmanaged.UMUtils.fivmr_MemoryArea_allocatePrimitive;
+
 /**
  * Created by scottflo on 4/13/15.
  */
@@ -32,10 +34,8 @@ public class UMInteger implements UMPrimitive {
 		{
 			throw new UnsupportedOperationException("Allocation cannot occur in Heap or Immortal Memory");
 		}
-        return fivmr_MemoryArea_allocateInteger(val, curArea);
+        Pointer primitivePointer =  fivmr_MemoryArea_allocatePrimitive(curArea);
+		primitivePointer.store(val);
+		return primitivePointer;
 	}
-
-    @RuntimeImport
-    @NoSafepoint
-    public static native Pointer fivmr_MemoryArea_allocateInteger(int val, Pointer currentArea);
 }

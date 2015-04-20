@@ -434,7 +434,7 @@ static inline int32_t fivmr_MemoryArea_findFreeIndex(int32_t map)
     //TODO throw something
 }
 
-uintptr_t fivmr_MemoryArea_allocatePrimitive(void* val, size_t size, uintptr_t fivmrMemoryArea)
+uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
 {
     printf("Hello World!!!!!\n");
     //Cast to fivmr_MemoryArea
@@ -498,19 +498,11 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(void* val, size_t size, uintptr_t f
     area->fr_head->map = ((1 << index) | area->fr_head->map);
     DEBUG(DB_MEMAREA, ("Map is now: "));
     // print_binary(area->fr_head->map);
-    //Set the value:
-    memcpy((void*) &(area->fr_head->storage[index]), val, size);
-    // area->fr_head->storage[index] = val;
     //Return the pointer to it:
     return (uintptr_t) &(area->fr_head->storage[index]);
     // int32_t *Int = (int32_t*) malloc(sizeof(int32_t));
     // *Int = (int32_t) val;
     // return (uintptr_t) Int;
-}
-
-uintptr_t fivmr_MemoryArea_allocateInteger(int32_t val, uintptr_t fivmrMemoryArea)
-{
-    fivmr_MemoryArea_allocatePrimitive((void*) &val, sizeof(int32_t), fivmrMemoryArea);
 }
 
 

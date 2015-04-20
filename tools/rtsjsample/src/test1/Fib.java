@@ -1,6 +1,7 @@
 package test1;
 
 import com.fiji.fivm.r1.MemoryAreas;
+import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.unmanaged.UMInteger;
 import common.LOG;
 
@@ -12,6 +13,12 @@ public class Fib implements Runnable {
     public void run() {
         try {
             LOG.info("In fib.");
+
+			Pointer p = UMInteger.allocate(2);
+			System.out.println(UMInteger.get(p));
+			UMInteger.set(p, 42);
+			System.out.println(UMInteger.get(p));
+
 //            long[] numbers = new long[FibMain.ARRAY_SIZE];
 			UMInteger.allocate(42);
             LOG.info("Memory Area Consumed: " + MemoryAreas.consumed(MemoryAreas.getCurrentArea()));
