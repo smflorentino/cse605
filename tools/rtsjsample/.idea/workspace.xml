@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8ab62598-8b6c-4520-bbec-1877c4d601a0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../../fivm/util/c/getNumProcs/getNumProcs" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../src/build/test1/Fib.class" afterPath="$PROJECT_DIR$/../src/build/test1/Fib.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/runtimej/build/com/fiji/fivm/r1/MemoryAreas.class" afterPath="$PROJECT_DIR$/../../fivm/runtimej/build/com/fiji/fivm/r1/MemoryAreas.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/runtimej/build/com/fiji/fivm/r1/unmanaged/UMInteger.class" afterPath="$PROJECT_DIR$/../../fivm/runtimej/build/com/fiji/fivm/r1/unmanaged/UMInteger.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/bottomup.jar" afterPath="$PROJECT_DIR$/../../fivm/lib/bottomup.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/fiji-asm.jar" afterPath="$PROJECT_DIR$/../../fivm/lib/fiji-asm.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/fijicore.jar" afterPath="$PROJECT_DIR$/../../fivm/lib/fijicore.jar" />
@@ -23,13 +20,10 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/scj.jar" afterPath="$PROJECT_DIR$/../../fivm/lib/scj.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/scj.jar" afterPath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/scj.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/.numberOfProcessors" afterPath="$PROJECT_DIR$/../../fivm/.numberOfProcessors" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test1/Fib.java" afterPath="$PROJECT_DIR$/src/test1/Fib.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test1/FibMain.java" afterPath="$PROJECT_DIR$/src/test1/FibMain.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/debug/Makefile" afterPath="$PROJECT_DIR$/../../fivm/target/debug/Makefile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/opt/Makefile" afterPath="$PROJECT_DIR$/../../fivm/target/opt/Makefile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/small/Makefile" afterPath="$PROJECT_DIR$/../../fivm/target/small/Makefile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/RealMakefile" afterPath="$PROJECT_DIR$/../../fivm/RealMakefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java" afterPath="$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/cmr-biased-ctypes.tmp" afterPath="$PROJECT_DIR$/../../fivm/lib/cmr-biased-ctypes.tmp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/config.log" afterPath="$PROJECT_DIR$/../../fivm/config.log" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/config.log" afterPath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/config.log" />
@@ -44,10 +38,8 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/fivmc_def_config.h" afterPath="$PROJECT_DIR$/../../fivm/lib/fivmc_def_config.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/fivmc_def_config.h" afterPath="$PROJECT_DIR$/../../fivm/target/fivmc_def_config.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/fivmcrc" afterPath="$PROJECT_DIR$/../../fivm/target/fivmcrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/runtimec/src/fivmr.h" afterPath="$PROJECT_DIR$/../../fivm/runtimec/src/fivmr.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/fivmr_asm_defs.h" afterPath="$PROJECT_DIR$/../../fivm/lib/fivmr_asm_defs.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/fivmr_asm_defs.h" afterPath="$PROJECT_DIR$/../../fivm/target/fivmr_asm_defs.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/runtimec/src/fivmr_memoryareas.c" afterPath="$PROJECT_DIR$/../../fivm/runtimec/src/fivmr_memoryareas.c" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/fivmr_target.h" afterPath="$PROJECT_DIR$/../../fivm/lib/fivmr_target.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/fivmr_target.h" afterPath="$PROJECT_DIR$/../../fivm/target/fivmr_target.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/lib/hfa-ctypes.tmp" afterPath="$PROJECT_DIR$/../../fivm/lib/hfa-ctypes.tmp" />
@@ -57,7 +49,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/target-results.conf" afterPath="$PROJECT_DIR$/../../fivm/target/target-results.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/target/target.conf" afterPath="$PROJECT_DIR$/../../fivm/target/target.conf" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../../fivm/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="rtsjsample.iws" />
     <ignored path=".idea/workspace.xml" />
