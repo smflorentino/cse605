@@ -112,3 +112,5 @@ tools/src/build/test1/Fib.class
 fivm/.numberOfProcessors
 tools/src/build/test1/Fib.class
 
+autom4te.cache/traces.0
+
