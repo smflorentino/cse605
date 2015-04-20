@@ -1531,7 +1531,7 @@ struct fivmr_um_node {
   /* Pointer to next node */
   struct fivmr_um_node* next;
   /* Pad to make 64 byte size */
-  char fivmr_um_node_zero[60];
+  char zero[60];
 };
 
 /* A Primitive Storage Block */
@@ -1564,6 +1564,8 @@ struct fivmr_MemoryArea_s {
     fivmr_MemoryArea *parent;
 
     /* UnManaged Scoped Memory Support */
+    /* The start of scoped memory */ 
+    uintptr_t new_start;
     /* The head to the Linked List of Free Blocks */
     struct fivmr_um_node *free_head;
     /* The head to the Linked List of Primitive Blocks with Available Space */
@@ -4995,8 +4997,38 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
     }
 }
 
+// enum fivmr_um_primitive_t {
+//   INT = 0,
+//   LONG = 1,
+//   SHORT = 2,
+//   CHAR = 3,
+//   DOUBLE = 4,
+//   FLOAT = 5,
+//   BOOLEAN = 6,
+//   BYTE = 7
+// };
+
+// typedef enum fivmr_um_primitive_t fivmr_um_primitive_t;
+
 /* Support for Unmanaged Data in Memory Areas */
-uintptr_t fivmr_MemoryArea_allocateInt(int32_t val);
+#define FULL_MAP 63 //0b000111111 (all 6 slots full)
+
+/* Print a number in binary */
+// #define PRINT_BINARY(number) { \
+//   char buffer [33];\
+//   itoa (number,buffer,2);\
+//   printf ("binary: %s\n",buffer);\
+// }
+
+// void print_binary(int32_t number) {
+//   char buffer [33];
+//   itoa (number,buffer,2);
+//   printf ("binary: %s\n",buffer);
+// }
+
+uintptr_t fivmr_MemoryArea_allocateInteger(int32_t val, uintptr_t fivmrMemoryArea);
+
+uintptr_t fivmr_MemoryArea_allocatePrimitive(void* val, size_t size, uintptr_t fivmrMemoryArea);
 
 void fivmr_ScopeBacking_alloc(fivmr_ThreadState *ts, uintptr_t size);
 

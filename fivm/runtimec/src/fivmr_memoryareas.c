@@ -71,6 +71,35 @@ static fivmr_MemoryArea *normalizeParentage(fivmr_ThreadState *ts,
     }
 }
 
+/* Initialize the tracking structures for a Memory Area */
+static void fivmr_MemoryArea_setupUM(uintptr_t start, int64_t size)
+{
+    /* Allocate the first block */
+    //Create struct to memcpy from
+    struct fivmr_um_node first;
+    /* Zero out the zero region*/
+    memset(&(first.zero), 0, 60);
+    //Get the block size
+    int blockSize = sizeof(struct fivmr_um_node);
+    //Copy into UM region
+    memcpy((void*) start,&first,blockSize);
+    //Set current node 
+    struct fivmr_um_node* cur = (struct fivmr_um_node*) start;
+    //Set next place to copy into
+    uintptr_t nextBlock = start + blockSize;
+    //Continue until we fill up UM region
+    while(nextBlock < (start + size)) {
+        //memcpy  into UM region
+        memcpy((void*) nextBlock,&first,blockSize);
+        //set the next 
+        cur->next = (struct fivmr_um_node *) nextBlock;
+        //move the head to the new struct we just copied
+        cur = cur->next;
+        //set destination to next block 
+        nextBlock += blockSize;
+    }
+}
+
 uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
                                  int32_t shared, fivmr_Object name, int64_t unManagedSize)
 {
@@ -79,6 +108,9 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
     fivmr_TypeData *td;
     uintptr_t newtop;
     int64_t totalsize;
+
+    //Allocate for 4 extra pointers in fivmr_MemoryArea
+    size += 16;
 
     size = (size+FIVMSYS_PTRSIZE-1)&(~(uintptr_t)(FIVMSYS_PTRSIZE-1));
     totalsize = size + sizeof(fivmr_MemoryAreaStack) + sizeof(fivmr_MemoryArea);
@@ -91,6 +123,7 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
         area->shared=shared?1:0;
         area->start=area->bump=(uintptr_t)(area+1)
             +FIVMR_ALLOC_OFFSET(&ts->vm->settings);
+        //TODO unmanaged memory here ...
         return (uintptr_t)area;
     }
 
@@ -136,6 +169,19 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
         /* Fix up the start to push the BackingStoreID "out" of the area */
         area->start=area->bump;
     }
+    /* Old Bump is where the UM Region begins - this points to our first free node */
+    uintptr_t oldBump = area->bump;
+    /* Move the bump up so we can store our UM Region */
+    area->bump += unManagedSize;
+    /* Scoped Memory now starts outside of UM Region */
+    area->new_start = area->bump;
+    /* Create our tracking structures */
+    fivmr_MemoryArea_setupUM(oldBump, unManagedSize);
+    area->free_head = (struct fivmr_um_node*) oldBump;
+    /* Zero out our fields */
+    area->fr_head = NULL;
+    area->nfr_head = NULL;
+
     return (uintptr_t)area;
 }
 
@@ -350,12 +396,121 @@ int64_t fivmr_MemoryArea_consumed(fivmr_ThreadState *ts,
     }
 }
 
-uintptr_t fivmr_MemoryArea_allocateInt(int32_t val)
+/* Find the index of an available primitive slot in its bit vector.
+ * We use the first 6 bits to designate what's available:
+ * 000000 = all free
+ * 000001 = slot 0 in use, slots 1-5 
+ * 000011 = slots 0 and 1 in use, slots 2-5 free
+ * 000100 = slot 2 in use, slots 0,1,3-5 free
+ * ...
+ * 111111 = all slots in use.
+ */
+static inline int32_t fivmr_MemoryArea_findFreeIndex(int32_t map)
 {
-    // printf("Hello World!!!!!");
-    int32_t *Int = (int32_t*) malloc(sizeof(int32_t));
-    *Int = val;
-    return (uintptr_t) Int;
+    DEBUG(DB_MEMAREA,("Finding free index in map: "));
+    // print_binary(map);
+    if(map == 0) {
+        return 0;
+    }
+    else if((map & 0x00000002) == 0) {
+        return 1;
+    }
+    else if((map & 0x00000004) == 0) {
+        return 2;
+    }
+    else if((map & 0x00000008) == 0) {
+        return 3;
+    }
+    else if((map & 0x00000010) == 0) {
+        return 4;
+    }
+    else if((map & 0x00000020) == 0) {
+        return 5;
+    }
+    else {
+        fivmr_assert(0);
+    }
+    //Should never get here, per logic in allocatePrimitive
+    //TODO throw something
+}
+
+uintptr_t fivmr_MemoryArea_allocatePrimitive(void* val, size_t size, uintptr_t fivmrMemoryArea)
+{
+    printf("Hello World!!!!!\n");
+    //Cast to fivmr_MemoryArea
+    fivmr_MemoryArea *area = (fivmr_MemoryArea*) fivmrMemoryArea;
+    //If no primitives have been allocated, get one:
+    if(area->fr_head == NULL)
+    {
+        struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) area->free_head;
+        //if null, we're out of memory
+        if(block == NULL)
+        {
+            //TODO throw out of memory error
+            fivmr_assert(0);
+        }
+        //Pop it off the free block list
+        area->free_head = area->free_head->next;
+        //Set it as the next block to receive allocations
+        area->fr_head = block;
+        area->fr_head->next = NULL;
+    }
+    //If the current head of the primtive list is full (first 6 bits are 111111), move it to the nonfree list:
+    if(area->fr_head->map == FULL_MAP) {
+        //Move the full block FROM the fr list TO the nfr list.
+        //If there are none, make it the head.
+        if(area->nfr_head == NULL) {
+            //If there are no full blocks, make this one the head of the list
+            area->nfr_head = area->fr_head;
+            //And update the new head of the fr list:
+            area->fr_head = area->fr_head->next;
+        }
+        //if there are already full primitive blocks, add the full block to that list:
+        else {
+            //Save the current head of the NFR list:
+            struct fivmr_um_primitive_block *old_nfr_head = area->nfr_head;
+            //Make the current full block the NFR head:
+            area->nfr_head = area->fr_head;
+            //Now, update the new head of the FR list:
+            area->fr_head = area->fr_head->next;
+            //Now, link the block that's full to the rest of the NFR list
+            area->nfr_head->next = old_nfr_head;
+        }
+        //If the FR list is empty, we need to find a free block and add it:
+        if(area->fr_head == NULL) {
+            struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) area->free_head;
+            //if null, there wasn't a free block, and we're out of memory
+            if(block == NULL)
+            {
+                //TODO throw out of memory error
+                fivmr_assert(0);
+            }
+            //Pop it off the free block list
+            area->free_head = area->free_head->next;
+            //Set it as the next block to receive allocations
+            area->fr_head = block;
+            area->fr_head->next = NULL;
+        }
+    }
+    //Now we have a free head node that can store a primitive. Find an index.
+    int32_t index = fivmr_MemoryArea_findFreeIndex(area->fr_head->map);
+    //Mark that index as used, by setting the bit number of the index to 1:
+    area->fr_head->map = ((1 << index) | area->fr_head->map);
+    DEBUG(DB_MEMAREA, ("Map is now: "));
+    // print_binary(area->fr_head->map);
+    //Set the value:
+    memcpy((void*) &(area->fr_head->storage[index]), val, size);
+    // area->fr_head->storage[index] = val;
+    //Return the pointer to it:
+    return (uintptr_t) &(area->fr_head->storage[index]);
+    // int32_t *Int = (int32_t*) malloc(sizeof(int32_t));
+    // *Int = (int32_t) val;
+    // return (uintptr_t) Int;
+}
+
+uintptr_t fivmr_MemoryArea_allocateInteger(int32_t val, uintptr_t fivmrMemoryArea)
+{
+    fivmr_MemoryArea_allocatePrimitive((void*) &val, sizeof(int32_t), fivmrMemoryArea);
 }
 
 

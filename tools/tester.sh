@@ -1,6 +1,6 @@
 #/bin/bash
 #Specify Fiji Home
-FIJI_HOME=/home/scottflo/repos/cse605/fivm
+#FIJI_HOME=/home/scottflo/repos/cse605/fivm
 #Specify the Java compiler to use
 FIJI_JAVA_COMPILER=$FIJI_HOME/ecj/ecj
 
@@ -14,8 +14,8 @@ ECJ_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar:$FIJI_LIB_DIR/fivmcommon.jar:$FIJI_LIB_DIR/
 FIVMC_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar
 
 #Specify the Source Directory(ies) for our Java Programs
-HARDRTJSRC=/home/scottflo/repos/cse605/tools/src
-HARDRTJSRC2=/home/scottflo/repos/cse605/tools/rtsjsample/src
+HARDRTJSRC=$HOME/repos/cse605/tools/src
+HARDRTJSRC2=$HOME/repos/cse605/tools/rtsjsample/src
 
 echo "Compiling Java to Bytecode..."
 #$FIJI_JAVA_COMPILER -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath $ECJ_CLASSPATH $HARDRTJSRC -d src/build

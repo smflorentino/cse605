@@ -69,6 +69,8 @@ public class MemoryAreas {
     /**
      * Allocate a MemoryArea from the current thread's scope backing.
      *
+	 * NOTE: this should NOT be used for Heap or Immortal Memory, although in theory it probably could be.
+	 *
      * @param unManagedSize The amount of the MemoryArea that should be unmanaged.
      */
     @Inline
@@ -77,6 +79,10 @@ public class MemoryAreas {
         {
             throw new IllegalArgumentException("Unmanaged size must be smaller than overall size");
         }
+		if(unManagedSize % 64 != 0)
+		{
+			throw new IllegalArgumentException("Unmanaged size must be a multiple of blocksize (currently 64)");
+		}
         Pointer area = fivmr_MemoryArea_alloc(Magic.curThreadState(),
                                               size, shared?1:0, name, unManagedSize);
         if (area == Pointer.zero()) {

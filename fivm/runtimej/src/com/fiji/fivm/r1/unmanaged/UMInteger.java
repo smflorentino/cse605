@@ -1,5 +1,6 @@
 package com.fiji.fivm.r1.unmanaged;
 
+import com.fiji.fivm.r1.MemoryAreas;
 import com.fiji.fivm.r1.NoSafepoint;
 import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.RuntimeImport;
@@ -25,10 +26,16 @@ public class UMInteger implements UMPrimitive {
 
     public static Pointer allocate(int val)
     {
-        return fivmr_MemoryArea_allocateInt(val);
-    }
+		//We can't be in the Heap OR Immortal Memory
+		final Pointer curArea = MemoryAreas.getCurrentArea();
+		if(curArea == MemoryAreas.getHeapArea() || curArea == MemoryAreas.getImmortalArea())
+		{
+			throw new UnsupportedOperationException("Allocation cannot occur in Heap or Immortal Memory");
+		}
+        return fivmr_MemoryArea_allocateInteger(val, curArea);
+	}
 
     @RuntimeImport
     @NoSafepoint
-    public static native Pointer fivmr_MemoryArea_allocateInt(int val);
+    public static native Pointer fivmr_MemoryArea_allocateInteger(int val, Pointer currentArea);
 }
