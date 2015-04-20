@@ -83,5 +83,31 @@ fivm/lib/hfa-ctypes.tmp
 fivm/lib/rtsj.jar
 fivm/lib/scj.jar
 
+fivm/.numberOfProcessors
+fivm/RealMakefile
+fivm/autom4te.cache/requests
+fivm/config.log
+fivm/config.status
+fivm/depend.mk
+fivm/scj/oSCJ/scj/ri/config.log
+fivm/scj/oSCJ/scj/ri/depend.mk
+fivm/scj/oSCJ/scj/ri/scj.jar
+fivm/target/config.log
+fivm/target/config.status
+fivm/target/debug/Makefile
+fivm/target/fivmc_def_config.h
+fivm/target/fivmcrc
+fivm/target/fivmr_asm_defs.h
+fivm/target/fivmr_target.h
+fivm/target/opt/Makefile
+fivm/target/small/Makefile
+fivm/target/target-results.conf
+fivm/target/target.conf
+fivm/test/c/mvm/autom4te.cache/requests
+fivm/test/java/build/jasmin.log
+fivm/testmake/config.log
+fivm/testmake/config.status
+fivm/util/c/getNumProcs/getNumProcs
+tools/src/build/test1/Fib.class
 
 
