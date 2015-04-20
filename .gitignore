@@ -109,5 +109,6 @@ fivm/testmake/config.log
 fivm/testmake/config.status
 fivm/util/c/getNumProcs/getNumProcs
 tools/src/build/test1/Fib.class
-
+fivm/.numberOfProcessors
+tools/src/build/test1/Fib.class
 
