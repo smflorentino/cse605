@@ -45,3 +45,16 @@ fivm/lib/targets/*
 fivm/config.log/*
 fivm/bottomup/generated/*
 fivm/lib/ctypes-64.conf
+
+fivm/atlassian-ide-plugin.xml
+fivm/autom4te.cache/output.2
+fivm/autom4te.cache/output.3
+fivm/autom4te.cache/traces.2
+fivm/autom4te.cache/traces.3
+fivm/lib/cmr-biased-ctypes.tmp.build/
+fivm/lib/hf-pip-ctypes.tmp
+fivm/lib/hf-pip-ctypes.tmp.build/
+fivm/lib/hfa-ctypes.tmp.build/
+fivm/scj/oSCJ/scj/ri/build/
+fivm/test/c/mvm/autom4te.cache/output.1
+fivm/test/c/mvm/autom4te.cache/traces.1
