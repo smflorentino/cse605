@@ -1544,6 +1544,30 @@ struct fivmr_um_primitive_block {
   uint64_t storage[6];
 };
 
+typedef enum fivmr_um_type_t
+{
+  INT,
+  BYTE,
+  SHORT,
+  LONG,
+  DOUBLE,
+  FLOAT,
+  CHAR,
+  BOOLEAN
+} fivmr_um_type_t;
+
+/* An array header block */
+struct fivmr__um_array_header {
+  /* Points to the Array Spine in Scoped Memory */
+  struct fivmr_um_arrayspine *spine;
+  /* Supports (hypothetically) 2^31-1 elements */
+  int32_t size;
+  /* Store the array data type */
+  fivmr_um_type_t type;
+  /* Store the first five elements here */
+  uint64_t elem[5];
+};
+
 /* Note that any additions that change the size of this struct must be reflected in FIVMR_OFFSETOF_REGSAVE */
 struct fivmr_MemoryArea_s {
     uintptr_t start;
@@ -1574,6 +1598,7 @@ struct fivmr_MemoryArea_s {
     struct fivmr_um_primitive_block *fr_head;
     /* The head to the Linked List of Full Primitive Blocks */
     struct fivmr_um_primitive_block *nfr_head;
+    /* No data structures are needed to track arrays - it's all in the spine! */
 };
 
 #define FIVMR_MEMORYAREASTACK_GCINPROGRESS 0x1
@@ -5029,6 +5054,8 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
 // }
 
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea);
+uintptr_t fivmr_MemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t size);
+
 
 void fivmr_ScopeBacking_alloc(fivmr_ThreadState *ts, uintptr_t size);
 

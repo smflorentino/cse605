@@ -507,4 +507,9 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
     // return (uintptr_t) Int;
 }
 
+uintptr_t fivmrMemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t size)
+{
+    return (uintptr_t) NULL;
+}
+
 
