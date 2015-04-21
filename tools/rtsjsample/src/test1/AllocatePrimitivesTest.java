@@ -70,8 +70,8 @@ public class AllocatePrimitivesTest implements Runnable
             System.out.println(UMBoolean.get(p));
 
             //Allocating a float
-            double d=12.98f;
-            p=UMFloat.allocate(d);
+            float f=12.98f;
+            p=UMFloat.allocate(f);
             assert UMFloat.get(p)==12.98f;
             UMFloat.set(p, 1237.56f);
             //System.out.println(UMDouble.get(p));
