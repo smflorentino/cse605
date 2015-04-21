@@ -8,16 +8,16 @@ import com.fiji.fivm.r1.RuntimeImport;
 import static com.fiji.fivm.r1.unmanaged.UMUtils.fivmr_MemoryArea_allocatePrimitive;
 
 /**
- * Created by scottflo on 4/13/15.
+ * Created by mihirlibran on 4/20/15.
  */
-public class UMLong implements UMPrimitive{
+public class UMByte implements UMPrimitive{
 
-    public static long get(Pointer p)
+    public static byte get(Pointer p)
     {
-        return p.loadLong();
+        return p.loadByte();
     }
 
-    public static void set(Pointer p, long val)
+    public static void set(Pointer p, byte val)
     {
         p.store(val);
     }
@@ -26,7 +26,7 @@ public class UMLong implements UMPrimitive{
         //TODO
     }
 
-    public static Pointer allocate(long val)
+    public static Pointer allocate(byte val)
     {
         //We can't be in the Heap OR Immortal Memory
         final Pointer curArea = MemoryAreas.getCurrentArea();
