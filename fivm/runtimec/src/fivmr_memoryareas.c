@@ -178,6 +178,8 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
     /* Create our tracking structures */
     fivmr_MemoryArea_setupUM(oldBump, unManagedSize);
     area->free_head = (struct fivmr_um_node*) oldBump;
+    //Save the size for later
+    area->um_size = unManagedSize;
     /* Zero out our fields */
     area->fr_head = NULL;
     area->nfr_head = NULL;

@@ -1544,7 +1544,7 @@ struct fivmr_um_primitive_block {
   uint64_t storage[6];
 };
 
-/* Note that any additions to this struct must be reflected in FIVMR_OFFSETOF_REGSAVE */
+/* Note that any additions that change the size of this struct must be reflected in FIVMR_OFFSETOF_REGSAVE */
 struct fivmr_MemoryArea_s {
     uintptr_t start;
     uintptr_t bump;
@@ -1566,6 +1566,8 @@ struct fivmr_MemoryArea_s {
     /* UnManaged Scoped Memory Support */
     /* The start of scoped memory */ 
     uintptr_t new_start;
+    /* The size of unmanaged memory */
+    int64_t um_size;
     /* The head to the Linked List of Free Blocks */
     struct fivmr_um_node *free_head;
     /* The head to the Linked List of Primitive Blocks with Available Space */
@@ -5025,6 +5027,7 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
 //   itoa (number,buffer,2);
 //   printf ("binary: %s\n",buffer);
 // }
+
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea);
 
 void fivmr_ScopeBacking_alloc(fivmr_ThreadState *ts, uintptr_t size);

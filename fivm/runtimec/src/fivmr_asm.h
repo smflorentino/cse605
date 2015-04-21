@@ -59,8 +59,8 @@
 // #define FIVMR_OFFSETOF_REGSAVE_0   268
 // #define FIVMR_OFFSETOF_REGSAVE_1   272
 /* Changing the size of the scoped memory struct requires adjusting the offsets */
-#define FIVMR_OFFSETOF_REGSAVE_0   284
-#define FIVMR_OFFSETOF_REGSAVE_1   288
+#define FIVMR_OFFSETOF_REGSAVE_0   292
+#define FIVMR_OFFSETOF_REGSAVE_1   296
 
 #endif
 
