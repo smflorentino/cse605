@@ -1531,13 +1531,14 @@ struct fivmr_ScopeID_s {
 #define ELEMENTS_PER_BLOCK 8
 #define BLOCK_SIZE 64
 
+typedef struct fivmr_um_node_s fivmr_um_node;
 typedef struct fivmr_um_array_header_s fivmr_um_array_header;
 typedef struct fivmr_um_array_block_s fivmr_um_array_block;
 
 /* A Linked List to represent unused memory */
-struct fivmr_um_node {
+struct fivmr_um_node_s {
   /* Pointer to next node */
-  struct fivmr_um_node* next;
+  fivmr_um_node* next;
   /* Pad to make 64 byte size */
   char zero[60];
 };
@@ -1609,7 +1610,7 @@ struct fivmr_MemoryArea_s {
     /* The size of unmanaged memory */
     int64_t um_size;
     /* The head to the Linked List of Free Blocks */
-    struct fivmr_um_node *free_head;
+    fivmr_um_node *free_head;
     /* The head to the Linked List of Primitive Blocks with Available Space */
     struct fivmr_um_primitive_block *fr_head;
     /* The head to the Linked List of Full Primitive Blocks */
@@ -5071,6 +5072,9 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
 
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea);
 uintptr_t fivmr_MemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t size);
+
+void fivmr_MemoryArea_freeArray(uintptr_t fivmrMemoryArea, uintptr_t arrayHeader);
+
 int32_t fivmr_MemoryArea_loadArrayInt(uintptr_t arrayHeader, int32_t index);
 void fivmr_MemoryArea_storeArrayInt(uintptr_t arrayHeader, int32_t index, int32_t value);
 

@@ -76,15 +76,15 @@ static void fivmr_MemoryArea_setupUM(uintptr_t start, int64_t size)
 {
     /* Allocate the first block */
     //Create struct to memcpy from
-    struct fivmr_um_node first;
+    fivmr_um_node first;
     /* Zero out the everything, including the zero region*/
-    memset(&(first), 0, sizeof(struct fivmr_um_node));
+    memset(&(first), 0, sizeof(fivmr_um_node));
     //Get the block size
-    int blockSize = sizeof(struct fivmr_um_node);
+    int blockSize = sizeof(fivmr_um_node);
     //Copy into UM region
     memcpy((void*) start,&first,blockSize);
     //Set current node 
-    struct fivmr_um_node* cur = (struct fivmr_um_node*) start;
+    fivmr_um_node* cur = (fivmr_um_node*) start;
     // DEBUG(DB_MEMAREA, ("Block created."));
     //Set next place to copy into
     uintptr_t nextBlock = start + blockSize;
@@ -93,7 +93,7 @@ static void fivmr_MemoryArea_setupUM(uintptr_t start, int64_t size)
         //memcpy  into UM region
         memcpy((void*) nextBlock,&first,blockSize);
         //set the next 
-        cur->next = (struct fivmr_um_node *) nextBlock;
+        cur->next = (fivmr_um_node *) nextBlock;
         //move the head to the new struct we just copied
         cur = cur->next;
         //set destination to next block 
@@ -181,7 +181,7 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
     area->new_start = area->bump;
     /* Create our tracking structures */
     fivmr_MemoryArea_setupUM(oldBump, unManagedSize);
-    area->free_head = (struct fivmr_um_node*) oldBump;
+    area->free_head = (fivmr_um_node*) oldBump;
     //Save the size for later
     area->um_size = unManagedSize;
     /* Zero out our fields */
@@ -440,9 +440,9 @@ static inline int32_t fivmr_MemoryArea_findFreeIndex(int32_t map)
     //TODO throw something
 }
 
-static inline struct fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_MemoryArea *area) {
+static inline fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_MemoryArea *area) {
     //Get current free block:
-    struct fivmr_um_node *block = area->free_head;
+    fivmr_um_node *block = area->free_head;
     if(block == NULL) {
         //We're out of memory
         //TODO throw OOME
@@ -454,6 +454,22 @@ static inline struct fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_MemoryAr
     block->next = NULL;
     DEBUG(DB_MEMAREA, ("Block allocated."));
     return block;
+}
+
+static inline void fivmr_MemoryArea_freeBlock(fivmr_MemoryArea *area, fivmr_um_node* block) {
+    //Zero the block
+    memset(block, 0, sizeof(fivmr_um_node));
+    //Get the head of the Memory Area:
+    fivmr_um_node *head = area->free_head;
+    //if this is the last free block, make it the new head
+    if(head == NULL) {
+        area->free_head = block;
+    }
+    //else, add it to the head of the list:
+    else {
+        block->next = area->free_head;
+        area->free_head = block;
+    }
 }
 
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
@@ -571,6 +587,30 @@ uintptr_t fivmr_MemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type
     }
 
     return (uintptr_t) header;
+}
+
+void fivmr_MemoryArea_freeArray(uintptr_t fivmrMemoryArea, uintptr_t arrayHeader)
+{
+    fivmr_MemoryArea *area = (fivmr_MemoryArea*) fivmrMemoryArea;
+    fivmr_um_array_header *header = (fivmr_um_array_header*) arrayHeader;
+    //Free the header, if elements are inlined:
+    if(header->size <= 6) {
+        fivmr_MemoryArea_freeBlock(area, (fivmr_um_node*) header);
+    }
+    //Free the data blocks:
+    int64_t blocksAllocated = header->size / ELEMENTS_PER_BLOCK;
+    //We might have spilled partially into another block:
+    if(header->size % ELEMENTS_PER_BLOCK != 0) {
+        blocksAllocated += 1;
+    }
+    //Lets FREE!
+    int64_t blocksFreed = 0;
+    for(blocksFreed = 0; blocksFreed < blocksAllocated; blocksFreed++) {
+        fivmr_MemoryArea_freeBlock(area, (fivmr_um_node*) header->spine[blocksAllocated]);
+    }
+    //Now free the header.
+    fivmr_MemoryArea_freeBlock(area, (fivmr_um_node*) header);
+    return;
 }
 
 int32_t fivmr_MemoryArea_loadArrayInt(uintptr_t arrayHeader, int32_t index)
