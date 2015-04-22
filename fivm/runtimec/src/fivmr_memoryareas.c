@@ -405,8 +405,26 @@ int64_t fivmr_MemoryArea_consumed(fivmr_ThreadState *ts,
 
 int64_t fivmr_MemoryArea_consumedUnmanaged(fivmr_ThreadState *ts, fivmr_MemoryArea *area)
 {
-    //TODO assert not heap or stack
-    return area->um_consumed;
+    //TODO throw something here
+    fivmr_assert(area!=&ts->gc.heapMemoryArea);
+        // if (area==&ts->gc.heapMemoryArea) {
+        // int64_t result=fivmr_GC_totalMemory(&ts->vm->gc);
+        // LOG(3,("Requested consumed memory for heap memory (%p) in Thread #%u, "
+        //        "got %p",area,ts->id,(uintptr_t)result));
+        // return result;
+    if (area==ts->gc.currentArea &&
+               !area->shared) {
+        uintptr_t result=area->um_consumed;
+        LOG(3,("Requested consumed memory for private current memory "
+               "area (%p) in Thread #%u, got %p",area,ts->id,(uintptr_t)result));
+        return result;
+    } else {
+        uintptr_t result=area->um_consumed;
+        LOG(3,("Requested consumed memory for shared or non-current "
+               "memory area (%p) in Thread #%u, got %p",
+               area,ts->id,(uintptr_t)result));
+        return result;
+    }
 }
 
 /* Find the index of an available primitive slot in its bit vector.
@@ -532,8 +550,13 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
     // return (uintptr_t) Int;
 }
 
-uintptr_t fivmr_MemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t numElements)
+uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, int32_t numElements)
 {
+    //Exception?
+    fivmr_assert()
+    //Get the area:
+    ts->gc.alloc[FIVMR_GC_OBJ_SPACE] 
+    gc.alloc[FIVMR_GC_OBJ_SPACE]
     //Cast to fivmr_MemoryArea
     fivmr_MemoryArea *area = (fivmr_MemoryArea*) fivmrMemoryArea;
 

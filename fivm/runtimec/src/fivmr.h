@@ -5074,7 +5074,7 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
 // }
 
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea);
-uintptr_t fivmr_MemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t size);
+uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, int32_t size);
 
 void fivmr_MemoryArea_freeArray(uintptr_t fivmrMemoryArea, uintptr_t arrayHeader);
 
