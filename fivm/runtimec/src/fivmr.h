@@ -1529,7 +1529,7 @@ struct fivmr_ScopeID_s {
 #define ELEMENT_STORAGE_SIZE sizeof(uint64_t)
 //Number of array elements supported per array block
 #define ELEMENTS_PER_BLOCK 8
-#define BLOCK_SIZE 64
+#define ARRAY_BLOCK_SIZE 64
 
 typedef struct fivmr_um_node_s fivmr_um_node;
 typedef struct fivmr_um_array_header_s fivmr_um_array_header;
