@@ -1,7 +1,7 @@
 package test1;
 
 import com.fiji.fivm.r1.Pointer;
-import com.fiji.fivm.r1.unmanaged.UMFloat;
+import com.fiji.fivm.r1.unmanaged.UMArray;
 import common.LOG;
 
 /**
@@ -13,16 +13,24 @@ public class Fib2 implements Runnable
 	{
 		try
 		{
-			int[] myArray = new int[256];
-			myArray[126] = 20;
-			myArray[127] = 21;
-//			myArray[2	024] = 10;
+			Pointer array = UMArray.allocate(UMArray.UMArrayType.INT,300);
+			for(int i = 0; i< 300; i++)
+			{
+				UMArray.setInt(array, i, 3*i);
+			}
+			for(int i = 0; i< 300; i++)
+			{
+				int x = UMArray.getInt(array,i);
+				assert x ==3*i;
+			}
+//			assert false;
+
 		}
 		catch(Throwable e)
 		{
-			LOG.FATAL("Exception in Runnable...");
+			LOG.HEAP("Exception in Runnable...");
 			LOG.info(e.getClass().getName());
-			LOG.FATAL(e.getMessage());
+			LOG.HEAP(e.getMessage());
 		}
 	}
 }

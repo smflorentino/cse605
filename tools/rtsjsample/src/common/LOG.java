@@ -8,15 +8,14 @@ import com.fiji.fivm.r1.Pointer;
  */
 public class LOG {
 
-    private static String MSG;
     public static void info(String log)
     {
         System.out.println("INFO: " + log);
     }
 
-    public static void FATAL(String msg)
+    public static void HEAP(String msg)
     {
-        MSG = msg;
+        final String MSG = msg;
         Pointer outer = MemoryAreas.getCurrentArea();
         MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
         System.err.println(MSG);

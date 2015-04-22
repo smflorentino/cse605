@@ -77,14 +77,15 @@ static void fivmr_MemoryArea_setupUM(uintptr_t start, int64_t size)
     /* Allocate the first block */
     //Create struct to memcpy from
     struct fivmr_um_node first;
-    /* Zero out the zero region*/
-    memset(&(first.zero), 0, 60);
+    /* Zero out the everything, including the zero region*/
+    memset(&(first), 0, sizeof(struct fivmr_um_node));
     //Get the block size
     int blockSize = sizeof(struct fivmr_um_node);
     //Copy into UM region
     memcpy((void*) start,&first,blockSize);
     //Set current node 
     struct fivmr_um_node* cur = (struct fivmr_um_node*) start;
+    // DEBUG(DB_MEMAREA, ("Block created."));
     //Set next place to copy into
     uintptr_t nextBlock = start + blockSize;
     //Continue until we fill up UM region
@@ -97,7 +98,10 @@ static void fivmr_MemoryArea_setupUM(uintptr_t start, int64_t size)
         cur = cur->next;
         //set destination to next block 
         nextBlock += blockSize;
+        // DEBUG(DB_MEMAREA, ("Block created."));
     }
+    //Make sure last block has a NULL next pointer.
+    cur->next = NULL;
 }
 
 uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
@@ -436,6 +440,22 @@ static inline int32_t fivmr_MemoryArea_findFreeIndex(int32_t map)
     //TODO throw something
 }
 
+static inline struct fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_MemoryArea *area) {
+    //Get current free block:
+    struct fivmr_um_node *block = area->free_head;
+    if(block == NULL) {
+        //We're out of memory
+        //TODO throw OOME
+        fivmr_assert(0);
+    }
+    //Set the head to the next block
+    area->free_head = area->free_head->next;
+    //De-link the block from the chain
+    block->next = NULL;
+    DEBUG(DB_MEMAREA, ("Block allocated."));
+    return block;
+}
+
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
 {
     printf("Hello World!!!!!\n");
@@ -507,9 +527,74 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
     // return (uintptr_t) Int;
 }
 
-uintptr_t fivmrMemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t size)
+uintptr_t fivmr_MemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t numElements)
 {
-    return (uintptr_t) NULL;
+    //Cast to fivmr_MemoryArea
+    fivmr_MemoryArea *area = (fivmr_MemoryArea*) fivmrMemoryArea;
+
+    //Get a free block for the array header
+    fivmr_um_array_header *header = (fivmr_um_array_header*) fivmr_MemoryArea_getFreeBlock(area);
+
+    //Set the fields in our header:
+    header->type = type;
+    header->size = numElements;
+
+    uintptr_t oldBump = area->bump;
+    //The first 6 elements are inlined, if size allows:
+    if(numElements <= 6)
+    {
+        return (uintptr_t) header;
+    }
+    //Allocate the spine, by bumping the pointer. The current bump is our spine allocation:
+    //Our current implementation has a 12.5% penalty that cannot be reclaimed...
+    int64_t spineSize = (numElements / ELEMENTS_PER_BLOCK);
+    //We might need to spill over into another block, if the size is not divisible by 8.
+    if(numElements % ELEMENTS_PER_BLOCK != 0)
+    {
+        spineSize += 1;
+    }
+    uintptr_t newbump = area->bump + spineSize;
+    //See if we have enough space:
+    if(newbump - area->start > area->size) {
+        //TODO throw OOME
+        fivmr_assert(0);
+    }
+    //If we're good, set the bump:
+    area->bump = newbump;
+    //Allocate the spine:
+    int64_t blocksAllocated = 0;
+    int64_t blocksNeeded = spineSize;
+    header->spine = (fivmr_um_array_block**) oldBump;
+    for(blocksAllocated = 0; blocksAllocated < blocksNeeded; blocksAllocated++) {
+        fivmr_um_array_block *block = (fivmr_um_array_block*) fivmr_MemoryArea_getFreeBlock(area);
+        header->spine[blocksAllocated] = (fivmr_um_array_block*) block;
+    }
+
+    return (uintptr_t) header;
+}
+
+int32_t fivmr_MemoryArea_loadArrayInt(uintptr_t arrayHeader, int32_t index)
+{
+    fivmr_um_array_header *header = (fivmr_um_array_header*) arrayHeader;
+    if(header->size < 6) {
+        return (int32_t) header->elem[index];
+    }
+    //Get the block from the spine
+    fivmr_um_array_block *block = header->spine[index / ELEMENTS_PER_BLOCK];
+    //Get the data from the block
+    return block->storage[index % ELEMENTS_PER_BLOCK];
+}
+
+void fivmr_MemoryArea_storeArrayInt(uintptr_t arrayHeader, int32_t index, int32_t value)
+{
+    fivmr_um_array_header *header = (fivmr_um_array_header*) arrayHeader;
+    if(header->size < 6) {
+        header->elem[index] = value;
+    }
+    //Get the block from the spine
+    fivmr_um_array_block *block = header->spine[index / ELEMENTS_PER_BLOCK];
+    //Set the data from the block
+    block->storage[index % ELEMENTS_PER_BLOCK] = value;
 }
 
 

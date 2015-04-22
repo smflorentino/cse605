@@ -57,7 +57,7 @@ public class libc {
 	@NoInline
 	@Import
 	@GodGiven
-        @TrustedGodGiven
+	@TrustedGodGiven
 	@NoThrow
 	@NoNativeFrame
 	@UseObjectsNotHandles

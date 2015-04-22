@@ -1525,6 +1525,14 @@ struct fivmr_ScopeID_s {
 };
 
 /* Unmanaged Memory Structures*/
+//Size of array primitive element
+#define ELEMENT_STORAGE_SIZE sizeof(uint64_t)
+//Number of array elements supported per array block
+#define ELEMENTS_PER_BLOCK 8
+#define BLOCK_SIZE 64
+
+typedef struct fivmr_um_array_header_s fivmr_um_array_header;
+typedef struct fivmr_um_array_block_s fivmr_um_array_block;
 
 /* A Linked List to represent unused memory */
 struct fivmr_um_node {
@@ -1544,28 +1552,36 @@ struct fivmr_um_primitive_block {
   uint64_t storage[6];
 };
 
-typedef enum fivmr_um_type_t
-{
-  INT,
-  BYTE,
-  SHORT,
-  LONG,
-  DOUBLE,
-  FLOAT,
-  CHAR,
-  BOOLEAN
-} fivmr_um_type_t;
+// typedef enum fivmr_um_type_t
+// {
+//   INT,
+//   BYTE,
+//   SHORT,
+//   LONG,
+//   DOUBLE,
+//   FLOAT,
+//   CHAR,
+//   BOOLEAN
+// } fivmr_um_type_t;
+
+/*An array storage block */
+struct fivmr_um_array_block_s {
+  /* The storage available in this block */
+  uint64_t storage[8];
+};
 
 /* An array header block */
-struct fivmr__um_array_header {
+struct fivmr_um_array_header_s {
   /* Points to the Array Spine in Scoped Memory */
-  struct fivmr_um_arrayspine *spine;
+  fivmr_um_array_block **spine;
   /* Supports (hypothetically) 2^31-1 elements */
   int32_t size;
   /* Store the array data type */
-  fivmr_um_type_t type;
-  /* Store the first five elements here */
-  uint64_t elem[5];
+  int32_t type;
+  /* Store the first six elements here */
+  uint64_t elem[6];
+  /* Zero out to make 64 byte block size*/
+  char zero[4];
 };
 
 /* Note that any additions that change the size of this struct must be reflected in FIVMR_OFFSETOF_REGSAVE */
@@ -5055,7 +5071,8 @@ static inline fivmr_MemoryArea *fivmr_MemoryArea_forObject(
 
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea);
 uintptr_t fivmr_MemoryArea_allocateArray(uintptr_t fivmrMemoryArea, int32_t type, int32_t size);
-
+int32_t fivmr_MemoryArea_loadArrayInt(uintptr_t arrayHeader, int32_t index);
+void fivmr_MemoryArea_storeArrayInt(uintptr_t arrayHeader, int32_t index, int32_t value);
 
 void fivmr_ScopeBacking_alloc(fivmr_ThreadState *ts, uintptr_t size);
 

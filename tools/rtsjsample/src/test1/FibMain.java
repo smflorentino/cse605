@@ -3,11 +3,7 @@ package test1;
 import com.fiji.fivm.r1.Magic;
 import com.fiji.fivm.r1.MemoryAreas;
 import com.fiji.fivm.r1.Pointer;
-import com.fiji.fivm.r1.unmanaged.UMInteger;
 import common.LOG;
-import test2.ExampleRTThread;
-
-import javax.realtime.RealtimeThread;
 
 /**
  * Created by scottflo on 4/14/15.
@@ -25,9 +21,9 @@ public class FibMain {
 
         MemoryAreas.allocScopeBacking(Magic.curThreadState(), totalBacking);
 
-        Pointer scoped = MemoryAreas.alloc(SCOPE_SIZE,false,"scoped", 512);
+        Pointer scoped = MemoryAreas.alloc(SCOPE_SIZE,false,"scoped", 3072);
 
-        MemoryAreas.enter(scoped, new Fib());
+        MemoryAreas.enter(scoped, new Fib2());
     }
 
 }
