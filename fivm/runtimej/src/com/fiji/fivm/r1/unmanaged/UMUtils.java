@@ -16,7 +16,7 @@ public class UMUtils
 
 	@RuntimeImport
 	@NoSafepoint
-	public static native Pointer fivmr_MemoryArea_allocateArray(Pointer currentArea, int type, int elemCount);
+	public static native Pointer fivmr_MemoryArea_allocateArray(Pointer ts, int type, int elemCount);
 
 	@RuntimeImport
 	@NoSafepoint

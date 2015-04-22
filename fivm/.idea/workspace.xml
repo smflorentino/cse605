@@ -3,10 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="c996f1da-94e5-438a-ab25-760b13f24423" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MM.java" afterPath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MM.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimec/src/fivmr.h" afterPath="$PROJECT_DIR$/runtimec/src/fivmr.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scj/oSCJ/scj/ri/RealMakefile" afterPath="$PROJECT_DIR$/scj/oSCJ/scj/ri/RealMakefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" afterPath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java" afterPath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scj/oSCJ/scj/ri/config.status" afterPath="$PROJECT_DIR$/scj/oSCJ/scj/ri/config.status" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimec/src/fivmr_memoryareas.c" afterPath="$PROJECT_DIR$/runtimec/src/fivmr_memoryareas.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/tester.sh" afterPath="$PROJECT_DIR$/../tools/tester.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" />
     </list>
     <ignored path="fivm.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,9 +30,6 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="DaemonCodeAnalyzer">
-    <disable_hints />
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="fivm" />
@@ -39,11 +39,9 @@
       <file leaf-file-name="UMUtils.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.72" vertical-offset="81" max-vertical-offset="646">
-              <caret line="22" column="29" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="-9.72">
+              <caret line="18" column="33" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="33" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -51,28 +49,21 @@
       <file leaf-file-name="CType.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/CType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.52" vertical-offset="509" max-vertical-offset="1921">
+            <state vertical-scroll-proportion="0.0">
               <caret line="79" column="33" selection-start-line="79" selection-start-column="33" selection-end-line="79" selection-end-column="33" />
-              <folding />
+              <folding>
+                <element signature="e#0#4769#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UMArray.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UMArray.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2193">
-              <caret line="0" column="10" selection-start-line="0" selection-start-column="8" selection-end-line="0" selection-end-column="10" />
-              <folding>
-                <element signature="e#2621#2622#0" expanded="false" />
-                <element signature="e#2647#2648#0" expanded="false" />
-                <element signature="e#2674#2675#0" expanded="false" />
-                <element signature="e#2696#2697#0" expanded="false" />
-                <element signature="e#2983#2984#0" expanded="false" />
-                <element signature="e#3047#3048#0" expanded="false" />
-                <element signature="e#3163#3164#0" expanded="false" />
-                <element signature="e#3192#3193#0" expanded="false" />
-              </folding>
+            <state vertical-scroll-proportion="0.46655232">
+              <caret line="38" column="48" selection-start-line="38" selection-start-column="48" selection-end-line="38" selection-end-column="48" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -80,11 +71,40 @@
       <file leaf-file-name="Pointer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/Pointer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.52" vertical-offset="1580" max-vertical-offset="2601">
+            <state vertical-scroll-proportion="0.0">
               <caret line="158" column="19" selection-start-line="158" selection-start-column="19" selection-end-line="158" selection-end-column="19" />
               <folding>
-                <element signature="e#6867#6868#0" expanded="true" />
-                <element signature="e#6910#6911#0" expanded="true" />
+                <element signature="e#0#8714#0" expanded="false" />
+                <element signature="e#2371#2372#0" expanded="false" />
+                <element signature="e#2407#2408#0" expanded="false" />
+                <element signature="e#2518#2519#0" expanded="false" />
+                <element signature="e#2547#2548#0" expanded="false" />
+                <element signature="e#2591#2592#0" expanded="false" />
+                <element signature="e#2627#2628#0" expanded="false" />
+                <element signature="e#6015#6016#0" expanded="false" />
+                <element signature="e#6058#6059#0" expanded="false" />
+                <element signature="e#6174#6175#0" expanded="false" />
+                <element signature="e#6216#6217#0" expanded="false" />
+                <element signature="e#6335#6336#0" expanded="false" />
+                <element signature="e#6374#6375#0" expanded="false" />
+                <element signature="e#6581#6582#0" expanded="false" />
+                <element signature="e#6624#6625#0" expanded="false" />
+                <element signature="e#6724#6725#0" expanded="false" />
+                <element signature="e#6767#6768#0" expanded="false" />
+                <element signature="e#7010#7011#0" expanded="false" />
+                <element signature="e#7053#7054#0" expanded="false" />
+                <element signature="e#7153#7154#0" expanded="false" />
+                <element signature="e#7196#7197#0" expanded="false" />
+                <element signature="e#7301#7302#0" expanded="false" />
+                <element signature="e#7349#7350#0" expanded="false" />
+                <element signature="e#7457#7458#0" expanded="false" />
+                <element signature="e#7508#7509#0" expanded="false" />
+                <element signature="e#7620#7621#0" expanded="false" />
+                <element signature="e#7675#7676#0" expanded="false" />
+                <element signature="e#7790#7791#0" expanded="false" />
+                <element signature="e#7848#7849#0" expanded="false" />
+                <element signature="e#7959#7960#0" expanded="false" />
+                <element signature="e#8013#8014#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -93,7 +113,7 @@
       <file leaf-file-name="NoPollcheck.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/NoPollcheck.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="697" max-vertical-offset="850">
+            <state vertical-scroll-proportion="0.0">
               <caret line="79" column="18" selection-start-line="79" selection-start-column="18" selection-end-line="79" selection-end-column="18" />
               <folding>
                 <element signature="e#0#4051#0" expanded="false" />
@@ -102,14 +122,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MM.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MM.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MM.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.39591077" vertical-offset="8644" max-vertical-offset="32793">
-              <caret line="583" column="21" selection-start-line="583" selection-start-column="21" selection-end-line="583" selection-end-column="21" />
+            <state vertical-scroll-proportion="-3.2857144">
+              <caret line="1292" column="8" selection-start-line="1292" selection-start-column="8" selection-end-line="1292" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OMData.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/om/OMData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.08">
+              <caret line="210" column="22" selection-start-line="210" selection-start-column="22" selection-end-line="210" selection-end-column="22" />
               <folding>
-                <element signature="e#18671#18672#0" expanded="true" />
-                <element signature="e#18762#18763#0" expanded="true" />
+                <element signature="e#5884#5885#0" expanded="true" />
+                <element signature="e#5908#5909#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -118,7 +148,7 @@
       <file leaf-file-name="fivmRuntime.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/fivmRuntime.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0" vertical-offset="16116" max-vertical-offset="84337">
+            <state vertical-scroll-proportion="0.0">
               <caret line="1054" column="31" selection-start-line="1054" selection-start-column="31" selection-end-line="1054" selection-end-column="31" />
               <folding>
                 <element signature="e#0#172811#0" expanded="true" />
@@ -130,8 +160,8 @@
       <file leaf-file-name="MemoryAreas.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MemoryAreas.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.730769" vertical-offset="42" max-vertical-offset="5610">
-              <caret line="64" column="8" selection-start-line="64" selection-start-column="8" selection-end-line="64" selection-end-column="8" />
+            <state vertical-scroll-proportion="-4.5">
+              <caret line="240" column="42" selection-start-line="240" selection-start-column="42" selection-end-line="240" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -140,21 +170,9 @@
       <file leaf-file-name="Magic.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/Magic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1700" max-vertical-offset="4488">
-              <caret line="138" column="47" selection-start-line="138" selection-start-column="33" selection-end-line="138" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#8799#0" expanded="false" />
-                <element signature="e#6348#6349#0" expanded="false" />
-                <element signature="e#6372#6373#0" expanded="false" />
-                <element signature="e#6580#6581#0" expanded="false" />
-                <element signature="e#6635#6636#0" expanded="false" />
-                <element signature="e#8203#8204#0" expanded="false" />
-                <element signature="e#8291#8292#0" expanded="false" />
-                <element signature="e#8492#8493#0" expanded="false" />
-                <element signature="e#8561#8562#0" expanded="false" />
-                <element signature="e#8721#8722#0" expanded="false" />
-                <element signature="e#8794#8795#0" expanded="false" />
-              </folding>
+            <state vertical-scroll-proportion="-7.76">
+              <caret line="152" column="33" selection-start-line="152" selection-start-column="33" selection-end-line="152" selection-end-column="33" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -193,10 +211,10 @@
         <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMLong.java" />
         <option value="$PROJECT_DIR$/compiler/src/com/fiji/fivm/c1/CTypesystemReferences.java" />
         <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/fivmRuntime.java" />
-        <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" />
-        <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java" />
         <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MemoryAreas.java" />
         <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MM.java" />
+        <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" />
+        <option value="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java" />
       </list>
     </option>
   </component>
@@ -210,10 +228,14 @@
   <component name="MavenProjectNavigator">
     <treeState />
   </component>
+  <component name="NamedScopeManager">
+    <order />
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
-    <option name="width" value="1680" />
-    <option name="height" value="1023" />
+    <option name="x" value="65" />
+    <option name="y" value="-4" />
+    <option name="width" value="1855" />
+    <option name="height" value="1084" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -238,6 +260,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -494,9 +518,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -531,95 +553,13 @@
       <option name="PROGRAM_PARAMETERS" />
       <method />
     </configuration>
-    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
-      <module name="" />
-      <option name="TESTING_TYPE" value="0" />
-      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="USE_COMMAND_LINE" value="true" />
-      <option name="COMMAND_LINE" value="" />
-      <option name="WIPE_USER_DATA" value="false" />
-      <option name="DISABLE_BOOT_ANIMATION" value="false" />
-      <option name="NETWORK_SPEED" value="full" />
-      <option name="NETWORK_LATENCY" value="none" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
-      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="JarApplication" factoryName="JAR Application">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list />
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <method />
-    </configuration>
-    <configuration default="true" type="TestNG" factoryName="TestNG">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="SUITE_NAME" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="GROUP_NAME" />
-      <option name="TEST_OBJECT" value="CLASS" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="OUTPUT_DIRECTORY" />
-      <option name="ANNOTATION_TYPE" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <option name="USE_DEFAULT_REPORTERS" value="false" />
-      <option name="PROPERTIES_FILE" />
-      <envs />
-      <properties />
-      <listeners />
-      <method />
-    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
+      <module />
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
       <option name="HEIGHT" value="300" />
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -658,27 +598,47 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
-      <module name="" />
-      <option name="ACTIVITY_CLASS" value="" />
-      <option name="MODE" value="default_activity" />
-      <option name="DEPLOY" value="true" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="USE_COMMAND_LINE" value="true" />
-      <option name="COMMAND_LINE" value="" />
-      <option name="WIPE_USER_DATA" value="false" />
-      <option name="DISABLE_BOOT_ANIMATION" value="false" />
-      <option name="NETWORK_SPEED" value="full" />
-      <option name="NETWORK_LATENCY" value="none" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
-      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+    <configuration default="true" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <envs />
       <method />
     </configuration>
-    <list size="0" />
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration">
@@ -701,34 +661,34 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="1023" extended-state="6" />
-    <editor active="false" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Atlassian " active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31712708" sideWeight="0.49806523" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3281768" sideWeight="0.50193477" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31618434" sideWeight="0.49806523" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24908425" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32990354" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4002211" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15323566" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15312327" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3281768" sideWeight="0.50193477" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Atlassian " active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.187567" sideWeight="0.4936034" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4002211" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -743,9 +703,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="myTodoPanelSettings">
-      <TodoPanelSettings />
-    </option>
     <MESSAGE value="Update offset in runtimec caused by structures" />
     <option name="LAST_COMMIT_MESSAGE" value="Update offset in runtimec caused by structures" />
   </component>
@@ -788,51 +745,44 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMChar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cpruntime/src/java/lang/reflect/Array.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.25" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-7.25">
           <caret line="334" column="14" selection-start-line="334" selection-start-column="14" selection-end-line="334" selection-end-column="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fijicore/src/java/lang/reflect/Array.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.2884617" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-5.2884617">
           <caret line="328" column="20" selection-start-line="328" selection-start-column="20" selection-end-line="328" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fijicore/src/java/lang/ArrayIndexOutOfBoundsException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.84" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-8.84">
           <caret line="36" column="6" selection-start-line="36" selection-start-column="6" selection-end-line="36" selection-end-column="6" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/Reflect.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.4" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-3.4">
           <caret line="43" column="18" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMPrimitive.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.76" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.76">
           <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMFloat.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.64" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-8.64">
           <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="false" />
@@ -842,133 +792,133 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fijirt/src/sun/misc/FloatingDecimal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.1538463" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.1538463">
           <caret line="324" column="48" selection-start-line="324" selection-start-column="48" selection-end-line="324" selection-end-column="48" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fijicore/src/java/lang/ThreadLocal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.64" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-8.64">
           <caret line="127" column="72" selection-start-line="127" selection-start-column="72" selection-end-line="127" selection-end-column="72" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fijicore/src/java/lang/Thread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.04" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-11.04">
           <caret line="1042" column="46" selection-start-line="1042" selection-start-column="46" selection-end-line="1042" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/GodGiven.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="44" column="20" selection-start-line="44" selection-start-column="20" selection-end-line="44" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/UsesMagic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.44" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-5.44">
           <caret line="46" column="21" selection-start-line="46" selection-start-column="21" selection-end-line="46" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/__vm/FCMagic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="45" column="1" selection-start-line="45" selection-start-column="1" selection-end-line="45" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/__vm/FCPtr.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="44" column="1" selection-start-line="44" selection-start-column="1" selection-end-line="44" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/ProfilerThread.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="45" column="1" selection-start-line="45" selection-start-column="1" selection-end-line="45" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/Monitors.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="45" column="1" selection-start-line="45" selection-start-column="1" selection-end-line="45" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/util/PollcheckStats.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="44" column="1" selection-start-line="44" selection-start-column="1" selection-end-line="44" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/util/GCStats.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="44" column="1" selection-start-line="44" selection-start-column="1" selection-end-line="44" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/util/CLStats.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="44" column="1" selection-start-line="44" selection-start-column="1" selection-end-line="44" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/util/GCControl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="45" column="1" selection-start-line="45" selection-start-column="1" selection-end-line="45" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/gnu/classpath/FCStackWalker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="29.44" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="29.44">
           <caret line="53" column="1" selection-start-line="53" selection-start-column="1" selection-end-line="53" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/gnu/java/net/FCNativePlainSocketImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="51" column="1" selection-start-line="51" selection-start-column="1" selection-end-line="51" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/gnu/java/nio/FCSelector.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="46" column="1" selection-start-line="46" selection-start-column="1" selection-end-line="46" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/gnu/java/nio/FCNativePipe.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="46" column="1" selection-start-line="46" selection-start-column="1" selection-end-line="46" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/gnu/java/nio/FCNativeChannel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.08">
           <caret line="54" column="1" selection-start-line="54" selection-start-column="1" selection-end-line="54" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/libc.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.64" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-15.64">
           <caret line="66" column="0" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
           <folding />
         </state>
@@ -976,105 +926,105 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/TrustedGodGiven.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.4" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-3.4">
           <caret line="43" column="18" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMBoolean.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.76" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.76">
           <caret line="7" column="47" selection-start-line="7" selection-start-column="47" selection-end-line="7" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/compiler/src/com/fiji/fivm/c1/ThreadState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.72" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-2.72">
           <caret line="42" column="13" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMLong.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.84" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-8.84">
           <caret line="20" column="9" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/compiler/src/com/fiji/fivm/c1/Arg.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.28" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-7.28">
           <caret line="176" column="17" selection-start-line="176" selection-start-column="17" selection-end-line="176" selection-end-column="17" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.32" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-10.32">
           <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="35" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fijirt/src/javax/realtime/IllegalAssignmentError.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.8" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-6.8">
           <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scj/oSCJ/scj/ri/spec/common/src/javax/realtime/IllegalAssignmentError.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.76" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-4.76">
           <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/RTSJ/src/javax/realtime/IllegalAssignmentError.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.8" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-6.8">
           <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fijicore/src/java/lang/IllegalAccessError.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.36" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-18.36">
           <caret line="62" column="9" selection-start-line="62" selection-start-column="9" selection-end-line="62" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fijicore/src/java/lang/ClassCastException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.64" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-15.64">
           <caret line="46" column="11" selection-start-line="46" selection-start-column="11" selection-end-line="46" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/ThreadPriority.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.2" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-10.2">
           <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/compiler/src/com/fiji/fivm/c1/Type.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.4" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-9.4">
           <caret line="590" column="20" selection-start-line="590" selection-start-column="20" selection-end-line="590" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/compiler/src/com/fiji/fivm/c1/SanityCheck.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-22.44" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="-22.44">
           <caret line="73" column="4" selection-start-line="73" selection-start-column="4" selection-end-line="73" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/NoPollcheck.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="0.0">
           <caret line="79" column="18" selection-start-line="79" selection-start-column="18" selection-end-line="79" selection-end-column="18" />
           <folding>
             <element signature="e#0#4051#0" expanded="false" />
@@ -1082,80 +1032,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/Magic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="138" column="47" selection-start-line="138" selection-start-column="33" selection-end-line="138" selection-end-column="47" />
-          <folding>
-            <element signature="e#0#8799#0" expanded="false" />
-            <element signature="e#6348#6349#0" expanded="false" />
-            <element signature="e#6372#6373#0" expanded="false" />
-            <element signature="e#6580#6581#0" expanded="false" />
-            <element signature="e#6635#6636#0" expanded="false" />
-            <element signature="e#8203#8204#0" expanded="false" />
-            <element signature="e#8291#8292#0" expanded="false" />
-            <element signature="e#8492#8493#0" expanded="false" />
-            <element signature="e#8561#8562#0" expanded="false" />
-            <element signature="e#8721#8722#0" expanded="false" />
-            <element signature="e#8794#8795#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fijicore/src/java/lang/UnsupportedOperationException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
+        <state vertical-scroll-proportion="0.0">
           <caret line="37" column="13" selection-start-line="37" selection-start-column="13" selection-end-line="37" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="0" column="10" selection-start-line="0" selection-start-column="8" selection-end-line="0" selection-end-column="10" />
-          <folding>
-            <element signature="e#2621#2622#0" expanded="false" />
-            <element signature="e#2647#2648#0" expanded="false" />
-            <element signature="e#2674#2675#0" expanded="false" />
-            <element signature="e#2696#2697#0" expanded="false" />
-            <element signature="e#2983#2984#0" expanded="false" />
-            <element signature="e#3047#3048#0" expanded="false" />
-            <element signature="e#3163#3164#0" expanded="false" />
-            <element signature="e#3192#3193#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.72" vertical-offset="81" max-vertical-offset="646">
-          <caret line="22" column="29" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/Inline.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.12035398" vertical-offset="0" max-vertical-offset="565">
+        <state vertical-scroll-proportion="0.12035398">
           <caret line="42" column="18" selection-start-line="42" selection-start-column="18" selection-end-line="42" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MemoryAreas.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.730769" vertical-offset="42" max-vertical-offset="5610">
-          <caret line="64" column="8" selection-start-line="64" selection-start-column="8" selection-end-line="64" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/fivmRuntime.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0" vertical-offset="16116" max-vertical-offset="84337">
+        <state vertical-scroll-proportion="-0.0">
           <caret line="1054" column="31" selection-start-line="1054" selection-start-column="31" selection-end-line="1054" selection-end-column="31" />
           <folding>
             <element signature="e#0#172811#0" expanded="true" />
@@ -1165,31 +1058,102 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/CType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.52" vertical-offset="509" max-vertical-offset="1921">
+        <state vertical-scroll-proportion="0.0">
           <caret line="79" column="33" selection-start-line="79" selection-start-column="33" selection-end-line="79" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#0#4769#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/Pointer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.52" vertical-offset="1580" max-vertical-offset="2601">
+        <state vertical-scroll-proportion="0.0">
           <caret line="158" column="19" selection-start-line="158" selection-start-column="19" selection-end-line="158" selection-end-column="19" />
           <folding>
-            <element signature="e#6867#6868#0" expanded="true" />
-            <element signature="e#6910#6911#0" expanded="true" />
+            <element signature="e#0#8714#0" expanded="false" />
+            <element signature="e#2371#2372#0" expanded="false" />
+            <element signature="e#2407#2408#0" expanded="false" />
+            <element signature="e#2518#2519#0" expanded="false" />
+            <element signature="e#2547#2548#0" expanded="false" />
+            <element signature="e#2591#2592#0" expanded="false" />
+            <element signature="e#2627#2628#0" expanded="false" />
+            <element signature="e#6015#6016#0" expanded="false" />
+            <element signature="e#6058#6059#0" expanded="false" />
+            <element signature="e#6174#6175#0" expanded="false" />
+            <element signature="e#6216#6217#0" expanded="false" />
+            <element signature="e#6335#6336#0" expanded="false" />
+            <element signature="e#6374#6375#0" expanded="false" />
+            <element signature="e#6581#6582#0" expanded="false" />
+            <element signature="e#6624#6625#0" expanded="false" />
+            <element signature="e#6724#6725#0" expanded="false" />
+            <element signature="e#6767#6768#0" expanded="false" />
+            <element signature="e#7010#7011#0" expanded="false" />
+            <element signature="e#7053#7054#0" expanded="false" />
+            <element signature="e#7153#7154#0" expanded="false" />
+            <element signature="e#7196#7197#0" expanded="false" />
+            <element signature="e#7301#7302#0" expanded="false" />
+            <element signature="e#7349#7350#0" expanded="false" />
+            <element signature="e#7457#7458#0" expanded="false" />
+            <element signature="e#7508#7509#0" expanded="false" />
+            <element signature="e#7620#7621#0" expanded="false" />
+            <element signature="e#7675#7676#0" expanded="false" />
+            <element signature="e#7790#7791#0" expanded="false" />
+            <element signature="e#7848#7849#0" expanded="false" />
+            <element signature="e#7959#7960#0" expanded="false" />
+            <element signature="e#8013#8014#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/r1/Magic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.76">
+          <caret line="152" column="33" selection-start-line="152" selection-start-column="33" selection-end-line="152" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/com/fiji/fivm/om/OMData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.08">
+          <caret line="210" column="22" selection-start-line="210" selection-start-column="22" selection-end-line="210" selection-end-column="22" />
+          <folding>
+            <element signature="e#5884#5885#0" expanded="true" />
+            <element signature="e#5908#5909#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MemoryAreas.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.5">
+          <caret line="240" column="42" selection-start-line="240" selection-start-column="42" selection-end-line="240" selection-end-column="42" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/MM.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.39591077" vertical-offset="8644" max-vertical-offset="32793">
-          <caret line="583" column="21" selection-start-line="583" selection-start-column="21" selection-end-line="583" selection-end-column="21" />
-          <folding>
-            <element signature="e#18671#18672#0" expanded="true" />
-            <element signature="e#18762#18763#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="-3.2857144">
+          <caret line="1292" column="8" selection-start-line="1292" selection-start-column="8" selection-end-line="1292" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.72">
+          <caret line="18" column="33" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.46655232">
+          <caret line="38" column="48" selection-start-line="38" selection-start-column="48" selection-end-line="38" selection-end-column="48" />
+          <folding />
         </state>
       </provider>
     </entry>

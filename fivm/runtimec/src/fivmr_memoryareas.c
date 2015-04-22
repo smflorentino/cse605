@@ -553,21 +553,20 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
 uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, int32_t numElements)
 {
     //Exception?
-    fivmr_assert()
+    // fivmr_assert(ts->gc.currentArea != &ts->gc.heapMemoryArea);
     //Get the area:
-    ts->gc.alloc[FIVMR_GC_OBJ_SPACE] 
-    gc.alloc[FIVMR_GC_OBJ_SPACE]
-    //Cast to fivmr_MemoryArea
-    fivmr_MemoryArea *area = (fivmr_MemoryArea*) fivmrMemoryArea;
+    fivmr_MemoryArea *area = ts->gc.currentArea;
+    fivmr_GCSpaceAlloc *alloc = &(ts->gc.alloc[FIVMR_GC_OBJ_SPACE]);
 
     //Get a free block for the array header
-    fivmr_um_array_header *header = (fivmr_um_array_header*) fivmr_MemoryArea_getFreeBlock(area);
+    fivmr_um_array_header *header = (fivmr_um_array_header*)  fivmr_MemoryArea_getFreeBlock(area);
 
     //Set the fields in our header:
     header->type = type;
     header->size = numElements;
 
-    uintptr_t oldBump = area->bump;
+    // uintptr_t oldBump = area->bump;
+    uintptr_t oldBump = alloc->bump;
     //The first 6 elements are inlined, if size allows:
     if(numElements <= 6)
     {
@@ -575,20 +574,23 @@ uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, in
     }
     //Allocate the spine, by bumping the pointer. The current bump is our spine allocation:
     //Our current implementation has a 12.5% penalty that cannot be reclaimed...
-    int64_t spineSize = (numElements / ELEMENTS_PER_BLOCK);
+    int64_t spineSize = (numElements / ELEMENTS_PER_BLOCK) * 1;
     //We might need to spill over into another block, if the size is not divisible by 8.
     if(numElements % ELEMENTS_PER_BLOCK != 0)
     {
         spineSize += 1;
     }
-    uintptr_t newbump = area->bump + spineSize;
+    //We need to bump the amount + the amount required to store an array of pointers
+    uintptr_t newbump = oldBump + (spineSize * sizeof(void*));
     //See if we have enough space:
-    if(newbump - area->start > area->size) {
+    // if(newbump - area->start > area->size) {
+    if(newbump - alloc->start > alloc->size) {
         //TODO throw OOME
         fivmr_assert(0);
     }
     //If we're good, set the bump:
-    area->bump = newbump;
+    // area->bump = newbump;
+    alloc->bump = newbump;
     //Allocate the spine:
     int64_t blocksAllocated = 0;
     int64_t blocksNeeded = spineSize;

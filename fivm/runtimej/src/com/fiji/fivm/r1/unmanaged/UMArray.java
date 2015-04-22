@@ -36,7 +36,7 @@ public class UMArray
 			throwNASE();
 		}
 		//Attempt to allocate array
-		return UMUtils.fivmr_MemoryArea_allocateArray(curArea, type.getVal(), size);
+		return UMUtils.fivmr_MemoryArea_allocateArray(Magic.curThreadState(), type.getVal(), size);
 	}
 
 	public static void free(Pointer array)

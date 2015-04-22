@@ -454,7 +454,7 @@ public class MM {
     @Inline
     @NoPollcheck
     @NoSafepoint
-    @Puref
+    @Pure
     public static int hashCode(Object o) {
         return Pointer.fromObject(o).castToInt()>>logRequiredObjectAlignment();
     }
