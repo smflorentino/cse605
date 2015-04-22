@@ -41,6 +41,7 @@
 package com.fiji.fivm.r1;
 
 import com.fiji.fivm.Settings;
+import com.fiji.fivm.codegen.MachineCode;
 import com.fiji.fivm.om.*;
 
 @UsesMagic
@@ -235,6 +236,11 @@ public class MemoryAreas {
         return fivmr_MemoryArea_consumed(Magic.curThreadState(),area);
     }
 
+    @Inline
+    public static long consumedUnmanaged(Pointer area) {
+        return fivmr_MemoryArea_consumedUnmanaged(Magic.curThreadState(), area);
+    }
+
     /**
      * Return the amount of remaining memory available for allocation in
      * a fivmr_MemoryArea's allocation area.
@@ -365,6 +371,11 @@ public class MemoryAreas {
     @RuntimeImport
     @NoSafepoint
     private static native long fivmr_MemoryArea_consumed(Pointer ts,
+                                                         Pointer area);
+
+    @RuntimeImport
+    @NoSafepoint
+    private static native long fivmr_MemoryArea_consumedUnmanaged(Pointer ts,
                                                          Pointer area);
 
     static {

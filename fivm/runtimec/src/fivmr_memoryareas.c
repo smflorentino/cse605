@@ -185,6 +185,7 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
     //Save the size for later
     area->um_size = unManagedSize;
     /* Zero out our fields */
+    area->um_consumed = 0;
     area->fr_head = NULL;
     area->nfr_head = NULL;
 
@@ -402,6 +403,12 @@ int64_t fivmr_MemoryArea_consumed(fivmr_ThreadState *ts,
     }
 }
 
+int64_t fivmr_MemoryArea_consumedUnmanaged(fivmr_ThreadState *ts, fivmr_MemoryArea *area)
+{
+    //TODO assert not heap or stack
+    return area->um_consumed;
+}
+
 /* Find the index of an available primitive slot in its bit vector.
  * We use the first 6 bits to designate what's available:
  * 000000 = all free
@@ -453,6 +460,7 @@ static inline fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_MemoryArea *are
     //De-link the block from the chain
     block->next = NULL;
     DEBUG(DB_MEMAREA, ("Block allocated."));
+    area->um_consumed += UNMANAGED_BLOCK_SIZE;
     return block;
 }
 
@@ -470,6 +478,7 @@ static inline void fivmr_MemoryArea_freeBlock(fivmr_MemoryArea *area, fivmr_um_n
         block->next = area->free_head;
         area->free_head = block;
     }
+    area->um_consumed -= UNMANAGED_BLOCK_SIZE;
 }
 
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
@@ -480,18 +489,8 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
     //If no primitives have been allocated, get one:
     if(area->fr_head == NULL)
     {
-        struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) area->free_head;
-        //if null, we're out of memory
-        if(block == NULL)
-        {
-            //TODO throw out of memory error
-            fivmr_assert(0);
-        }
-        //Pop it off the free block list
-        area->free_head = area->free_head->next;
-        //Set it as the next block to receive allocations
+        struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) fivmr_MemoryArea_getFreeBlock(area);
         area->fr_head = block;
-        area->fr_head->next = NULL;
     }
     //If the current head of the primtive list is full (first 6 bits are 111111), move it to the nonfree list:
     if(area->fr_head->map == FULL_MAP) {
@@ -516,18 +515,8 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
         }
         //If the FR list is empty, we need to find a free block and add it:
         if(area->fr_head == NULL) {
-            struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) area->free_head;
-            //if null, there wasn't a free block, and we're out of memory
-            if(block == NULL)
-            {
-                //TODO throw out of memory error
-                fivmr_assert(0);
-            }
-            //Pop it off the free block list
-            area->free_head = area->free_head->next;
-            //Set it as the next block to receive allocations
+            struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) fivmr_MemoryArea_getFreeBlock(area);
             area->fr_head = block;
-            area->fr_head->next = NULL;
         }
     }
     //Now we have a free head node that can store a primitive. Find an index.
@@ -606,7 +595,7 @@ void fivmr_MemoryArea_freeArray(uintptr_t fivmrMemoryArea, uintptr_t arrayHeader
     //Lets FREE!
     int64_t blocksFreed = 0;
     for(blocksFreed = 0; blocksFreed < blocksAllocated; blocksFreed++) {
-        fivmr_MemoryArea_freeBlock(area, (fivmr_um_node*) header->spine[blocksAllocated]);
+        fivmr_MemoryArea_freeBlock(area, (fivmr_um_node*) header->spine[blocksFreed]);
     }
     //Now free the header.
     fivmr_MemoryArea_freeBlock(area, (fivmr_um_node*) header);

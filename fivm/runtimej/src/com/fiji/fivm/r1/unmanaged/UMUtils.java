@@ -20,6 +20,10 @@ public class UMUtils
 
 	@RuntimeImport
 	@NoSafepoint
+	public static native void fivmr_MemoryArea_freeArray(Pointer currentArea, Pointer array);
+
+	@RuntimeImport
+	@NoSafepoint
 	public static native int fivmr_MemoryArea_loadArrayInt(Pointer array, int index);
 
 	@RuntimeImport

@@ -14,6 +14,7 @@ import com.fiji.fivm.r1.fivmRuntime;
 
 import static com.fiji.fivm.r1.fivmRuntime.throwArrayBoundsRTE;
 import static com.fiji.fivm.r1.fivmRuntime.throwNegativeSizeRTE;
+import static com.fiji.fivm.r1.unmanaged.UMUtils.fivmr_MemoryArea_freeArray;
 import static com.fiji.fivm.r1.unmanaged.UMUtils.fivmr_MemoryArea_loadArrayInt;
 import static com.fiji.fivm.r1.unmanaged.UMUtils.fivmr_MemoryArea_storeArrayInt;
 
@@ -36,6 +37,17 @@ public class UMArray
 		}
 		//Attempt to allocate array
 		return UMUtils.fivmr_MemoryArea_allocateArray(curArea, type.getVal(), size);
+	}
+
+	public static void free(Pointer array)
+	{
+		//We can't be in the Heap OR Immortal Memory
+		final Pointer curArea = MemoryAreas.getCurrentArea();
+		if(curArea == MemoryAreas.getHeapArea() || curArea == MemoryAreas.getImmortalArea())
+		{
+			throw new UnsupportedOperationException("Allocation cannot occur in Heap or Immortal Memory");
+		}
+		fivmr_MemoryArea_freeArray(MemoryAreas.getCurrentArea(), array);
 	}
 
 	public static int getInt(Pointer array, int index)

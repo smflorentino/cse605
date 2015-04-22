@@ -1530,6 +1530,7 @@ struct fivmr_ScopeID_s {
 //Number of array elements supported per array block
 #define ELEMENTS_PER_BLOCK 8
 #define ARRAY_BLOCK_SIZE 64
+#define UNMANAGED_BLOCK_SIZE 64
 
 typedef struct fivmr_um_node_s fivmr_um_node;
 typedef struct fivmr_um_array_header_s fivmr_um_array_header;
@@ -1609,6 +1610,8 @@ struct fivmr_MemoryArea_s {
     uintptr_t new_start;
     /* The size of unmanaged memory */
     int64_t um_size;
+    /* The amount consumed in unmanaged memory */
+    int64_t um_consumed;
     /* The head to the Linked List of Free Blocks */
     fivmr_um_node *free_head;
     /* The head to the Linked List of Primitive Blocks with Available Space */
@@ -5077,6 +5080,8 @@ void fivmr_MemoryArea_freeArray(uintptr_t fivmrMemoryArea, uintptr_t arrayHeader
 
 int32_t fivmr_MemoryArea_loadArrayInt(uintptr_t arrayHeader, int32_t index);
 void fivmr_MemoryArea_storeArrayInt(uintptr_t arrayHeader, int32_t index, int32_t value);
+
+int64_t fivmr_MemoryArea_consumedUnmanaged(fivmr_ThreadState *ts, fivmr_MemoryArea *area);
 
 void fivmr_ScopeBacking_alloc(fivmr_ThreadState *ts, uintptr_t size);
 

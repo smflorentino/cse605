@@ -15,10 +15,18 @@ public class LOG {
 
     public static void HEAP(String msg)
     {
-        final String MSG = msg;
+        final String MSG = "HEAP: " + msg;
         Pointer outer = MemoryAreas.getCurrentArea();
         MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
         System.err.println(MSG);
+        MemoryAreas.setCurrentArea(outer);
+    }
+
+    public static void HEAP(final long l)
+    {
+        Pointer outer = MemoryAreas.getCurrentArea();
+        MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
+        System.err.println("HEAP: "+ l);
         MemoryAreas.setCurrentArea(outer);
     }
 }
