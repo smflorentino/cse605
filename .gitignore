@@ -114,3 +114,8 @@ tools/src/build/test1/Fib.class
 
 autom4te.cache/traces.0
 fivm/runtimej/build
+
+autom4te.cache/
+
+scj/oSCJ/scj/ri/Realmakefile
+scj/oSCJ/scj/ri/config.status
