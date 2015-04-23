@@ -29,21 +29,23 @@ public class FragmentedMemoryTest
         {
             arr[i]=1;
         }
+
         //Calculate time to access a random element
         Random random=new Random();
-        int index=random.nextInt(arr.length);
-        long startTime=System.currentTimeMillis();
-        int val=arr[index];
-        long endTime=System.currentTimeMillis();
+        int index=random.nextInt(arr.length); //Generating a random index
+        long startTime=System.nanoTime();
+        int val=arr[index]; //Accessing the element at the random index
+        long endTime=System.nanoTime();
         long accessTime=endTime-startTime;
         System.out.println("Time to access "+index+" element:"+accessTime);
+
         //Calculate time to access entire array sequentially
-        startTime=System.currentTimeMillis();
+        startTime=System.nanoTime();
         for(int i=0;i<arr.length;i++)
         {
             val=arr[i];
         }
-        endTime=System.currentTimeMillis();
+        endTime=System.nanoTime();
         long totalAccessTime=endTime-startTime;
         System.out.println("Total Array Access Time:"+totalAccessTime);
     }
@@ -58,23 +60,24 @@ public class FragmentedMemoryTest
             size=random.nextInt(n);
             init(size);
         }
+
         long startTime,endTime,totalTime;
         int minSize=25*1024; //represents a memory of 100K
         int maxSize=512*1024; //represents a memory of 2M
-        //Report 10 results
+        //Allocate/Deallocate 10 arrays and report the results
         for(int i=0;i<10;i++) {
             size=random.nextInt((maxSize-minSize)+1) + minSize; //getting a random size from 100K to 2M
-            startTime = System.currentTimeMillis();
+            startTime = System.nanoTime();
             allocate(size);
-            endTime = System.currentTimeMillis();
+            endTime = System.nanoTime();
             totalTime = endTime - startTime;
             System.out.println("Allocation Time for array " + i + ":" + totalTime);
         }
 
         size=random.nextInt((maxSize-minSize)+1) + minSize; //getting a random size from 100K to 2M
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         testTimes(size);
-        endTime=System.currentTimeMillis();
+        endTime=System.nanoTime();
         totalTime=endTime-startTime;
         System.out.println("Allocation/Deallocation Time:"+totalTime);
     }
