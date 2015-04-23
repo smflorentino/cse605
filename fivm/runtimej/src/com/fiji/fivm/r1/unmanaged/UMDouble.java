@@ -1,12 +1,11 @@
 package com.fiji.fivm.r1.unmanaged;
 
-import com.fiji.fivm.r1.Inline;
 import com.fiji.fivm.r1.MemoryAreas;
 import com.fiji.fivm.r1.Pointer;
-import com.fiji.fivm.r1.NoSafepoint;
-import com.fiji.fivm.r1.RuntimeImport;
 
 import static com.fiji.fivm.r1.unmanaged.UMUtils.fivmr_MemoryArea_allocatePrimitive;
+import static com.fiji.fivm.r1.unmanaged.UMUtils.fivmr_MemoryArea_deallocatePrimitive;
+
 /**
  * Created by scottflo on 4/13/15.
  */
