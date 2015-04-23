@@ -23,7 +23,7 @@ public class FibMain {
 
         Pointer scoped = MemoryAreas.alloc(SCOPE_SIZE,false,"scoped", 3072);
 
-        MemoryAreas.enter(scoped, new Fib2());
+        MemoryAreas.enter(scoped, new AllocatePrimitivesTest());
     }
 
 }
