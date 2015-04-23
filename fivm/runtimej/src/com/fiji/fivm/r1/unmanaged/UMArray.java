@@ -137,6 +137,7 @@ public class UMArray
 	private static final int POINTER_SIZE = 4;
 	//TODO get this from C
 	private static final int HEADER_SIZE = BLOCKSIZE;
+
 	/**
 	 * @return the amount of scoped memory needed to support array(s) of the specified size, and amount;
 	 * with the specified amount being the number of arrays allocated at any one time quantum
@@ -160,12 +161,14 @@ public class UMArray
 			return HEADER_SIZE; //inlined arrays only have a header
 		}
 		assert elemSize == 8;
-		int elementsPerBlock = elemSize / BLOCKSIZE;
-		int neededBlocks = elemCount / elementsPerBlock;
-		if(elemCount % neededBlocks != 0)
+		int elementsPerBlock = BLOCKSIZE / elemSize;
+		int neededBlocks = 0;
+		if(elemCount % elementsPerBlock != 0)
 		{
 			neededBlocks++;
 		}
+		neededBlocks += elemCount / elementsPerBlock;
+
 		int dataSize = neededBlocks * BLOCKSIZE;
 		int arraySize = dataSize + HEADER_SIZE;
 		return arraySize * activeArrayCount;
@@ -175,21 +178,23 @@ public class UMArray
 	 * @return the overhead (lost space) from allocate the specified count of arrays in
 	 * unmamaged memory.
 	 */
-	public static int calcualteScopedMemoryOverhead(int elemSize, int elemCount, int arrayCount)
+	public static int calcualteScopedMemoryOverhead(int elemSize, int elemCount, int totalArrayCount)
 	{
 		assert elemSize == 8;
 		if(elemCount <= 6)
 		{
 			return 0; //no overhead for inlined arrays
 		}
-		int elementsPerBlock = elemSize / BLOCKSIZE;
-		int neededBlocks = elemCount / elementsPerBlock;
-		if(elemCount % neededBlocks != 0)
+		int elementsPerBlock = BLOCKSIZE / elemSize;
+		int neededBlocks = 0;
+		if(elemCount % elementsPerBlock != 0)
 		{
 			neededBlocks++;
 		}
+		neededBlocks += elemCount / elementsPerBlock;
+
 		int overheadPerArray = neededBlocks * POINTER_SIZE;
-		return overheadPerArray * arrayCount;
+		return overheadPerArray * totalArrayCount;
 
 	}
 

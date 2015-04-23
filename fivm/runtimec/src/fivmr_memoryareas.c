@@ -472,6 +472,7 @@ static inline fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_ThreadState *ts
         //We're out of memory
         //TODO throw OOME
         fivmr_throwOutOfMemoryError_inJava(ts);
+        return;
     }
     //Set the head to the next block
     area->free_head = area->free_head->next;
