@@ -7,6 +7,7 @@ import com.fiji.fivm.r1.unmanaged.UMArray;
 import common.LOG;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -35,7 +36,6 @@ public class UnManagedArraysTest
 ////		inlinedArrayTest();
 //		smallArrayTest();
 		smallArrayTest2();
-		smallArrayTest2a();
 		smallArrayTest3();
 	}
 
@@ -139,7 +139,7 @@ public class UnManagedArraysTest
 
 					for(int i = 0; i< UMArray.length(array); i++)
 					{
-						int x = UMArray.getInt(array,i);
+						int x = UMArray.getInt(array, i);
 						assert x ==3*i;
 					}
 					UMArray.free(array);
@@ -235,7 +235,7 @@ public class UnManagedArraysTest
 						}
 						for (int j = 0; j < UMArray.length(array); j++)
 						{
-							assertTrue(UMArray.getInt(array,j) == j*3*i);
+							assertTrue(UMArray.getInt(array, j) == j * 3 * i);
 						}
 						UMArray.free(array);
 					}
@@ -262,65 +262,6 @@ public class UnManagedArraysTest
 	public static void smallArrayTest2()
 	{
 		LOG.info("smallArrayTest2 starting...");
-
-		final int elemCount = 13337;
-		final int scopeSize = UMArray.calculateScopedMemorySize(8, elemCount, 32, 4);
-		final int unManagedSize = UMArray.calculateManagedMemorySize(8, elemCount, 4);
-		final int overhead = UMArray.calcualteScopedMemoryOverhead(8, elemCount, 32);
-		Pointer area = MemoryAreas.alloc(scopeSize, false, "scoped", unManagedSize);
-
- 		final Pointer[] arrays = new Pointer[4];
-
-		MemoryAreas.enter(area, new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
-					for(int i =0;i<8;i++)
-					{
-						for(int j=0; j<4;j++)
-						{
-							arrays[j] = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
-							Pointer array = arrays[j];
-							for (int k = 0; k < UMArray.length(array); k++)
-							{
-								UMArray.setInt(array, k, k*3*i);
-							}
-							for (int k = 0; k < UMArray.length(array); k++)
-							{
-								assertTrue(UMArray.getInt(array,k) == k*3*i);
-							}
-						}
-						for(int j=0; j<4;j++)
-						{
-							UMArray.free(arrays[j]);
-						}
-
-					}
-					//All arrays were freed, make sure no memory was leaked
-					//We use reportError since our scope is FULLY allocated
-					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == overhead + unManagedSize , 1); //"Scoped Memory was leaked!"
-					reportError(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, 2);// "Unmanaged Memory was leaked!"
-				}
-				catch(Throwable e)
-				{
-					LOG.FAIL(e.getMessage());
-				}
-			}
-		});
-		MemoryAreas.pop(area);
-		MemoryAreas.free(area);
-		LOG.info("smallArrayTest2 completed");
-	}
-
-	/**
-	 * Similar to {@link UnManagedArraysTest#smallArrayTest()}, but with more arrays this time.
-	 * We also use calculators for sizes
-	 */
-	public static void smallArrayTest2a()
-	{
-		LOG.info("smallArrayTest2a starting...");
 
 		final int elemCount = 13337;
 		final int activeArrayCount = 6;
@@ -372,7 +313,7 @@ public class UnManagedArraysTest
 		});
 		MemoryAreas.pop(area);
 		MemoryAreas.free(area);
-		LOG.info("smallArrayTest2a completed");
+		LOG.info("smallArrayTest2 completed");
 	}
 
 	/**
@@ -384,7 +325,7 @@ public class UnManagedArraysTest
 		LOG.info("smallArrayTest3 starting...");
 
 		final int elemCount = 7;
-		final int arrayCount = 6;
+		final int arrayCount = 36;
 		final int activeArrayCount = 6;
 		final int scopeSize = UMArray.calculateScopedMemorySize(8, elemCount, arrayCount, activeArrayCount);
 		final int unManagedSize = UMArray.calculateManagedMemorySize(8, elemCount, activeArrayCount);
@@ -405,10 +346,15 @@ public class UnManagedArraysTest
 		}
 
 		//Randomize array allocation/deallocation order
-		final int[] activeArrays = new int[activeArrayCount];
-		for(int i = 0; i< activeArrayCount; i++)
+//		final int[] activeArrays = new int[activeArrayCount];
+//		for(int i = 0; i< activeArrayCount; i++)
+//		{
+//			activeArrays[i] = i;
+//		}
+		final List<Integer> activeArrays = new ArrayList<Integer>(activeArrayCount);
+		for(int i =0; i< activeArrayCount; i++)
 		{
-			activeArrays[i] = i;
+			activeArrays.add(i);
 		}
 		//Populate array of array pointers
 		final Pointer[] arrayPointers = new Pointer[activeArrayCount];
@@ -419,36 +365,54 @@ public class UnManagedArraysTest
 			{
 				try
 				{
-					for(int i =0;i<1;i++)
+					for(int i =0;i<6;i++)
 					{
 						//Perform allocation in random order
-//						Collections.shuffle(activeArrays, r);
-						for(int arrayIndex =0;arrayIndex<activeArrayCount;arrayIndex++)
+						Collections.shuffle(activeArrays, r);
+						for(int j =0;j<activeArrayCount;j++)
 						{
+							int arrayIndex = activeArrays.get(j);
 							arrayPointers[arrayIndex] = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
 							Pointer array = arrayPointers[arrayIndex];
-							for(int j=0;j<elemCount;j++)
+							for(int k=0;k<elemCount;k++)
 							{
-								UMArray.setInt(array, j, values[arrayIndex][j]);
+								UMArray.setInt(array, k, values[arrayIndex][k]);
 							}
 						}
 						//Perform verification in random order
-//						Collections.shuffle(activeArrays, r);
-						for(int arrayIndex =0;arrayIndex<activeArrayCount;arrayIndex++)
+						Collections.shuffle(activeArrays, r);
+						for(int j =0;j<activeArrayCount;j++)
 						{
-							arrayPointers[arrayIndex] = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
+							/*
+							scottflo@scottpcub:/tmp/ramdisk/cse605/tools$ ./umtest
+							FIVMR_DEBUG_LEVEL: 0
+							INFO: smallArrayTest2 starting...
+							INFO: smallArrayTest2 completed
+							INFO: smallArrayTest2a starting...
+							INFO: smallArrayTest2a completed
+							INFO: smallArrayTest3 starting...
+							Fiji Java Debug Level: 0
+							fivmr ABORT: (fivmr_threadstate.c:51) assertion 'ts->cookie==0xd1e7c0c0' failed.
+							fivmr VM instance at pid = 18345 dumping core.
+							Aborted (core dumped)
+
+							 */
+//							arrayPointers[arrayIndex] = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
+							int arrayIndex = activeArrays.get(j);
+
 							Pointer array = arrayPointers[arrayIndex];
-							for(int j=0;j<elemCount;j++)
+							for(int k=0;k<elemCount;k++)
 							{
-								int cur = UMArray.getInt(array, j);
-								reportError(cur ==  values[arrayIndex][j], 3); //Value misplaced!
+								int cur = UMArray.getInt(array, k);
+								reportError(cur ==  values[arrayIndex][k], 3); //Value misplaced!
 							}
 						}
 
 						//Perform deallocation in random order
-//						Collections.shuffle(activeArrays, r);
-						for(int arrayIndex =0;arrayIndex<activeArrayCount;arrayIndex++)
+						Collections.shuffle(activeArrays, r);
+						for(int k =0;k<activeArrayCount;k++)
 						{
+							int arrayIndex = activeArrays.get(k);
 							UMArray.free(arrayPointers[arrayIndex]);
 						}
 
