@@ -21,7 +21,7 @@ public class AllocatePrimitivesTest implements Runnable
     {
         try
         {
-            LOG.info("In AllocatePrimitivesTest");
+            LOG.HEAP("In AllocatePrimitivesTest");
 
             //Allocating an integer
             /*
@@ -85,11 +85,12 @@ public class AllocatePrimitivesTest implements Runnable
             //System.out.println(UMDouble.get(p));
             assert UMDouble.get(p)==123712.12123;
 
-            LOG.info("Memory Area Consumed: " + MemoryAreas.consumed(MemoryAreas.getCurrentArea()));
+            LOG.HEAP("Memory Area Consumed:");
+            LOG.HEAP(MemoryAreas.consumed(MemoryAreas.getCurrentArea()));
         }
         catch(Throwable e)
         {
-            LOG.FATAL("Exception in Runnable...");
+            LOG.HEAP("Exception in Runnable...");
             LOG.info(e.getClass().toString());
         }
     }

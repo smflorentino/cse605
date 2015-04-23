@@ -14,8 +14,8 @@ ECJ_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar:$FIJI_LIB_DIR/fivmcommon.jar:$FIJI_LIB_DIR/
 FIVMC_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar
 
 #Specify the Source Directory(ies) for our Java Programs
-HARDRTJSRC=/tmp/ramdisk/cse605/tools/src
-HARDRTJSRC2=/tmp/ramdisk/cse605/tools/rtsjsample/src
+HARDRTJSRC=/home/scottflo/repos/cse605/tools/src
+HARDRTJSRC2=/home/scottflo/repos/cse605/tools/rtsjsample/src
 
 echo "Compiling Java to Bytecode..."
 rm -rf src/build

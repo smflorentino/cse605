@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8ab62598-8b6c-4520-bbec-1877c4d601a0" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/MemExample.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test1/FibExample$1.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test1/FibExample$10.class" afterPath="" />
@@ -56,59 +57,8 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test1/FibTest.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test2/FibExample$Fib.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test2/LOG.class" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$1.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$2.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$AsLIFOQueue.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$AsLIFOQueue.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedCollection$1.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedCollection$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedCollection.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedCollection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedList$1.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedList$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap$CheckedEntrySet$1.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap$CheckedEntrySet$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap$CheckedEntrySet$CheckedEntry.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap$CheckedEntrySet$CheckedEntry.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap$CheckedEntrySet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap$CheckedEntrySet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedRandomAccessList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedRandomAccessList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedSet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedSortedMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedSortedMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedSortedSet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CheckedSortedSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CopiesList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$CopiesList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyEnumeration.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyEnumeration.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyIterator.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyIterator.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyListIterator.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyListIterator.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptyMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptySet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$EmptySet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$ReverseComparator.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$ReverseComparator.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$ReverseComparator2.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$ReverseComparator2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SetFromMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SetFromMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SingletonList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SingletonList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SingletonMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SingletonMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SingletonSet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SingletonSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedCollection.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedCollection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedRandomAccessList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedRandomAccessList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedSet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedSortedMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedSortedMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedSortedSet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$SynchronizedSortedSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableCollection$1.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableCollection$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableCollection.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableCollection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableList$1.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableList$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap$UnmodifiableEntrySet$1.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap$UnmodifiableEntrySet$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap$UnmodifiableEntrySet$UnmodifiableEntry.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap$UnmodifiableEntrySet$UnmodifiableEntry.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap$UnmodifiableEntrySet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap$UnmodifiableEntrySet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableRandomAccessList.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableRandomAccessList.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableSet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableSortedMap.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableSortedMap.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableSortedSet.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections$UnmodifiableSortedSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections.class" afterPath="$PROJECT_DIR$/../../fivm/fijicore/build/java/util/Collections.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/fijicore/src/java/util/Collections.java" afterPath="$PROJECT_DIR$/../../fivm/fijicore/src/java/util/Collections.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/RealMakefile" afterPath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/RealMakefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/UnManagedArraysTest.java" afterPath="$PROJECT_DIR$/src/tests/UnManagedArraysTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/config.status" afterPath="$PROJECT_DIR$/../../fivm/scj/oSCJ/scj/ri/config.status" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../../fivm/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test1/AllocatePrimitivesTest.java" afterPath="$PROJECT_DIR$/src/test1/AllocatePrimitivesTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tests.sh" afterPath="$PROJECT_DIR$/../tests.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="rtsjsample.iws" />
@@ -131,54 +81,80 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="UnManagedArraysTest.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/tests/UnManagedArraysTest.java">
+      <file leaf-file-name="FibMain.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test1/FibMain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.34740883">
-              <caret line="411" column="44" selection-start-line="411" selection-start-column="44" selection-end-line="411" selection-end-column="44" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#basicInlinedArrayTest#0;class#UnManagedArraysTest#0" expanded="false" />
-                <element signature="method#basicArrayTest1#0;class#UnManagedArraysTest#0" expanded="false" />
-                <element signature="method#basicArrayTest2#0;class#UnManagedArraysTest#0" expanded="false" />
-                <element signature="method#inlinedArrayTest#0;class#UnManagedArraysTest#0" expanded="false" />
-                <element signature="method#smallArrayTest#0;class#UnManagedArraysTest#0" expanded="false" />
-                <element signature="e#6040#6912#0" expanded="true" />
-                <element signature="e#6911#6912#0" expanded="true" />
-                <element signature="e#10182#10191#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Report.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/common/Report.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="23" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="23" />
+            <state vertical-scroll-proportion="-11.44">
+              <caret line="25" column="14" selection-start-line="25" selection-start-column="14" selection-end-line="25" selection-end-column="14" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Collections.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/util/Collections.class">
+      <file leaf-file-name="AllocatePrimitivesTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test1/AllocatePrimitivesTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.04">
-              <caret line="234" column="28" selection-start-line="234" selection-start-column="28" selection-end-line="234" selection-end-column="28" />
+            <state vertical-scroll-proportion="-32.64">
+              <caret line="88" column="70" selection-start-line="88" selection-start-column="70" selection-end-line="88" selection-end-column="70" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FragmentedMemoryTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test1/FragmentedMemoryTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.68">
+              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UnManagedPrimitivesTest.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.6368876">
+              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
               <folding>
-                <element signature="e#7368#7369#0" expanded="true" />
-                <element signature="e#7430#7431#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#923#1116#0" expanded="true" />
+                <element signature="e#1115#1116#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RandomAccess.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/util/RandomAccess.class">
+      <file leaf-file-name="UnManagedArraysTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/tests/UnManagedArraysTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+            <state vertical-scroll-proportion="-8.84">
+              <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
+              <folding>
+                <element signature="e#1216#1671#0" expanded="true" />
+                <element signature="e#1670#1671#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UnManagedMemoryTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#2543#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Fib3.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test1/Fib3.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-4.76">
+              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -187,13 +163,29 @@
       <file leaf-file-name="LOG.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/common/LOG.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="40" column="23" selection-start-line="40" selection-start-column="23" selection-end-line="40" selection-end-column="23" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#195#196#0" expanded="false" />
-                <element signature="e#245#246#0" expanded="false" />
-              </folding>
+            <state vertical-scroll-proportion="1.36">
+              <caret line="16" column="5" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Fib2.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test1/Fib2.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="28.96">
+              <caret line="16" column="9" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Fib.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test1/Fib.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.04">
+              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -246,7 +238,9 @@
         <option value="$PROJECT_DIR$/src/common/Assert.java" />
         <option value="$PROJECT_DIR$/src/common/Report.java" />
         <option value="$PROJECT_DIR$/src/common/LOG.java" />
+        <option value="$PROJECT_DIR$/src/test1/AllocatePrimitivesTest.java" />
         <option value="$PROJECT_DIR$/src/tests/UnManagedArraysTest.java" />
+        <option value="$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java" />
       </list>
     </option>
   </component>
@@ -254,16 +248,16 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="102" />
-    <option name="y" value="34" />
-    <option name="width" value="1670" />
-    <option name="height" value="1021" />
+    <option name="x" value="65" />
+    <option name="y" value="24" />
+    <option name="width" value="1301" />
+    <option name="height" value="744" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
     <OptionsSetting value="true" id="Checkout" />
-    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="false" id="Update" />
     <OptionsSetting value="true" id="Status" />
     <OptionsSetting value="true" id="Edit" />
     <ConfirmationsSetting value="0" id="Add" />
@@ -282,8 +276,8 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -291,144 +285,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="rtsjsample" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmcommon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmcommon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmr.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmcommon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmr.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fiji" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmcommon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmr.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fiji" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmcommon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmr.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fiji" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="r1" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmcommon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivmr.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fiji" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fivm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="r1" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="unmanaged" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -452,6 +308,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rtsjsample" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rtsjsample" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test2" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -488,6 +366,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="common" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rtsjsample" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rtsjsample" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value=".idea" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -707,34 +599,34 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="102" y="34" width="1670" height="1021" extended-state="0" />
-    <editor active="false" />
+    <frame x="65" y="24" width="1301" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33793104" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3296582" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4008942" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3296582" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23399015" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23443505" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Atlassian " active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32890365" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3279743" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -793,41 +685,52 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/common/Report.java">
+    <entry file="file://$PROJECT_DIR$/src/test1/FibMain.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="23" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="23" />
+          <caret line="25" column="31" selection-start-line="25" selection-start-column="31" selection-end-line="25" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/util/Collections.class">
+    <entry file="file://$PROJECT_DIR$/src/test1/Fib2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="224" column="45" selection-start-line="224" selection-start-column="45" selection-end-line="224" selection-end-column="45" />
-          <folding>
-            <element signature="e#7368#7369#0" expanded="true" />
-            <element signature="e#7430#7431#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/util/RandomAccess.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+          <caret line="14" column="9" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/LOG.java">
+    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/rtsj.jar!/javax/realtime/IllegalAssignmentError.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="23" selection-start-line="40" selection-start-column="23" selection-end-line="40" selection-end-column="23" />
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test1/Fib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="19" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fivmcommon.jar!/com/fiji/fivm/r1/Pointer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="155" column="43" selection-start-line="155" selection-start-column="43" selection-end-line="155" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMFloat.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="false" />
-            <element signature="e#195#196#0" expanded="false" />
-            <element signature="e#245#246#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -835,47 +738,58 @@
     <entry file="file://$PROJECT_DIR$/src/test1/FibMain.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="74" selection-start-line="23" selection-start-column="74" selection-end-line="23" selection-end-column="74" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/MemoryAreas.java">
+    <entry file="file://$PROJECT_DIR$/src/test1/Fib2.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="77" column="26" selection-start-line="77" selection-start-column="26" selection-end-line="77" selection-end-column="26" />
-          <folding>
-            <element signature="e#7452#7453#0" expanded="false" />
-            <element signature="e#7529#7530#0" expanded="false" />
-          </folding>
+          <caret line="14" column="9" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test1/FibExampleTest.java">
+    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/rtsj.jar!/javax/realtime/IllegalAssignmentError.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="334" column="31" selection-start-line="0" selection-start-column="0" selection-end-line="348" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#14120#0" expanded="false" />
-          </folding>
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test1/Fib.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="34" selection-start-line="0" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+          <caret line="17" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="19" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java">
+    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fivmcommon.jar!/com/fiji/fivm/r1/Pointer.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <caret line="155" column="43" selection-start-line="155" selection-start-column="43" selection-end-line="155" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMFloat.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test1/FibMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="5" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -887,30 +801,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/LOG.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="32" selection-start-line="28" selection-start-column="32" selection-end-line="28" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#195#196#0" expanded="false" />
-            <element signature="e#245#246#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test1/FibTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="345" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/../../fivm/lib/rtsj.jar!/javax/realtime/IllegalAssignmentError.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test1/Fib.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="19" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fivmcommon.jar!/com/fiji/fivm/r1/Pointer.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="155" column="43" selection-start-line="155" selection-start-column="43" selection-end-line="155" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMFloat.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -926,9 +847,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#14120#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -944,6 +863,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -951,11 +871,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="21" column="25" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#195#196#0" expanded="false" />
-            <element signature="e#245#246#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -979,11 +894,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#195#196#0" expanded="false" />
-            <element signature="e#245#246#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1003,6 +913,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/test1/FibExampleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMInteger.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.65625">
@@ -1014,6 +932,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-4.76">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/lang/Error.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.125">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/lang/Throwable.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.1875">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -1021,17 +954,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.3076923">
           <caret line="758" column="36" selection-start-line="758" selection-start-column="36" selection-end-line="758" selection-end-column="36" />
-          <folding>
-            <element signature="e#23731#23732#0" expanded="false" />
-            <element signature="e#23782#23783#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMFloat.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.28">
-          <caret line="21" column="14" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="14" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
@@ -1040,8 +969,9 @@
     </entry>
     <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fivmcommon.jar!/com/fiji/fivm/r1/Pointer.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.36">
+        <state vertical-scroll-proportion="0.0">
           <caret line="155" column="43" selection-start-line="155" selection-start-column="43" selection-end-line="155" selection-end-column="43" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1049,209 +979,95 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test1/FibTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="345" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test1/Fib.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="32" selection-start-line="0" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test1/FibExampleTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-18.36">
-          <caret line="348" column="0" selection-start-line="348" selection-start-column="0" selection-end-line="348" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#14120#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/lang/StackTraceElement.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.08">
-          <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/lang/Throwable.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.68">
-          <caret line="135" column="23" selection-start-line="135" selection-start-column="23" selection-end-line="135" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.04">
-          <caret line="43" column="25" selection-start-line="0" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/MemoryAreas.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.6">
-          <caret line="234" column="23" selection-start-line="234" selection-start-column="23" selection-end-line="234" selection-end-column="23" />
-          <folding>
-            <element signature="e#7452#7453#0" expanded="false" />
-            <element signature="e#7529#7530#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test1/FibMain.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.64">
-          <caret line="23" column="74" selection-start-line="23" selection-start-column="70" selection-end-line="23" selection-end-column="74" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test1/Fib3.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-21.08">
-          <caret line="34" column="30" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test1/Fib2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.2">
-          <caret line="42" column="12" selection-start-line="42" selection-start-column="12" selection-end-line="42" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/lang/Error.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.72">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/Assert.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.92">
-          <caret line="19" column="5" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
-          <folding>
-            <element signature="e#175#176#0" expanded="false" />
-            <element signature="e#210#211#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/Fail.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.4">
-          <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-          <folding>
-            <element signature="e#162#163#0" expanded="false" />
-            <element signature="e#176#177#0" expanded="false" />
-            <element signature="e#206#207#0" expanded="false" />
-            <element signature="e#226#227#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-30.04">
-          <caret line="181" column="26" selection-start-line="181" selection-start-column="26" selection-end-line="181" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/util/RandomAccess.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+        <state vertical-scroll-proportion="-2.04">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/common/LOG.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="23" selection-start-line="40" selection-start-column="23" selection-end-line="40" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#195#196#0" expanded="false" />
-            <element signature="e#245#246#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/lang/reflect/Array.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33207548">
-          <caret line="22" column="28" selection-start-line="22" selection-start-column="26" selection-end-line="22" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/Report.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="23" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="23" />
+        <state vertical-scroll-proportion="1.36">
+          <caret line="16" column="5" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/util/Collections.class">
+    <entry file="file://$PROJECT_DIR$/src/test1/Fib3.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.04">
-          <caret line="234" column="28" selection-start-line="234" selection-start-column="28" selection-end-line="234" selection-end-column="28" />
+        <state vertical-scroll-proportion="-4.76">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test1/Fib2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="28.96">
+          <caret line="16" column="9" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test1/FibMain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.44">
+          <caret line="25" column="14" selection-start-line="25" selection-start-column="14" selection-end-line="25" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test1/FragmentedMemoryTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.68">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#7368#7369#0" expanded="true" />
-            <element signature="e#7430#7431#0" expanded="true" />
+            <element signature="e#0#2543#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/../../fivm/lib/fijicore.jar!/java/util/ArrayList.class">
+    <entry file="file://$PROJECT_DIR$/src/test1/AllocatePrimitivesTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33265308">
-          <caret line="86" column="32" selection-start-line="86" selection-start-column="28" selection-end-line="86" selection-end-column="32" />
+        <state vertical-scroll-proportion="-32.64">
+          <caret line="88" column="70" selection-start-line="88" selection-start-column="70" selection-end-line="88" selection-end-column="70" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/tests/UnManagedArraysTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34740883">
-          <caret line="411" column="44" selection-start-line="411" selection-start-column="44" selection-end-line="411" selection-end-column="44" />
+        <state vertical-scroll-proportion="-8.84">
+          <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
+          <folding>
+            <element signature="e#1216#1671#0" expanded="true" />
+            <element signature="e#1670#1671#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6368876">
+          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#basicInlinedArrayTest#0;class#UnManagedArraysTest#0" expanded="false" />
-            <element signature="method#basicArrayTest1#0;class#UnManagedArraysTest#0" expanded="false" />
-            <element signature="method#basicArrayTest2#0;class#UnManagedArraysTest#0" expanded="false" />
-            <element signature="method#inlinedArrayTest#0;class#UnManagedArraysTest#0" expanded="false" />
-            <element signature="method#smallArrayTest#0;class#UnManagedArraysTest#0" expanded="false" />
-            <element signature="e#6040#6912#0" expanded="true" />
-            <element signature="e#6911#6912#0" expanded="true" />
-            <element signature="e#10182#10191#0" expanded="true" />
+            <element signature="e#923#1116#0" expanded="true" />
+            <element signature="e#1115#1116#0" expanded="true" />
           </folding>
         </state>
       </provider>
