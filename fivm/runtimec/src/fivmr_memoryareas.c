@@ -507,4 +507,72 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
     // return (uintptr_t) Int;
 }
 
+//Shreyas
+void fivmr_MemoryArea_deallocatePrimitive(uintptr_t fivmrMemoryArea, uintptr_t primitiveLoc)
+{
+    printf("In Deallocation native!\n");
+    //Cast the primitiveloc parameter to uintptr_t*
+    uintptr_t * primitiveLocation = (uintptr_t *)primitiveLoc;
+    //Cast to fivmr_MemoryArea
+    fivmr_MemoryArea *areaptr = (fivmr_MemoryArea*) fivmrMemoryArea;
+    uintptr_t *result;
+    //Subtract MemoryArea's start from it
+    int OFFSET = primitiveLocation - (uintptr_t*)areaptr->start;
+    //Divide by 64 and take ceiling of it
+    OFFSET=ceil(OFFSET/64);
+    //Multiply by 64 and add to start of MemoryArea
+    result=(OFFSET*64)+(uintptr_t *)areaptr->start;
+    //This is the start of the corresponding primitive block
+    struct fivmr_um_primitive_block *resultPrimitiveBlock = (struct fivmr_um_primitive_block*) result;
+    //Now to find which storage element to zero out
+    int PRIMITIVE_INDEX = primitiveLocation - (uintptr_t*)resultPrimitiveBlock;
+    PRIMITIVE_INDEX=(PRIMITIVE_INDEX)-2;
+    //Zero out the elements from the block pointer by resultPrimitiveBlock
+    // printf("%" PRIu64 "\t",resultPrimitiveBlock->storage[PRIMITIVE_INDEX]);
 
+    resultPrimitiveBlock->storage[PRIMITIVE_INDEX]=0;
+    //printf("\n%" PRIu64 "\n",resultPrimitiveBlock->storage[PRIMITIVE_INDEX]);    //TODO: remove
+    //Change the Bit Vector accordingly
+    // index starts from LSB and from 0
+    //Save prevous map before mutating....resultPrimitiveBlock-> &= ~(1 << index);
+    int prevmap=resultPrimitiveBlock->map;
+    resultPrimitiveBlock->map &= ~(1 << PRIMITIVE_INDEX);
+    //printf("%d",resultPrimitiveBlock->map);    //TODO: remove
+    //Bookkeeping
+    //Add this block to the fr_list
+    if(prevmap==FULL_MAP)
+    {
+            //Move the full block FROM the nfr list TO the fr list.
+            //If there are none, make it the head.
+            if(areaptr->fr_head == NULL) {
+                //If there are no half filled blocks, make this one the head of the list
+                areaptr->fr_head = (struct fivmr_um_primitive_block * ) resultPrimitiveBlock;
+            }
+            //if there are already half filled primitive blocks, add this block to that list:
+            else {
+                //Save the current head of the FR list:
+                struct fivmr_um_primitive_block *old_fr_head = areaptr->fr_head;
+                //Make the current full block the FR head:
+                areaptr->fr_head = resultPrimitiveBlock;
+                //Now, link the block that's full to the rest of the NFR list
+                areaptr->fr_head->next = old_fr_head;
+            }
+             //Traverse and remove the nfr block :(
+             struct fivmr_um_primitive_block *curptr = areaptr->nfr_head;
+             //If theres only one node in the nfr list then do this->nfr_head=NULL
+            if(curptr->next==NULL){areaptr->nfr_head=NULL;}
+            else{
+                //Primitive freeing not in the fr_head node
+                while(curptr!=NULL)
+                {
+                    if(curptr->next->map!=FULL_MAP)
+                    {
+                        curptr->next=curptr->next->next;
+                        break;
+                    }
+                    curptr=curptr->next;
+                }
+            }
+    }
+
+}
