@@ -65,9 +65,9 @@ public class AllocatePrimitivesTest implements Runnable
             //Allocating a boolean
             boolean var=false;
             Pointer p=UMBoolean.allocate(var);
-            System.out.println(UMBoolean.get(p));
+            assert !UMBoolean.get(p);
             UMBoolean.set(p, true);
-            System.out.println(UMBoolean.get(p));
+            assert UMBoolean.get(p);
 
             //Allocating a float
             float f=12.98f;
@@ -75,7 +75,7 @@ public class AllocatePrimitivesTest implements Runnable
             assert UMFloat.get(p)==12.98f;
             UMFloat.set(p, 1237.56f);
             //System.out.println(UMDouble.get(p));
-            assert UMFloat.get(p)==123712.12123;
+            assert UMFloat.get(p)==1237.56f;
 
             //Allocating a double
             double d=12312.98;
@@ -90,7 +90,7 @@ public class AllocatePrimitivesTest implements Runnable
         catch(Throwable e)
         {
             LOG.FATAL("Exception in Runnable...");
-            LOG.FATAL(e.getMessage());
+            LOG.info(e.getClass().toString());
         }
     }
 }
