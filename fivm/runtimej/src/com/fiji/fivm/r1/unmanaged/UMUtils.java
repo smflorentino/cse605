@@ -12,4 +12,8 @@ public class UMUtils
 	@RuntimeImport
 	@NoSafepoint
 	public static native Pointer fivmr_MemoryArea_allocatePrimitive(Pointer currentArea);
+
+	@RuntimeImport
+	@NoSafepoint
+	public static native Pointer fivmr_MemoryArea_deallocatePrimitive(Pointer currentArea, Pointer primitive);
 }

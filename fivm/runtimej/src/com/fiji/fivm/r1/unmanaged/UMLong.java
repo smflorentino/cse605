@@ -24,6 +24,13 @@ public class UMLong implements UMPrimitive{
 
     public static void free(Pointer primitive) {
         //TODO
+        final Pointer curArea = MemoryAreas.getCurrentArea();
+        if(curArea == MemoryAreas.getHeapArea() || curArea == MemoryAreas.getImmortalArea())
+        {
+            throw new UnsupportedOperationException("Deallocation cannot occur in Heap or Immortal Memory");
+        }
+        //Call to native to Deallocate
+        fivmr_MemoryArea_deallocatePrimitive(curArea,primitive);
     }
 
     public static Pointer allocate(long val)
