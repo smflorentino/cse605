@@ -26,7 +26,21 @@ public class LOG {
     {
         Pointer outer = MemoryAreas.getCurrentArea();
         MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
-        System.err.println("HEAP: "+ l);
+        System.err.println("HEAP: " + l);
         MemoryAreas.setCurrentArea(outer);
     }
+
+    public static void HEAP_ERROR_CODE(final int errorCode)
+    {
+        Pointer outer = MemoryAreas.getCurrentArea();
+        MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
+        System.err.println("HEAP: An assertion Failed! Error Code "+ errorCode);
+        MemoryAreas.setCurrentArea(outer);
+    }
+
+    public static void FAIL(String msg)
+    {
+        System.out.println("FAIL:" + msg);
+    }
+
 }

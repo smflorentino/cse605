@@ -1,0 +1,20 @@
+JAVAC=javac
+JAR=jar
+
+include depend.mk
+
+all: scj.jar
+
+clean:
+	rm -rf build
+	rm -f scj.jar
+
+scj.jar: $(SRCFILES)
+	rm -rf build
+	mkdir build
+	#$(JAVAC) -nowarn -target 1.5 -cp ../../../../lib/fijicore.jar:../../../../lib/fivmr.jar:../../../../lib/fijirt.jar -source 1.5 $(SRCFILES)  -d build
+	$(JAVAC) -nowarn -target 1.5 -bootclasspath ../../../../lib/fijicore.jar:../../../../lib/fivmr.jar:../../../../lib/fijirt.jar -source 1.5 $(SRCFILES)  -d build
+	$(JAR) cf scj.jar -C build .
+	rm -rf ../../../../lib/scj.jar
+	cp scj.jar ../../../../lib/scj.jar
+

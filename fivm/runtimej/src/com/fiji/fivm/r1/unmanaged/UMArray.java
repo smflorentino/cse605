@@ -103,7 +103,7 @@ public class UMArray
 	@Inline
 	@NoPollcheck
 	@AllowUnsafe
-	private static int length(Pointer array)
+	public static int length(Pointer array)
 	{
 		return CType.getInt(array,"fivmr_um_array_header","size");
 	}
@@ -130,4 +130,67 @@ public class UMArray
 			fivmRuntime.throwNullPointerRTE();
 		}
 	}
+
+	//TODO get this from C
+	private static final int BLOCKSIZE = 64;
+	//TODO get this from C
+	private static final int POINTER_SIZE = 4;
+	//TODO get this from C
+	private static final int HEADER_SIZE = BLOCKSIZE;
+	/**
+	 * @return the amount of scoped memory needed to support array(s) of the specified size, and amount;
+	 * with the specified amount being the number of arrays allocated at any one time quantum
+	 */
+	public static int calculateScopedMemorySize(int elemSize, int elemCount, int arrayCount, int activeArrays)
+	{
+		assert elemSize == 8; //Right now all array elements are 8 bytes
+		return calculateManagedMemorySize(elemSize,elemCount,activeArrays) + calcualteScopedMemoryOverhead(elemSize,elemCount,arrayCount);
+
+	}
+
+	/**
+	 * @return the amount of managed memory needed to support array(s) of the specified size, and amount,
+	 * with the specified amount being the number of arrays allocated at any one time quantum
+	 */
+	public static int calculateManagedMemorySize(int elemSize, int elemCount, int activeArrayCount)
+	{
+		assert elemSize == 8;
+		if(elemCount <= 6)
+		{
+			return HEADER_SIZE; //inlined arrays only have a header
+		}
+		assert elemSize == 8;
+		int elementsPerBlock = elemSize / BLOCKSIZE;
+		int neededBlocks = elemCount / elementsPerBlock;
+		if(elemCount % neededBlocks != 0)
+		{
+			neededBlocks++;
+		}
+		int dataSize = neededBlocks * BLOCKSIZE;
+		int arraySize = dataSize + HEADER_SIZE;
+		return arraySize * activeArrayCount;
+	}
+
+	/**
+	 * @return the overhead (lost space) from allocate the specified count of arrays in
+	 * unmamaged memory.
+	 */
+	public static int calcualteScopedMemoryOverhead(int elemSize, int elemCount, int arrayCount)
+	{
+		assert elemSize == 8;
+		if(elemCount <= 6)
+		{
+			return 0; //no overhead for inlined arrays
+		}
+		int elementsPerBlock = elemSize / BLOCKSIZE;
+		int neededBlocks = elemCount / elementsPerBlock;
+		if(elemCount % neededBlocks != 0)
+		{
+			neededBlocks++;
+		}
+		int overheadPerArray = neededBlocks * POINTER_SIZE;
+		return overheadPerArray * arrayCount;
+
+	}
+
 }

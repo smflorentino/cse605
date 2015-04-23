@@ -465,13 +465,13 @@ static inline int32_t fivmr_MemoryArea_findFreeIndex(int32_t map)
     //TODO throw something
 }
 
-static inline fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_MemoryArea *area) {
+static inline fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_ThreadState *ts, fivmr_MemoryArea *area) {
     //Get current free block:
     fivmr_um_node *block = area->free_head;
     if(block == NULL) {
         //We're out of memory
         //TODO throw OOME
-        fivmr_assert(0);
+        fivmr_throwOutOfMemoryError_inJava(ts);
     }
     //Set the head to the next block
     area->free_head = area->free_head->next;
@@ -507,7 +507,7 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
     //If no primitives have been allocated, get one:
     if(area->fr_head == NULL)
     {
-        struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) fivmr_MemoryArea_getFreeBlock(area);
+        struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) fivmr_MemoryArea_getFreeBlock(NULL,area);
         area->fr_head = block;
     }
     //If the current head of the primtive list is full (first 6 bits are 111111), move it to the nonfree list:
@@ -533,7 +533,7 @@ uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
         }
         //If the FR list is empty, we need to find a free block and add it:
         if(area->fr_head == NULL) {
-            struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) fivmr_MemoryArea_getFreeBlock(area);
+            struct fivmr_um_primitive_block *block = (struct fivmr_um_primitive_block*) fivmr_MemoryArea_getFreeBlock(NULL,area);
             area->fr_head = block;
         }
     }
@@ -559,7 +559,7 @@ uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, in
     fivmr_GCSpaceAlloc *alloc = &(ts->gc.alloc[FIVMR_GC_OBJ_SPACE]);
 
     //Get a free block for the array header
-    fivmr_um_array_header *header = (fivmr_um_array_header*)  fivmr_MemoryArea_getFreeBlock(area);
+    fivmr_um_array_header *header = (fivmr_um_array_header*)  fivmr_MemoryArea_getFreeBlock(ts,area);
 
     //Set the fields in our header:
     header->type = type;
@@ -586,7 +586,7 @@ uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, in
     // if(newbump - area->start > area->size) {
     if(newbump - alloc->start > alloc->size) {
         //TODO throw OOME
-        fivmr_assert(0);
+        fivmr_throwOutOfMemoryError_inJava(ts);
     }
     //If we're good, set the bump:
     // area->bump = newbump;
@@ -596,7 +596,7 @@ uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, in
     int64_t blocksNeeded = spineSize;
     header->spine = (fivmr_um_array_block**) oldBump;
     for(blocksAllocated = 0; blocksAllocated < blocksNeeded; blocksAllocated++) {
-        fivmr_um_array_block *block = (fivmr_um_array_block*) fivmr_MemoryArea_getFreeBlock(area);
+        fivmr_um_array_block *block = (fivmr_um_array_block*) fivmr_MemoryArea_getFreeBlock(ts,area);
         header->spine[blocksAllocated] = (fivmr_um_array_block*) block;
     }
 
@@ -610,6 +610,7 @@ void fivmr_MemoryArea_freeArray(uintptr_t fivmrMemoryArea, uintptr_t arrayHeader
     //Free the header, if elements are inlined:
     if(header->size <= 6) {
         fivmr_MemoryArea_freeBlock(area, (fivmr_um_node*) header);
+        return;
     }
     //Free the data blocks:
     int64_t blocksAllocated = header->size / ELEMENTS_PER_BLOCK;
@@ -644,6 +645,7 @@ void fivmr_MemoryArea_storeArrayInt(uintptr_t arrayHeader, int32_t index, int32_
     fivmr_um_array_header *header = (fivmr_um_array_header*) arrayHeader;
     if(header->size < 6) {
         header->elem[index] = value;
+        return;
     }
     //Get the block from the spine
     fivmr_um_array_block *block = header->spine[index / ELEMENTS_PER_BLOCK];
