@@ -45,6 +45,8 @@ public class Utils
 	private void createArray(int size)
 	{
 		junk = new int[size];
+		junk[junk.length-1] = RANDOM.nextInt();
+		junk = null;
 	}
 
 	private Pointer createScopedMemoryArray(int size)
@@ -102,7 +104,8 @@ public class Utils
 			{
 				createArray(nextRandomInt(i, maxArraySize));
 			}
-			junk[junk.length-1] = RANDOM.nextInt();
+//			junk[junk.length-1] = RANDOM.nextInt();
+//			junk = null;
 		}
 	}
 
