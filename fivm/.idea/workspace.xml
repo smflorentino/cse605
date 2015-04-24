@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c996f1da-94e5-438a-ab25-760b13f24423" name="Default" comment="Update offset in runtimec caused by structures">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/MatMultScoped.java" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/MemExample.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test1/FibExample$1.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test1/FibExample$10.class" afterPath="" />
@@ -57,11 +56,6 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test1/FibTest.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test2/FibExample$Fib.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test2/LOG.class" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/MatMultHeap.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/MatMultHeap.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/Utils.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/benchmark.sh" afterPath="$PROJECT_DIR$/../tools/benchmark.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" />
     </list>
     <ignored path="fivm.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -674,7 +668,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2797" y="24" width="1301" height="744" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
