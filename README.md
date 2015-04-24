@@ -9,7 +9,9 @@ Scott Florentino
 Project 1 : Malloc and free in scoped memory
 
 Stuff you might find useful:
+
 fivm/ - the directory that has the Fiji VM, with our changes. Build it in the usual way.
+
 tools/ - the directory that has our build scripts, tests, and output. Run tests.sh to build the executables that run our tests, and benchmark.sh to run the tools to run our benchmarks. See our results in output.txt.
 
 NOTE: 
