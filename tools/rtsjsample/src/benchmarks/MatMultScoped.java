@@ -20,7 +20,7 @@ public class MatMultScoped
 {
 	private static final Utils utils = new Utils();
 
-	static final int trials = 1;
+	static final int trials = 10;
 	static final int fragmentationCount = 100;
 	final static int rows = 100;
 	final static int cols = 100;
@@ -33,14 +33,16 @@ public class MatMultScoped
 
 	public static void main(String[] args)
 	{
-		MemoryAreas.allocScopeBacking(Magic.curThreadState(), 30240192 + 1024 * 4);
-
 		//Generate sizes for fragmentation
 		final int[] randomSizes = new int[fragmentationCount];
 		utils.generateRandomSizes(randomSizes, arraySize);
 		int fragmentationOverhead = utils.calculateScoepdMemoryOverhead(randomSizes);
 
-		Pointer area = MemoryAreas.alloc(trials * (255192 + fragmentationOverhead) + 10240, false, "scoped", 240192 + 10240);
+		int scopeSize = (trials * (15000 + fragmentationOverhead))+ 240192 + 20480;
+
+		MemoryAreas.allocScopeBacking(Magic.curThreadState(), scopeSize + 10240 * trials);
+
+		Pointer area = MemoryAreas.alloc(scopeSize, false, "scoped", 240192 + 20480);
 
 		LOG.info("Fragmentation overhead: " + fragmentationOverhead);
 		LOG.info("Sccoped Memory Size: " + MemoryAreas.size(area));
@@ -82,7 +84,7 @@ public class MatMultScoped
 		LOG.info("Mult Time (ns):" + multTotal / trials);
 	}
 
-	public static void runTest(int trial, int[] fragmentationSizes)
+	public static void runTest(final int trial, final int[] fragmentationSizes)
 	{
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
 //		LOG.info("Current Consumed Heap Space: " + MemoryAreas.consumed(MemoryAreas.getHeapArea()));
@@ -164,7 +166,9 @@ public class MatMultScoped
 				}
 			}
 		}
-
+		UMArray.free(a);
+		UMArray.free(b);
+		UMArray.free(answer);
 //		System.out.println("The product is ");
 //		for (c = 0; c < firstRows; c++) {
 //			for (d = 0; d < secondCols; d++) {

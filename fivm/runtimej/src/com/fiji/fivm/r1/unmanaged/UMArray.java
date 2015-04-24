@@ -70,6 +70,14 @@ public class UMArray
 		fivmr_MemoryArea_storeArrayInt(array, index, val);
 	}
 
+	@Inline
+	@NoPollcheck
+	@AllowUnsafe
+	public static int length(Pointer array)
+	{
+		return CType.getInt(array,"fivmr_um_array_header","size");
+	}
+
 	public static enum UMArrayType {
 		INT(0),
 		BOOLEAN(1),
@@ -100,13 +108,7 @@ public class UMArray
 		}
 	}
 
-	@Inline
-	@NoPollcheck
-	@AllowUnsafe
-	public static int length(Pointer array)
-	{
-		return CType.getInt(array,"fivmr_um_array_header","size");
-	}
+
 
 	/**
 	 * Taken from MM.java, where it was private.

@@ -632,7 +632,7 @@ void fivmr_MemoryArea_freeArray(uintptr_t fivmrMemoryArea, uintptr_t arrayHeader
 int32_t fivmr_MemoryArea_loadArrayInt(uintptr_t arrayHeader, int32_t index)
 {
     fivmr_um_array_header *header = (fivmr_um_array_header*) arrayHeader;
-    if(header->size < 6) {
+    if(header->size <= 6) {
         return (int32_t) header->elem[index];
     }
     //Get the block from the spine
@@ -644,7 +644,7 @@ int32_t fivmr_MemoryArea_loadArrayInt(uintptr_t arrayHeader, int32_t index)
 void fivmr_MemoryArea_storeArrayInt(uintptr_t arrayHeader, int32_t index, int32_t value)
 {
     fivmr_um_array_header *header = (fivmr_um_array_header*) arrayHeader;
-    if(header->size < 6) {
+    if(header->size <= 6) {
         header->elem[index] = value;
         return;
     }

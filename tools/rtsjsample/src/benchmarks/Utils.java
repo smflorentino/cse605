@@ -2,10 +2,6 @@ package benchmarks;
 
 import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.unmanaged.UMArray;
-import common.LOG;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -82,7 +78,7 @@ public class Utils
 		int overhead = 0;
 		for(int i = 0;i<arraySizes.length;i++)
 		{
-			overhead += UMArray.calcualteScopedMemoryOverhead(8,MatMultScoped.arraySize,1);
+			overhead += UMArray.calcualteScopedMemoryOverhead(8,arraySizes[i],1);
 		}
 		return overhead;
 	}

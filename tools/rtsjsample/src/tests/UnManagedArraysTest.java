@@ -383,21 +383,6 @@ public class UnManagedArraysTest
 						Collections.shuffle(activeArrays, r);
 						for(int j =0;j<activeArrayCount;j++)
 						{
-							/*
-							scottflo@scottpcub:/tmp/ramdisk/cse605/tools$ ./umtest
-							FIVMR_DEBUG_LEVEL: 0
-							INFO: smallArrayTest2 starting...
-							INFO: smallArrayTest2 completed
-							INFO: smallArrayTest2a starting...
-							INFO: smallArrayTest2a completed
-							INFO: smallArrayTest3 starting...
-							Fiji Java Debug Level: 0
-							fivmr ABORT: (fivmr_threadstate.c:51) assertion 'ts->cookie==0xd1e7c0c0' failed.
-							fivmr VM instance at pid = 18345 dumping core.
-							Aborted (core dumped)
-
-							 */
-//							arrayPointers[arrayIndex] = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
 							int arrayIndex = activeArrays.get(j);
 
 							Pointer array = arrayPointers[arrayIndex];
