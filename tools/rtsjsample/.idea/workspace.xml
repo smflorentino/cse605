@@ -56,16 +56,8 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test1/FibTest.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test2/FibExample$Fib.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../src/build/test2/LOG.class" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/benchmarks/MatMultScoped.java" afterPath="$PROJECT_DIR$/src/benchmarks/MatMultScoped.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" afterPath="$PROJECT_DIR$/../../fivm/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/UnFragmentedScopedTest.java" afterPath="$PROJECT_DIR$/src/tests/UnFragmentedScopedTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/UnManagedArraysTest.java" afterPath="$PROJECT_DIR$/src/tests/UnManagedArraysTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java" afterPath="$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/benchmarks/Utils.java" afterPath="$PROJECT_DIR$/src/benchmarks/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../benchmark.sh" afterPath="$PROJECT_DIR$/../benchmark.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/runtimec/src/fivmr_memoryareas.c" afterPath="$PROJECT_DIR$/../../fivm/runtimec/src/fivmr_memoryareas.c" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../fivm/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../../fivm/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java" afterPath="$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java" />
     </list>
     <ignored path="rtsjsample.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -90,8 +82,8 @@
       <file leaf-file-name="UnFragmentedScopedTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tests/UnFragmentedScopedTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.48">
-              <caret line="62" column="7" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
+            <state vertical-scroll-proportion="-17.56">
+              <caret line="68" column="25" selection-start-line="68" selection-start-column="25" selection-end-line="68" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -131,38 +123,38 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MatMultScoped.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MatMultScoped.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/benchmarks/MatMultScoped.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18914473">
+            <state vertical-scroll-proportion="7.64">
               <caret line="22" column="32" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UnManagedArraysTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UnManagedArraysTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/tests/UnManagedArraysTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-21.08">
-              <caret line="409" column="34" selection-start-line="409" selection-start-column="34" selection-end-line="409" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.026687598">
+              <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1216#1671#0" expanded="true" />
-                <element signature="e#1670#1671#0" expanded="true" />
-                <element signature="e#1993#2981#0" expanded="true" />
-                <element signature="e#2980#2981#0" expanded="true" />
-                <element signature="e#3305#4295#0" expanded="true" />
-                <element signature="e#4294#4295#0" expanded="true" />
-                <element signature="e#4579#5373#0" expanded="true" />
-                <element signature="e#5372#5373#0" expanded="true" />
-                <element signature="e#6040#6912#0" expanded="true" />
-                <element signature="e#6911#6912#0" expanded="true" />
-                <element signature="e#7806#8860#0" expanded="true" />
-                <element signature="e#8859#8860#0" expanded="true" />
-                <element signature="e#10182#10191#0" expanded="true" />
-                <element signature="e#10414#12069#0" expanded="true" />
-                <element signature="e#12068#12069#0" expanded="true" />
+                <element signature="e#1202#1657#0" expanded="true" />
+                <element signature="e#1656#1657#0" expanded="true" />
+                <element signature="e#1979#2967#0" expanded="true" />
+                <element signature="e#2966#2967#0" expanded="true" />
+                <element signature="e#3291#4281#0" expanded="true" />
+                <element signature="e#4280#4281#0" expanded="true" />
+                <element signature="e#4565#5359#0" expanded="true" />
+                <element signature="e#5358#5359#0" expanded="true" />
+                <element signature="e#6026#6898#0" expanded="true" />
+                <element signature="e#6897#6898#0" expanded="true" />
+                <element signature="e#7792#8846#0" expanded="true" />
+                <element signature="e#8845#8846#0" expanded="true" />
+                <element signature="e#10168#10177#0" expanded="true" />
+                <element signature="e#10400#12055#0" expanded="true" />
+                <element signature="e#12054#12055#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -191,8 +183,8 @@
       <file leaf-file-name="UnManagedPrimitivesTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.68">
-              <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
+            <state vertical-scroll-proportion="-18.2">
+              <caret line="43" column="17" selection-start-line="0" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -201,10 +193,16 @@
       <file leaf-file-name="UnManagedMemoryTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state vertical-scroll-proportion="-15.64">
+              <caret line="23" column="23" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="23" />
               <folding>
-                <element signature="e#0#2543#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#861#1127#0" expanded="true" />
+                <element signature="e#1126#1127#0" expanded="true" />
+                <element signature="e#1433#1643#0" expanded="true" />
+                <element signature="e#1642#1643#0" expanded="true" />
+                <element signature="e#1949#2250#0" expanded="true" />
+                <element signature="e#2249#2250#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -252,7 +250,6 @@
         <option value="$PROJECT_DIR$/src/test1/FibMain.java" />
         <option value="$PROJECT_DIR$/src/test/UnManangedMemoryTest.java" />
         <option value="$PROJECT_DIR$/src/tests/UnManangedMemoryTest.java" />
-        <option value="$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java" />
         <option value="$PROJECT_DIR$/src/test1/Fib2.java" />
         <option value="$PROJECT_DIR$/src/common/Fail.java" />
         <option value="$PROJECT_DIR$/src/common/Assert.java" />
@@ -261,10 +258,11 @@
         <option value="$PROJECT_DIR$/src/test1/AllocatePrimitivesTest.java" />
         <option value="$PROJECT_DIR$/src/benchmarks/MatMultHeap.java" />
         <option value="$PROJECT_DIR$/src/tests/UnFragmentedScopedTest.java" />
-        <option value="$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java" />
-        <option value="$PROJECT_DIR$/src/tests/UnManagedArraysTest.java" />
         <option value="$PROJECT_DIR$/src/benchmarks/Utils.java" />
         <option value="$PROJECT_DIR$/src/benchmarks/MatMultScoped.java" />
+        <option value="$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java" />
+        <option value="$PROJECT_DIR$/src/tests/UnManagedArraysTest.java" />
+        <option value="$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java" />
       </list>
     </option>
   </component>
@@ -355,60 +353,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test1" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rtsjsample" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="benchmarks" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -668,7 +612,7 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28938907" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25830653" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3296582" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1073,57 +1017,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.68">
-          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/UnFragmentedScopedTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.48">
-          <caret line="62" column="7" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#2543#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedArraysTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-21.08">
-          <caret line="409" column="34" selection-start-line="409" selection-start-column="34" selection-end-line="409" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1216#1671#0" expanded="true" />
-            <element signature="e#1670#1671#0" expanded="true" />
-            <element signature="e#1993#2981#0" expanded="true" />
-            <element signature="e#2980#2981#0" expanded="true" />
-            <element signature="e#3305#4295#0" expanded="true" />
-            <element signature="e#4294#4295#0" expanded="true" />
-            <element signature="e#4579#5373#0" expanded="true" />
-            <element signature="e#5372#5373#0" expanded="true" />
-            <element signature="e#6040#6912#0" expanded="true" />
-            <element signature="e#6911#6912#0" expanded="true" />
-            <element signature="e#7806#8860#0" expanded="true" />
-            <element signature="e#8859#8860#0" expanded="true" />
-            <element signature="e#10182#10191#0" expanded="true" />
-            <element signature="e#10414#12069#0" expanded="true" />
-            <element signature="e#12068#12069#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/benchmarks/MatMultHeap.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.68">
@@ -1152,9 +1045,66 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/benchmarks/MatMultScoped.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18914473">
+        <state vertical-scroll-proportion="7.64">
           <caret line="22" column="32" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/UnFragmentedScopedTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-17.56">
+          <caret line="68" column="25" selection-start-line="68" selection-start-column="25" selection-end-line="68" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedMemoryTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-15.64">
+          <caret line="23" column="23" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#861#1127#0" expanded="true" />
+            <element signature="e#1126#1127#0" expanded="true" />
+            <element signature="e#1433#1643#0" expanded="true" />
+            <element signature="e#1642#1643#0" expanded="true" />
+            <element signature="e#1949#2250#0" expanded="true" />
+            <element signature="e#2249#2250#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedPrimitivesTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-18.2">
+          <caret line="43" column="17" selection-start-line="0" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tests/UnManagedArraysTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.026687598">
+          <caret line="22" column="38" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1202#1657#0" expanded="true" />
+            <element signature="e#1656#1657#0" expanded="true" />
+            <element signature="e#1979#2967#0" expanded="true" />
+            <element signature="e#2966#2967#0" expanded="true" />
+            <element signature="e#3291#4281#0" expanded="true" />
+            <element signature="e#4280#4281#0" expanded="true" />
+            <element signature="e#4565#5359#0" expanded="true" />
+            <element signature="e#5358#5359#0" expanded="true" />
+            <element signature="e#6026#6898#0" expanded="true" />
+            <element signature="e#6897#6898#0" expanded="true" />
+            <element signature="e#7792#8846#0" expanded="true" />
+            <element signature="e#8845#8846#0" expanded="true" />
+            <element signature="e#10168#10177#0" expanded="true" />
+            <element signature="e#10400#12055#0" expanded="true" />
+            <element signature="e#12054#12055#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

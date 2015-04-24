@@ -29,12 +29,12 @@ public class UnManagedArraysTest
 	{
 		MemoryAreas.allocScopeBacking(Magic.curThreadState(), TOTAL_BACKING);
 
-//		basicInlinedArrayTest();
-//		basicArrayTest1();
-//		basicArrayTest2();
-//
-////		inlinedArrayTest();
-//		smallArrayTest();
+		basicInlinedArrayTest();
+		basicArrayTest1();
+		basicArrayTest2();
+
+		inlinedArrayTest();
+		smallArrayTest();
 		smallArrayTest2();
 		smallArrayTest3();
 	}
