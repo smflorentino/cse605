@@ -34,7 +34,9 @@ echo "Compiling Bytecode to Native Code..."
 
 #fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 45K -o matheap src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultHeap
 
-fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 140K -o matheap src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultHeap
+#fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 140K -o matheap src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultHeap
+
+fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 131M -o matscop src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultScoped
 echo "Done!"
 
 #Unused....

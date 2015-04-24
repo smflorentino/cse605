@@ -2,6 +2,7 @@ package benchmarks;
 
 import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.unmanaged.UMArray;
+import common.LOG;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,12 @@ public class Utils
 	}
 	private int nextRandomInt(int seed, int max)
 	{
-		int randomInt;
-		do
+		int randomInt = RANDOM.nextInt(max);
+		while(randomInt <= 0)
 		{
 			randomInt = RANDOM.nextInt(max);
-		}while(randomInt <= 0);
 
+		}
 		switch(seed % 3)
 		{
 			case 0:
@@ -35,9 +36,16 @@ public class Utils
 				break;
 			case 1:
 				randomInt &= Short.MAX_VALUE;
+				break;
 			case 2:
 				//do nothing
 				break;
+		}
+
+		while(randomInt <= 0)
+		{
+			randomInt = RANDOM.nextInt(max);
+
 		}
 		return randomInt;
 	}
@@ -54,21 +62,29 @@ public class Utils
 		return UMArray.allocate(UMArray.UMArrayType.INT, size);
 	}
 
-	public List<Integer> randomIntList(int numArrays, int maxSize)
+	public void generateRandomSizes(int[] sizes, int maxSize)
 	{
-		List<Integer> arraySizes = new ArrayList<Integer>(numArrays);
-		for(int i =0; i< numArrays; i++)
+		for(int i =0; i< sizes.length; i++)
 		{
 			if(maxSize <= 6)
 			{
-				arraySizes.add(nextRandomSmallInt(maxSize));
+				sizes[i] = (nextRandomSmallInt(maxSize));
 			}
 			else
 			{
-				arraySizes.add(nextRandomInt(i, maxSize));
+				sizes[i] = (nextRandomInt(i, maxSize));
 			}
 		}
-		return arraySizes;
+	}
+
+	public static int calculateScoepdMemoryOverhead(int[] arraySizes)
+	{
+		int overhead = 0;
+		for(int i = 0;i<arraySizes.length;i++)
+		{
+			overhead += UMArray.calcualteScopedMemoryOverhead(8,MatMultScoped.arraySize,1);
+		}
+		return overhead;
 	}
 
 	/**
@@ -77,7 +93,7 @@ public class Utils
 	 * as well.
 	 * @param sizes
 	 */
-	public void fragmentUnmanagedMemory(List<Integer> sizes)
+	public void fragmentUnmanagedMemory(final int[] sizes)
 	{
 		for (int size : sizes)
 		{
