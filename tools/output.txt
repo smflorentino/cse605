@@ -1,0 +1,20 @@
+===Output of matheapCMR ====
+FIVMR_DEBUG_LEVEL: 0
+INFO: Allocation Time (ns):150656
+INFO: Set Time (ns):7003764
+INFO: Mult Time (ns):62008351
+
+===Output of matscope===
+FIVMR_DEBUG_LEVEL: 0
+INFO: Fragmentation overhead: 167328
+INFO: Sccoped Memory Size: 2083968
+INFO: Allocation Time (ns):38900
+INFO: Set Time (ns):7786323
+INFO: Mult Time (ns):370922406
+
+===Output of matheapHF===
+FIVMR_DEBUG_LEVEL: 0
+INFO: Allocation Time (ns):418748
+INFO: Set Time (ns):6294357
+INFO: Mult Time (ns):98474551
+

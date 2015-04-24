@@ -14,15 +14,14 @@ ECJ_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar:$FIJI_LIB_DIR/fivmcommon.jar:$FIJI_LIB_DIR/
 FIVMC_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar
 
 #Specify the Source Directory(ies) for our Java Programs
-HARDRTJSRC=/home/scottflo/repos/cse605/tools/src
-HARDRTJSRC2=/home/scottflo/repos/cse605/tools/rtsjsample/src
+HARDRTJSRC=./rtsjsample/src
 
 echo "Compiling Java to Bytecode..."
 rm -rf src/build
 mkdir src/build
 #$FIJI_JAVA_COMPILER -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath $ECJ_CLASSPATH $HARDRTJSRC -d src/build
 
-$FIJI_JAVA_COMPILER -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath $ECJ_CLASSPATH $HARDRTJSRC2 -d src/build
+$FIJI_JAVA_COMPILER -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath $ECJ_CLASSPATH $HARDRTJSRC -d src/build
 echo "Done!"
 
 
@@ -34,8 +33,8 @@ JARS+=" "
 #JARS+=$FIVM_LIB_DIR/rtsj.jar
 echo "Compiling Bytecode to Native Code..."
 #fivmc --jobs 4 --g-scoped-memory -o umtest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedMemoryTest
-
 fivmc --jobs 4 --g-scoped-memory -o umtest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedArraysTest
+fivmc --jobs 4 --g-scoped-memory -o arraytest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedMemoryTest
 echo "Done!"
 
 #Unused....

@@ -1,5 +1,5 @@
 #/bin/bash
-#Specify Fiji Home
+#Specify Fiji Home in your environment variables, please! Or I guess you could here.
 #FIJI_HOME=/home/scottflo/repos/cse605/fivm
 #Specify the Java compiler to use
 FIJI_JAVA_COMPILER=$FIJI_HOME/ecj/ecj
@@ -14,7 +14,7 @@ ECJ_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar:$FIJI_LIB_DIR/fivmcommon.jar:$FIJI_LIB_DIR/
 FIVMC_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar
 
 #Specify the Source Directory(ies) for our Java Programs
-HARDRTJSRC=/home/scottflo/repos/cse605/tools/rtsjsample/src
+HARDRTJSRC=./rtsjsample/src
 
 echo "Compiling Java to Bytecode..."
 rm -rf src/build
@@ -30,22 +30,8 @@ JARS=$FIVM_LIB_DIR/fivmtest.jar
 JARS+=" "
 #JARS+=$FIVM_LIB_DIR/rtsj.jar
 echo "Compiling Bytecode to Native Code..."
-#fivmc --jobs 4 --g-scoped-memory -o umtest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedMemoryTest
-
-#fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 45K -o matheap src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultHeap
-
-#fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 140K -o matheapCMR src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultHeap
-
+fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 140K -o matheapCMR src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultHeap
 fivmc --jobs 4 --g-scoped-memory --gc HF --g-def-max-mem 240K -o matheapHF src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultHeap
-
-
-#fivmc --jobs 4 --g-scoped-memory -o matscope src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultScoped
+fivmc --jobs 4 --g-scoped-memory -o matscope src/build/common/*.class src/build/benchmarks/*.class --no-opt -m benchmarks/MatMultScoped
 echo "Done!"
 
-#Unused....
-#fivmc --jobs 2 --g-scoped-memory -o hello $JARS src/build/common/*.class src/build/test1/*.class --no-opt -m test1/FibExample
-#fivmc --jobs 2 --g-scoped-memory --g-def-immortal-mem 1024K --rt-library RTSJ -o hello $FIVMC_CLASSPATH src/build/test2/*.class --no-opt --rt-flowlog-enable
-#fivmc -o hello src/build/test/HelloArray.class src/build/test/Kaymar.class --no-opt --rt-flowlog-enable
-#fivmc --g-scoped-memory -o myprog -m com/fiji/fivm/test/RawScopedMemoryTest $JARS
-#fivmc  -o myprog2 -m com/fiji/fivm/test/GetIntFieldTest $JARS
-#fivmc -o hello src/build/test/Hello.class
