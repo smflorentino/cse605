@@ -56,15 +56,8 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test1/FibTest.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test2/FibExample$Fib.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/../tools/src/build/test2/LOG.class" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/MatMultScoped.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/MatMultScoped.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" afterPath="$PROJECT_DIR$/runtimej/src/com/fiji/fivm/r1/unmanaged/UMArray.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnFragmentedScopedTest.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnFragmentedScopedTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnManagedArraysTest.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnManagedArraysTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnManagedPrimitivesTest.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnManagedPrimitivesTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/Utils.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/benchmarks/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/benchmark.sh" afterPath="$PROJECT_DIR$/../tools/benchmark.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtimec/src/fivmr_memoryareas.c" afterPath="$PROJECT_DIR$/runtimec/src/fivmr_memoryareas.c" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnManagedMemoryTest.java" afterPath="$PROJECT_DIR$/../tools/rtsjsample/src/tests/UnManagedMemoryTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../tools/rtsjsample/.idea/workspace.xml" />
     </list>
     <ignored path="fivm.iws" />
