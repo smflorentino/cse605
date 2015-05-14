@@ -30,9 +30,9 @@ JARS=$FIVM_LIB_DIR/fivmtest.jar
 JARS+=" "
 #JARS+=$FIVM_LIB_DIR/rtsj.jar
 echo "Compiling Bytecode to Native Code..."
-#9500K = 750x750 #168K = 100x100 #676K = 200x200
-fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 676K -o matheapCMR src/build/common/*.class src/build/benchmarks/*.class -m benchmarks/MatMultHeap
-fivmc --jobs 4 --g-scoped-memory --gc HF --g-def-max-mem 676K -o matheapHF src/build/common/*.class src/build/benchmarks/*.class -m benchmarks/MatMultHeap
+#9500K = 750x750 #168K = 100x100 #676K = 200x200 2707K = 400x400
+fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 2707K -o matheapCMR src/build/common/*.class src/build/benchmarks/*.class -m benchmarks/MatMultHeap
+fivmc --jobs 4 --g-scoped-memory --gc HF --g-def-max-mem 2707K -o matheapHF src/build/common/*.class src/build/benchmarks/*.class -m benchmarks/MatMultHeap
 fivmc --jobs 4 --g-scoped-memory -o matscope src/build/common/*.class src/build/benchmarks/*.class  -m benchmarks/MatMultScoped
 echo "Done!"
 
