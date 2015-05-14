@@ -58,29 +58,36 @@ public class Utils
 		return UMArray.allocate(UMArray.UMArrayType.INT, size);
 	}
 
-	public void generateRandomSizes(int[] sizes, int maxSize)
+	public void generateRandomFragmentationSizes(int[][] randomSizeMatrix, int maxSize)
 	{
-		for(int i =0; i< sizes.length; i++)
+		for(int i = 0; i< randomSizeMatrix.length; i++)
 		{
-			if(maxSize <= 6)
+			for(int j =0; j< randomSizeMatrix[i].length; j++)
 			{
-				sizes[i] = (nextRandomSmallInt(maxSize));
-			}
-			else
-			{
-				sizes[i] = (nextRandomInt(i, maxSize));
+
+				if(maxSize <= 6)
+				{
+					randomSizeMatrix[i][j] = (nextRandomSmallInt(maxSize));
+				}
+				else
+				{
+					randomSizeMatrix[i][j] = (nextRandomInt(j, maxSize));
+				}
 			}
 		}
 	}
 
-	public static int calculateScoepdMemoryOverhead(int[] arraySizes)
+	public static int[] calculateScopedMemoryFragmentationOverhead(int[][] randomSizeMatrix)
 	{
-		int overhead = 0;
-		for(int i = 0;i<arraySizes.length;i++)
+		int[] overheads = new int[randomSizeMatrix.length];
+		for(int i = 0; i< randomSizeMatrix.length; i++)
 		{
-			overhead += UMArray.calcualteScopedMemoryOverhead(8,arraySizes[i],1);
+			for(int j = 0;j<randomSizeMatrix[i].length;j++)
+			{
+				overheads[i] += UMArray.calcualteScopedMemoryOverhead(8,randomSizeMatrix[i][j],1);
+			}
 		}
-		return overhead;
+		return overheads;
 	}
 
 	/**
@@ -119,6 +126,16 @@ public class Utils
 //			junk[junk.length-1] = RANDOM.nextInt();
 //			junk = null;
 		}
+	}
+
+	public int sum(int[] array)
+	{
+		int sum = 0;
+		for(int x : array)
+		{
+			sum += x;
+		}
+		return sum;
 	}
 
 	public Random getRandom()

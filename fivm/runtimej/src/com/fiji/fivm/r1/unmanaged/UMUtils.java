@@ -1,5 +1,7 @@
 package com.fiji.fivm.r1.unmanaged;
 
+import com.fiji.fivm.r1.Export;
+import com.fiji.fivm.r1.MM;
 import com.fiji.fivm.r1.NoSafepoint;
 import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.RuntimeImport;

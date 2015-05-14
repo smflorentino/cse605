@@ -22,7 +22,7 @@ public class UnManagedArraysTest
 	private static final int SCOPE_SIZE = 10240;
 	private static final int TEST_COUNT = 1;
 	//Larger here, because arrays are a thing
-	private static final int LARGE_SCOPE_SIZE = 1048756;
+	private static final int LARGE_SCOPE_SIZE = 15 * 1048756;
 	private static final int TOTAL_BACKING = LARGE_SCOPE_SIZE * TEST_COUNT + 1024;
 
 	public static void main(String[] args)
@@ -32,6 +32,7 @@ public class UnManagedArraysTest
 		basicInlinedArrayTest();
 		basicArrayTest1();
 		basicArrayTest2();
+		basicLargeArrayTest1();
 
 		inlinedArrayTest();
 		smallArrayTest();
@@ -75,7 +76,7 @@ public class UnManagedArraysTest
 	//Size divisible by ELEMENTS_PER_BLOCK
 	public static void basicArrayTest1()
 	{
-		LOG.info("basicArrayTest starting...");
+		LOG.info("basicArrayTest1 starting...");
 
 		Pointer area = MemoryAreas.alloc(SCOPE_SIZE, false, "scoped", 3072);
 
@@ -113,13 +114,13 @@ public class UnManagedArraysTest
 		});
 		MemoryAreas.pop(area);
 		MemoryAreas.free(area);
-		LOG.info("basicArrayTest completed");
+		LOG.info("basicArrayTest1 completed");
 	}
 
 	//Size not divisible by ELEMENTS_PER_BLOCK
 	public static void basicArrayTest2()
 	{
-		LOG.info("basicArrayTest starting...");
+		LOG.info("basicArrayTest2 starting...");
 
 		Pointer area = MemoryAreas.alloc(SCOPE_SIZE, false, "scoped", 3072);
 
@@ -158,7 +159,55 @@ public class UnManagedArraysTest
 		});
 		MemoryAreas.pop(area);
 		MemoryAreas.free(area);
-		LOG.info("basicArrayTest completed");
+		LOG.info("basicArrayTest2 completed");
+	}
+
+	//Size not divisible by ELEMENTS_PER_BLOCK
+	public static void basicLargeArrayTest1()
+	{
+		LOG.info("basicLargeArrayTest1 starting...");
+
+		final int elemCount = 750*750;
+		int scopedSize = UMArray.calculateScopedMemorySize(8, elemCount,  1, 1);
+		int unManagedSize = UMArray.calculateManagedMemorySize(8, elemCount, 1);
+		Pointer area = MemoryAreas.alloc(scopedSize, false, "scoped", unManagedSize);
+
+		MemoryAreas.enter(area, new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					Pointer array = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
+//					assertTrue(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == 3224L, "Scoped Memory usage incorrect!");
+//					assertTrue(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 2496L, "Unmanaged Memory usage incorrect!");
+					for(int i = 0; i< UMArray.length(array); i++)
+					{
+						UMArray.setInt(array, i, 3*i);
+					}
+
+					for(int i = 0; i< UMArray.length(array); i++)
+					{
+						int x = UMArray.getInt(array, i);
+						assert x ==3*i;
+					}
+					UMArray.free(array);
+
+					//Verify we leaked the correct amount in scoped memory
+//					assertTrue(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == 3224L, "Scoped Memory usage incorrect!");
+					assertTrue(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, "Unmanaged Memory was leaked!");
+				}
+				catch(Throwable e)
+				{
+					LOG.FAIL(e.getMessage());
+				}
+
+
+			}
+		});
+		MemoryAreas.pop(area);
+		MemoryAreas.free(area);
+		LOG.info("basicLargeArrayTest1 completed");
 	}
 
 

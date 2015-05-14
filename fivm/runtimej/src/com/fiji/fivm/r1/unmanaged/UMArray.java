@@ -8,6 +8,7 @@ import com.fiji.fivm.r1.MemoryAreas;
 import com.fiji.fivm.r1.NoInline;
 import com.fiji.fivm.r1.NoPollcheck;
 import com.fiji.fivm.r1.NoReturn;
+import com.fiji.fivm.r1.NoSafepoint;
 import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.Reflect;
 import com.fiji.fivm.r1.fivmRuntime;
@@ -50,23 +51,19 @@ public class UMArray
 		fivmr_MemoryArea_freeArray(MemoryAreas.getCurrentArea(), array);
 	}
 
+	@Inline
+	@NoSafepoint
 	public static int getInt(Pointer array, int index)
 	{
 		nullCheckAndArrayBoundsCheck(array, index);
-		//Type check
-		if(Magic.semanticallyUnlikely(CType.getInt(array,"fivmr_um_array_header","type") != 0)) {
-			throw new ClassCastException();
-		}
 		return fivmr_MemoryArea_loadArrayInt(array, index);
 	}
 
+	@Inline
+	@NoSafepoint
 	public static void setInt(Pointer array, int index, int val)
 	{
 		nullCheckAndArrayBoundsCheck(array, index);
-		//Type check
-		if(Magic.semanticallyUnlikely(CType.getInt(array,"fivmr_um_array_header","type") != 0)) {
-			throw new ClassCastException();
-		}
 		fivmr_MemoryArea_storeArrayInt(array, index, val);
 	}
 
@@ -196,6 +193,11 @@ public class UMArray
 		neededBlocks += elemCount / elementsPerBlock;
 
 		int overheadPerArray = neededBlocks * POINTER_SIZE;
+		//Align to 32 bytes, to avoid screwing up other allocations that expect a 32-byte boundary.
+		if(overheadPerArray % 32  != 0)
+		{
+			overheadPerArray += (32 - overheadPerArray % 32);
+		}
 		return overheadPerArray * totalArrayCount;
 
 	}

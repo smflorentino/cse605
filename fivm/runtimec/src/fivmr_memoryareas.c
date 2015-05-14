@@ -178,6 +178,7 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
     /* Move the bump up so we can store our UM Region */
     area->bump += unManagedSize;
     /* Scoped Memory now starts outside of UM Region */
+    // area->start = area->bump;
     area->new_start = area->bump;
     /* Create our tracking structures */
     fivmr_MemoryArea_setupUM(oldBump, unManagedSize);
@@ -583,6 +584,10 @@ uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, in
     }
     //We need to bump the amount + the amount required to store an array of pointers
     uintptr_t newbump = oldBump + (spineSize * sizeof(void*));
+    if(newbump % 32 != 0)
+    {
+        newbump += (32 - (newbump % 32));
+    }
     //See if we have enough space:
     // if(newbump - area->start > area->size) {
     if(newbump - alloc->start > alloc->size) {
@@ -590,7 +595,7 @@ uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, in
         fivmr_throwOutOfMemoryError_inJava(ts);
     }
     //If we're good, set the bump:
-    // area->bump = newbump;
+    area->bump = newbump;
     alloc->bump = newbump;
     //Allocate the spine:
     int64_t blocksAllocated = 0;

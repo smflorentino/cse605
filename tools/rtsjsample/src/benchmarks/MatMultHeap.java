@@ -1,60 +1,97 @@
 package benchmarks;
 
-import com.fiji.fivm.r1.Magic;
-import com.fiji.fivm.r1.MemoryAreas;
 import common.LOG;
+import common.PlainOldJava;
+
+import java.io.FileNotFoundException;
 
 
 /**
  * Created by scottflo on 4/23/15.
  */
+@PlainOldJava
 public class MatMultHeap
 {
 	private static final Utils utils = new Utils();
 
-	private static final int trials = 20;
-	final static long[] allocation = new long[trials];
-	final static long[] set = new long[trials];
-	final static long[] mult = new long[trials];
+	private static final int trials = MatMultConstants.trials;
+	private static final int rows = MatMultConstants.rows;
+	private static final int cols = MatMultConstants.cols;
+	private static final int fragmentationCount = MatMultConstants.fragmentationCount;
 
-	public static void main(String[] args)
+	final static long[] allocation = new long[trials];
+	final static long[] sequentialSet = new long[trials];
+	final static long[] sequentialGet = new long[trials];
+	final static long[] mult = new long[trials];
+	final static long[] fragment = new long[trials];
+	final static long[] totalTime = new long[trials];
+
+	public static PrintLogWriter logger;
+
+	public static void main(String[] args) throws FileNotFoundException
 	{
+		logger = new PrintLogWriter(args[0]);
 		for(int i=0; i< trials;i++)
 		{
+			long start = System.currentTimeMillis();
 			runTest(i);
+			long end = System.currentTimeMillis();
+			totalTime[i] = end - start;
+		}
+		//Subtract off fragmentation time
+		for(int i = 0;i<trials; i++)
+		{
+			totalTime[i] -= (fragment[i] / 1000000);
 		}
 
 		long allocationTotal = 0;
 		long setTotal = 0;
+		long getTotal = 0;
 		long multTotal = 0;
+		long fragmentTotal = 0;
+		long totalTotal = 0;
 
 		for(int i=0; i< trials;i++)
 		{
 			allocationTotal += allocation[i];
-			setTotal += set[i];
+			setTotal += sequentialSet[i];
+			getTotal += sequentialGet[i];
 			multTotal += mult[i];
+			fragmentTotal += fragment[i];
+			totalTotal += totalTime[i];
 		}
-		LOG.info("Allocation Time (ns):" + allocationTotal / trials);
-		LOG.info("Set Time (ns):" + setTotal / trials);
-		LOG.info("Mult Time (ns):" + multTotal / trials);
+//		logger.println("Avg Time to fragment: (ms): " + fragmentTotal / trials / 1000000);
+		logger.println(allocationTotal / trials + " ns - Avg Allocation Time");
+		logger.println(setTotal / trials + " ns - Avg Set Time");
+		logger.println(getTotal / trials + " ns - Avg Get time");
+		logger.println(multTotal / trials + " ns -Avg Mult Time");
+		logger.println(totalTotal / trials + " ms - Avg Execution Time");
+//		logger.println("Avg Total Execution Time (ms): " + totalTotal);
 
-//		LOG.info("Fragmenting...");
+
+		//Log Results
+		printArray("Allocation", allocation);
+		printArray("Sequential Set", sequentialSet);
+		printArray("Sequential Get", sequentialGet);
+		printArray("Mat Mult", mult);
+		printArray("Total Time", totalTime);
+		logger.close();
 
 	}
 
 	public static void runTest(int trial)
 	{
-		assert MemoryAreas.getCurrentArea() == MemoryAreas.getHeapArea();
+		System.out.println("Starting Trial " + trial + "...");
 
-		final int rows = 100;
-		final int cols = 100;
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
 //		LOG.info("Current Consumed Heap Space: " + MemoryAreas.consumed(MemoryAreas.getHeapArea()));
 //		LOG.info("Fragmenting...");
 
-		int fragmentationCount = 100;
 		int arraySize = rows * cols;
-		utils.fragmentHeap(fragmentationCount,arraySize);
+		utils.start();
+		utils.fragmentHeap(fragmentationCount,(int) MatMultConstants.maxArrayFragmentSize);
+		utils.finish();
+		fragment[trial] = utils.time();
 		//Now do matrix multiplication
 		//Generate the array
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
@@ -68,7 +105,7 @@ public class MatMultHeap
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
 //		LOG.info("Current Consumed Heap Space: " + MemoryAreas.consumed(MemoryAreas.getHeapArea()));
 //		LOG.info("Time to allocate: " + utils.time());
-
+//		LOG.info("Populating...");
 		//Populate the array
 		utils.start();
 		for(int i = 0; i < rows * cols; i++)
@@ -77,11 +114,26 @@ public class MatMultHeap
 			b[i] = utils.getRandom().nextInt();
 		}
 		utils.finish();
-		set[trial] = utils.time();
+		sequentialSet[trial] = utils.time();
+
+//		LOG.info("Accessing...");
+		//Access all elements in array
+		utils.start();
+		int z = 0;
+		for(int i = 0; i < rows * cols; i++)
+		{
+			int x = a[i];
+			int y = b[i];
+			z|= x | y;
+		}
+		a[0] = z;
+		utils.finish();
+		sequentialGet[trial] = utils.time();
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
 //		LOG.info("Current Consumed Heap Space: " + MemoryAreas.consumed(MemoryAreas.getHeapArea()));
-//		LOG.info("Time to set: " + utils.time());
+//		LOG.info("Time to sequentialSet: " + utils.time());
 		//Do mat mult
+//		LOG.info("Multiplying...");
 		utils.start();
 		multiply1d(rows, cols, a, b);
 		utils.finish();
@@ -135,5 +187,16 @@ public class MatMultHeap
 //			}
 //			System.out.println();
 //		}
+	}
+
+	private static void printArray(String msg, long[] array)
+	{
+		System.out.println(msg);
+		for(int i = 0;i< trials; i++)
+		{
+			logger.print(array[i]);
+			logger.print(' ');
+		}
+		logger.print('\n');
 	}
 }

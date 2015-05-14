@@ -6,6 +6,8 @@ import com.fiji.fivm.r1.Pointer;
 import com.fiji.fivm.r1.unmanaged.UMArray;
 import common.LOG;
 
+import java.io.FileNotFoundException;
+
 /**
  * Scope Size:30240192
  Managed Size:240192
@@ -20,41 +22,58 @@ public class MatMultScoped
 {
 	private static final Utils utils = new Utils();
 
-	static final int trials = 10;
-	static final int fragmentationCount = 100;
-	final static int rows = 100;
-	final static int cols = 100;
-	final static int arraySize = rows * cols;
+	final static int arraySize = MatMultConstants.rows * MatMultConstants.cols;
 
+	final static long[] allocation = new long[MatMultConstants.trials];
+	final static long[] sequentialSet = new long[MatMultConstants.trials];
+	final static long[] sequentialGet = new long[MatMultConstants.trials];
+	final static long[] mult = new long[MatMultConstants.trials];
+	final static long[] fragment = new long[MatMultConstants.trials];
+	final static long[] totalTime = new long[MatMultConstants.trials];
 
-	final static long[] allocation = new long[trials];
-	final static long[] set = new long[trials];
-	final static long[] mult = new long[trials];
+	public static PrintLogWriter logger;
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws FileNotFoundException
 	{
+		logger = new PrintLogWriter(args[0]);
 		//Generate sizes for fragmentation
-		final int[] randomSizes = new int[fragmentationCount];
-		utils.generateRandomSizes(randomSizes, arraySize);
-		int fragmentationOverhead = utils.calculateScoepdMemoryOverhead(randomSizes);
+		final int[][] randomSizes = new int[MatMultConstants.trials][MatMultConstants.fragmentationCount];
+		utils.generateRandomFragmentationSizes(randomSizes, (int) MatMultConstants.maxArrayFragmentSize);
+		//Calculate the overhead needed
+		int[] fragmentationOverheads = Utils.calculateScopedMemoryFragmentationOverhead(randomSizes);
+		//Calculate scope size
+		int scopeSize = 0;
+		//Hold 3 arrays for matrix multiplication
+		scopeSize += UMArray.calculateScopedMemorySize(8, arraySize, 3, 3);
+		//And calculate the overhead needed for fragmentation...
+		scopeSize += utils.sum(fragmentationOverheads);
+		//Add overhead for actual calculation for each trial... (each trial creates 3 matrices...a,b,c)
+		scopeSize += UMArray.calcualteScopedMemoryOverhead(8, arraySize, 3 * MatMultConstants.trials);
+		//Add ~75K for printing and stack traces...
+		scopeSize += MatMultConstants.FREE_SPACE / 2;
 
-		int scopeSize = (trials * (15000 + fragmentationOverhead))+ 240192 + 20480;
+		//Calculate Unmanaged Size:
+		int unManagedSize = UMArray.calculateManagedMemorySize(8, arraySize, 3) + MatMultConstants.FREE_SPACE / 2;
 
-		MemoryAreas.allocScopeBacking(Magic.curThreadState(), scopeSize + 10240 * trials);
 
-		Pointer area = MemoryAreas.alloc(scopeSize, false, "scoped", 240192 + 20480);
+		MemoryAreas.allocScopeBacking(Magic.curThreadState(), scopeSize + MatMultConstants.FREE_SPACE);
 
-		LOG.info("Fragmentation overhead: " + fragmentationOverhead);
-		LOG.info("Sccoped Memory Size: " + MemoryAreas.size(area));
-		MemoryAreas.enter(area, new Runnable()
+		Pointer memoryArea = MemoryAreas.alloc(scopeSize, false, "scoped", unManagedSize);
+
+//		LOG.info("Fragmentation overhead: " + fragmentationOverhead);
+		LOG.info("Sccoped Memory Size: " + MemoryAreas.size(memoryArea));
+		MemoryAreas.enter(memoryArea, new Runnable()
 		{
 			public void run()
 			{
 				try
 				{
-					for (int i = 0; i < trials; i++)
+					for (int i = 0; i < MatMultConstants.trials; i++)
 					{
-						runTest(i, randomSizes);
+						long start = System.currentTimeMillis();
+						runTest(i, randomSizes[i]);
+						long end = System.currentTimeMillis();
+						totalTime[i] = end - start;
 					}
 				}
 				catch(Throwable e)
@@ -67,30 +86,60 @@ public class MatMultScoped
 			}
 		});
 
-		//Calculated the scoped memory overhead we need for THESE:
+		//Subtract off fragmentation time
+		for(int i = 0;i<MatMultConstants.trials; i++)
+		{
+			totalTime[i] -= (fragment[i] / 1000000);
+		}
 
 		long allocationTotal = 0;
 		long setTotal = 0;
+		long getTotal = 0;
 		long multTotal = 0;
+		long fragmentTotal = 0;
+		long totalTotal = 0;
 
-		for(int i=0; i< trials;i++)
+		for(int i=0; i< MatMultConstants.trials;i++)
 		{
 			allocationTotal += allocation[i];
-			setTotal += set[i];
+			setTotal += sequentialSet[i];
+			getTotal += sequentialGet[i];
 			multTotal += mult[i];
+			fragmentTotal += fragment[i];
+			totalTotal += totalTime[i];
 		}
-		LOG.info("Allocation Time (ns):" + allocationTotal / trials);
-		LOG.info("Set Time (ns):" + setTotal / trials);
-		LOG.info("Mult Time (ns):" + multTotal / trials);
+//		logger.println("Avg Time to fragment: (ms): " + fragmentTotal / trials / 1000000);
+		logger.println(allocationTotal / MatMultConstants.trials + " ns - Avg Allocation Time");
+		logger.println(setTotal / MatMultConstants.trials + " ns - Avg Set Time");
+		logger.println(getTotal / MatMultConstants.trials + " ns - Avg Get time");
+		logger.println(multTotal / MatMultConstants.trials + " ns -Avg Mult Time");
+		logger.println(totalTotal / MatMultConstants.trials + " ms - Avg Execution Time");
+//		logger.println("Avg Total Execution Time (ms): " + totalTotal);
+
+
+		//Log Results
+		printArray("Allocation", allocation);
+		printArray("Sequential Set", sequentialSet);
+		printArray("Sequential Get", sequentialGet);
+		printArray("Mat Mult", mult);
+		printArray("Total Time", totalTime);
+		logger.close();
+
 	}
 
 	public static void runTest(final int trial, final int[] fragmentationSizes)
 	{
+		System.out.println("Starting Trial " + trial + "...");
+
+		int rows = MatMultConstants.rows;
+		int cols = MatMultConstants.cols;
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
 //		LOG.info("Current Consumed Heap Space: " + MemoryAreas.consumed(MemoryAreas.getHeapArea()));
 //		LOG.info("Fragmenting...");
-
+		utils.start();
 		utils.fragmentUnmanagedMemory(fragmentationSizes);
+		utils.finish();
+		fragment[trial] = utils.time();
 		//Now do matrix multiplication
 		//Generate the array
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
@@ -105,6 +154,7 @@ public class MatMultScoped
 //		LOG.info("Current Consumed Heap Space: " + MemoryAreas.consumed(MemoryAreas.getHeapArea()));
 //		LOG.info("Time to allocate: " + utils.time());
 
+//		LOG.info("Populating...");
 		//Populate the array
 		utils.start();
 		for(int i = 0; i < rows * cols; i++)
@@ -113,11 +163,27 @@ public class MatMultScoped
 			UMArray.setInt(b,i,utils.getRandom().nextInt());
 		}
 		utils.finish();
-		set[trial] = utils.time();
+		sequentialSet[trial] = utils.time();
+
+//		LOG.info("Accessing...");
+		//Access all elements in array
+		utils.start();
+		int z = 0;
+		for(int i = 0; i < rows * cols; i++)
+		{
+			int x = UMArray.getInt(a, i);
+			int y = UMArray.getInt(b, i);
+			z|= x | y;
+		}
+		UMArray.setInt(a, 0, z);
+		utils.finish();
+		sequentialGet[trial] = utils.time();
+
 //		LOG.info("Current Consumed Stack Space: " + MemoryAreas.consumed(MemoryAreas.getStackArea()));
 //		LOG.info("Current Consumed Heap Space: " + MemoryAreas.consumed(MemoryAreas.getHeapArea()));
 //		LOG.info("Time to set: " + utils.time());
 		//Do mat mult
+//		LOG.info("Multiplying...");
 		utils.start();
 		multiply1d(rows, cols, a, b);
 		utils.finish();
@@ -129,7 +195,7 @@ public class MatMultScoped
 
 	public static void multiply1d(int rows, int cols, Pointer a, Pointer b)
 	{
-		int firstRows, firstCols, secondRows, secondCols, c, d, k;
+		int firstRows, firstCols, /*secondRows,*/ secondCols, c, d, k;
 //		System.out.println("enter the num of rows and columns first matrix");
 		firstRows = rows;
 		firstCols = cols;
@@ -141,7 +207,7 @@ public class MatMultScoped
 //		}
 
 //		System.out.println("enter the num of rows and columns second matrix");
-		secondRows = rows;
+//		secondRows = rows;
 		secondCols = cols;
 //		int second[] = new int[secondRows * secondCols];
 		Pointer answer = UMArray.allocate(UMArray.UMArrayType.INT, firstRows * secondCols);
@@ -176,5 +242,16 @@ public class MatMultScoped
 //			}
 //			System.out.println();
 //		}
+	}
+
+	private static void printArray(String msg, long[] array)
+	{
+		System.out.println(msg);
+		for(int i = 0;i<MatMultConstants.trials; i++)
+		{
+			logger.print(array[i]);
+			logger.print(' ');
+		}
+		logger.print('\n');
 	}
 }
