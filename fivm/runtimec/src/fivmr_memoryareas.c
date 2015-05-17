@@ -74,6 +74,10 @@ static fivmr_MemoryArea *normalizeParentage(fivmr_ThreadState *ts,
 /* Initialize the tracking structures for a Memory Area */
 static void fivmr_MemoryArea_setupUM(uintptr_t start, int64_t size)
 {
+    if(size == 0)
+    {
+        return;
+    }
     /* Allocate the first block */
     //Create struct to memcpy from
     fivmr_um_node first;
@@ -182,7 +186,14 @@ uintptr_t fivmr_MemoryArea_alloc(fivmr_ThreadState *ts, int64_t size,
     area->new_start = area->bump;
     /* Create our tracking structures */
     fivmr_MemoryArea_setupUM(oldBump, unManagedSize);
-    area->free_head = (fivmr_um_node*) oldBump;
+    if(unManagedSize != 0)
+    {
+        area->free_head = (fivmr_um_node*) oldBump;
+    }
+    else
+    {
+        area->free_head = NULL;
+    }
     //Save the size for later
     area->um_size = unManagedSize;
     /* Zero out our fields */
@@ -479,7 +490,7 @@ static inline fivmr_um_node* fivmr_MemoryArea_getFreeBlock(fivmr_ThreadState *ts
     area->free_head = area->free_head->next;
     //De-link the block from the chain
     block->next = NULL;
-    DEBUG(DB_MEMAREA, ("Block allocated."));
+    // DEBUG(DB_MEMAREA, ("Block allocated."));
     area->um_consumed += UNMANAGED_BLOCK_SIZE;
     return block;
 }
@@ -489,13 +500,13 @@ static inline void fivmr_MemoryArea_freeBlock(fivmr_MemoryArea *area, fivmr_um_n
     memset(block, 0, sizeof(fivmr_um_node));
     //Get the head of the Memory Area:
     fivmr_um_node *head = area->free_head;
-    //if this is the last free block, make it the new head
-    if(head == NULL) {
+    //Add it to the head of the list:
+    if(head != NULL) {
+        block->next = area->free_head;
         area->free_head = block;
     }
-    //else, add it to the head of the list:
+    //else, if this is the last free block, make it the new head
     else {
-        block->next = area->free_head;
         area->free_head = block;
     }
     area->um_consumed -= UNMANAGED_BLOCK_SIZE;
@@ -503,7 +514,7 @@ static inline void fivmr_MemoryArea_freeBlock(fivmr_MemoryArea *area, fivmr_um_n
 
 uintptr_t fivmr_MemoryArea_allocatePrimitive(uintptr_t fivmrMemoryArea)
 {
-    printf("Hello World!!!!!\n");
+    // printf("Hello World!!!!!\n");
     //Cast to fivmr_MemoryArea
     fivmr_MemoryArea *area = (fivmr_MemoryArea*) fivmrMemoryArea;
     //If no primitives have been allocated, get one:
@@ -584,10 +595,12 @@ uintptr_t fivmr_MemoryArea_allocateArray(fivmr_ThreadState *ts, int32_t type, in
     }
     //We need to bump the amount + the amount required to store an array of pointers
     uintptr_t newbump = oldBump + (spineSize * sizeof(void*));
-    if(newbump % 32 != 0)
-    {
-        newbump += (32 - (newbump % 32));
-    }
+    //Ensure 32 byte offset
+    newbump += 32;
+    // if(newbump % 32 != 0)
+    // {
+    //     newbump += (32 - (newbump % 32));
+    // }
     //See if we have enough space:
     // if(newbump - area->start > area->size) {
     if(newbump - alloc->start > alloc->size) {

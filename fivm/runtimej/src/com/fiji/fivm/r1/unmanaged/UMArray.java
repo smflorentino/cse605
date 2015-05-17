@@ -194,10 +194,7 @@ public class UMArray
 
 		int overheadPerArray = neededBlocks * POINTER_SIZE;
 		//Align to 32 bytes, to avoid screwing up other allocations that expect a 32-byte boundary.
-		if(overheadPerArray % 32  != 0)
-		{
-			overheadPerArray += (32 - overheadPerArray % 32);
-		}
+		overheadPerArray += 32;
 		return overheadPerArray * totalArrayCount;
 
 	}

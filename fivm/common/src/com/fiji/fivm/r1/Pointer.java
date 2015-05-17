@@ -48,7 +48,7 @@ public final class Pointer {
     
     @Intrinsic private Pointer() {}
     
-    @Intrinsic @NoSafepoint public native static Pointer zero();
+    @Inline @Intrinsic @NoSafepoint public native static Pointer zero();
     
     @Intrinsic @NoSafepoint public native static int size();
     

@@ -1,6 +1,5 @@
 package benchmarks;
 
-import common.LOG;
 import common.PlainOldJava;
 
 import java.io.FileNotFoundException;
