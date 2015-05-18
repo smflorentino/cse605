@@ -7,8 +7,6 @@ import java.io.PrintWriter;
 
 /**
  * Created by scottflo on 5/13/15.
- *
- * Prints to the console and to a file. Useful for quick debugging at runtime, and analyzing results later.
  */
 @PlainOldJava
 public class PrintLogWriter extends PrintWriter

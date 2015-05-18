@@ -5,12 +5,12 @@ import common.PlainOldJava;
 /**
  * Created by scottflo on 5/13/15.
  *
- * Constants for both Fiji VM heap MatMult tests and Unmanaged memory MatMult tests
+ * Holds constants for perform matrix multiplication tests.
  */
 @PlainOldJava
 public class MatMultConstants
 {
-	static final int trials = 25;
+	static final int trials = 100;
 	static final int rows = 400;
 	static final int cols = 400;
 	static final int fragmentationCount = 1000;

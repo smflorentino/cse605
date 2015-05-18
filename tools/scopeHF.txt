@@ -6,9 +6,9 @@ INFO: Starting size 100
 INFO: Starting size 1000
 INFO: Starting size 10000
 INFO: Starting size 100000
-INFO: Array Size: 4 Average Time (ns): 18384
-INFO: Array Size: 10 Average Time (ns): 2027
-INFO: Array Size: 100 Average Time (ns): 8722
-INFO: Array Size: 1000 Average Time (ns): 101780
-INFO: Array Size: 10000 Average Time (ns): 772439
-INFO: Array Size: 100000 Average Time (ns): 7893905
+INFO: Array Size: 4 Average Time (ns): 9585
+INFO: Array Size: 10 Average Time (ns): 1386
+INFO: Array Size: 100 Average Time (ns): 5652
+INFO: Array Size: 1000 Average Time (ns): 51298
+INFO: Array Size: 10000 Average Time (ns): 506719
+INFO: Array Size: 100000 Average Time (ns): 5526914

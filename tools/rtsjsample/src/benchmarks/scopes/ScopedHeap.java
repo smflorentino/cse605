@@ -9,6 +9,8 @@ import java.util.Random;
 
 /**
  * Created by scottflo on 5/15/15.
+ *
+ * Creates a scope for each array, and performs operations on it. Measures overhead of creating and entering scopes.
  */
 public class ScopedHeap
 {
@@ -43,6 +45,7 @@ public class ScopedHeap
 
 		for(int i = 0; i< trialCount; i++)
 		{
+
 			long start = System.nanoTime();
 			Pointer memoryArea = MemoryAreas.alloc((arraySize * 4) + ScopedConstants.FREE_SPACE, false, "scoped");
 			MemoryAreas.enter(memoryArea, new Runnable()

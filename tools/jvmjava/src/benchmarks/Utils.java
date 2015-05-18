@@ -1,13 +1,9 @@
 package benchmarks;
 
-import com.fiji.fivm.r1.Pointer;
-import com.fiji.fivm.r1.unmanaged.UMArray;
 import java.util.Random;
 
 /**
  * Created by scottflo on 4/23/15.
- *
- * Various utilities for benchmarking.
  */
 public class Utils
 {
@@ -55,11 +51,6 @@ public class Utils
 		junk = null;
 	}
 
-	private Pointer createScopedMemoryArray(int size)
-	{
-		return UMArray.allocate(UMArray.UMArrayType.INT, size);
-	}
-
 	public void generateRandomFragmentationSizes(int[][] randomSizeMatrix, int maxSize)
 	{
 		for(int i = 0; i< randomSizeMatrix.length; i++)
@@ -76,35 +67,6 @@ public class Utils
 					randomSizeMatrix[i][j] = (nextRandomInt(j, maxSize));
 				}
 			}
-		}
-	}
-
-	public static int[] calculateScopedMemoryFragmentationOverhead(int[][] randomSizeMatrix)
-	{
-		int[] overheads = new int[randomSizeMatrix.length];
-		for(int i = 0; i< randomSizeMatrix.length; i++)
-		{
-			for(int j = 0;j<randomSizeMatrix[i].length;j++)
-			{
-				overheads[i] += UMArray.calcualteScopedMemoryOverhead(8,randomSizeMatrix[i][j],1);
-			}
-		}
-		return overheads;
-	}
-
-	/**
-	 * Fragment unmanaged memory. This will require overhead to be
-	 * pre-calculated, so the "random" sizes will need to be precalculated
-	 * as well.
-	 * @param sizes
-	 */
-	public void fragmentUnmanagedMemory(final int[] sizes)
-	{
-		for (int size : sizes)
-		{
-			Pointer array = createScopedMemoryArray(size);
-			UMArray.setInt(array, size-1, size);
-			UMArray.free(array);
 		}
 	}
 

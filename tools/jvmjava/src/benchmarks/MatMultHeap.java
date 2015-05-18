@@ -1,4 +1,3 @@
-
 package benchmarks;
 
 import common.PlainOldJava;
@@ -8,9 +7,9 @@ import java.io.FileNotFoundException;
 
 /**
  * Created by scottflo on 4/23/15.
+ * Performs a number of matrix multiplication operations after fragmenting the Java heap.
  *
- * Performs matrix multiplication on the Fiji VM heap after fragmenting it. Results are printed and written
- * to a file; a file name argument must be provided.
+ * Writes results to a file; takes a file name as an argument.
  */
 @PlainOldJava
 public class MatMultHeap

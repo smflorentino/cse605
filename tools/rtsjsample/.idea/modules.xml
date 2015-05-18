@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/rtsjsample.iml" filepath="$PROJECT_DIR$/rtsjsample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/workbench-core/workbench-core.iml" filepath="$PROJECT_DIR$/workbench-core/workbench-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/workbench-fiji/workbench-fiji.iml" filepath="$PROJECT_DIR$/workbench-fiji/workbench-fiji.iml" />
-      <module fileurl="file://$PROJECT_DIR$/workbench-jvm/workbench-jvm.iml" filepath="$PROJECT_DIR$/workbench-jvm/workbench-jvm.iml" />
     </modules>
   </component>
 </project>

@@ -10,6 +10,9 @@ import java.util.Random;
 
 /**
  * Created by scottflo on 5/17/15.
+ *
+ * Performs basic array operations in a single scope, as opposed to {@link ScopedHeap},
+ * which performs array operations in a scope for each array.
  */
 public class ScopedUnmanaged
 {

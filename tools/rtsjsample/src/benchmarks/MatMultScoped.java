@@ -9,14 +9,10 @@ import common.LOG;
 import java.io.FileNotFoundException;
 
 /**
- * Scope Size:30240192
- Managed Size:240192
- Overhead:30000000
-
- */
-
-/**
  * Created by scottflo on 4/23/15.
+ *
+ * Performs Matrix multiplication on unmanaged memory after "fragmenting" it. Results are printed and written
+ * to a file; a file name argument must be provided.
  */
 public class MatMultScoped
 {
@@ -35,6 +31,10 @@ public class MatMultScoped
 
 	public static void main(String[] args) throws FileNotFoundException
 	{
+		if(args.length == 0)
+		{
+			throw new IllegalArgumentException("Please provide a file name.");
+		}
 		logger = new PrintLogWriter(args[0]);
 		//Generate sizes for fragmentation
 		final int[][] randomSizes = new int[MatMultConstants.trials][MatMultConstants.fragmentationCount];
