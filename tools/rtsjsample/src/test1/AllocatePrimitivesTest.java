@@ -1,3 +1,4 @@
+
 package test1;
 
 import com.fiji.fivm.r1.MemoryAreas;
@@ -21,15 +22,16 @@ public class AllocatePrimitivesTest implements Runnable
     {
         try
         {
-            LOG.HEAP("In AllocatePrimitivesTest");
+            //LOG.HEAP("In AllocatePrimitivesTest");
 
             //Allocating an integer
-            /*
+
             int i=8;
             Pointer p=UMInteger.allocate(i);
             //System.out.println(UMInteger.get(p));
             UMInteger.set(p, 21);
-            System.out.println(UMInteger.get(p));
+            //System.out.println(UMInteger.get(p));
+            LOG.PRINT(UMInteger.get(p));
 
 
             //Allocating a character
@@ -37,34 +39,33 @@ public class AllocatePrimitivesTest implements Runnable
             p=UMChar.allocate(m);
             //System.out.println(UMChar.get(p));
             UMChar.set(p, 's');
-            System.out.println(UMChar.get(p));
+            LOG.PRINT(UMChar.get(p));
 
             //Allocating a long
             long num=12936L;
             p=UMLong.allocate(num);
             //System.out.println(UMLong.get(p));
             UMLong.set(p,1278612876L);
-            System.out.println(UMLong.get(p));
+           LOG.PRINT(UMLong.get(p));
 
 
             //Allocating a byte
             byte b=0;
             p=UMByte.allocate((byte)b);
-            System.out.println(UMByte.get(p));
+            //System.out.println(UMByte.get(p));
             UMByte.set(p,(byte)127);
-            System.out.println(UMByte.get(p));
+            LOG.PRINT(UMByte.get(p));
 
             //Allocating a short
             short s=-5;
             p=UMShort.allocate(s);
-            System.out.println(UMShort.get(p));
+            //System.out.println(UMShort.get(p));
             UMShort.set(p, (short)32767);
-            System.out.println(UMShort.get(p));
-            */
+            LOG.PRINT(UMShort.get(p));
 
             //Allocating a boolean
             boolean var=false;
-            Pointer p=UMBoolean.allocate(var);
+            p=UMBoolean.allocate(var);
             assert !UMBoolean.get(p);
             UMBoolean.set(p, true);
             assert UMBoolean.get(p);
@@ -85,8 +86,8 @@ public class AllocatePrimitivesTest implements Runnable
             //System.out.println(UMDouble.get(p));
             assert UMDouble.get(p)==123712.12123;
 
-            LOG.HEAP("Memory Area Consumed:");
-            LOG.HEAP(MemoryAreas.consumed(MemoryAreas.getCurrentArea()));
+            //LOG.HEAP("Memory Area Consumed:");
+            //LOG.HEAP(MemoryAreas.consumed(MemoryAreas.getCurrentArea()));
         }
         catch(Throwable e)
         {
