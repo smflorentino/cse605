@@ -32,15 +32,9 @@ JARS=$FIVM_LIB_DIR/fivmtest.jar
 JARS+=" "
 #JARS+=$FIVM_LIB_DIR/rtsj.jar
 echo "Compiling Bytecode to Native Code..."
+fivmc --jobs 4 --g-scoped-memory -o umtest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedMemoryTest
+#fivmc --jobs 4 --g-scoped-memory -o arraytest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedArraysTest
 #fivmc --jobs 4 --g-scoped-memory -o umtest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedMemoryTest
-fivmc --jobs 4 --g-scoped-memory -o umtest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedArraysTest
-fivmc --jobs 4 --g-scoped-memory -o arraytest src/build/common/*.class src/build/tests/*.class --no-opt -m tests/UnManagedMemoryTest
+
 echo "Done!"
 
-#Unused....
-#fivmc --jobs 2 --g-scoped-memory -o hello $JARS src/build/common/*.class src/build/test1/*.class --no-opt -m test1/FibExample
-#fivmc --jobs 2 --g-scoped-memory --g-def-immortal-mem 1024K --rt-library RTSJ -o hello $FIVMC_CLASSPATH src/build/test2/*.class --no-opt --rt-flowlog-enable
-#fivmc -o hello src/build/test/HelloArray.class src/build/test/Kaymar.class --no-opt --rt-flowlog-enable
-#fivmc --g-scoped-memory -o myprog -m com/fiji/fivm/test/RawScopedMemoryTest $JARS
-#fivmc  -o myprog2 -m com/fiji/fivm/test/GetIntFieldTest $JARS
-#fivmc -o hello src/build/test/Hello.class
