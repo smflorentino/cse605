@@ -1,6 +1,7 @@
 #/bin/bash
+#This test is used to test whether primitives are working properly
 #Specify Fiji Home
-#FIJI_HOME=/home/scottflo/repos/cse605/fivm
+FIJI_HOME=/home/mihir/repos/cse605/fivm
 #Specify the Java compiler to use
 FIJI_JAVA_COMPILER=$FIJI_HOME/ecj/ecj
 
@@ -15,7 +16,7 @@ FIVMC_CLASSPATH=$FIJI_LIB_DIR/rtsj.jar
 
 #Specify the Source Directory(ies) for our Java Programs
 HARDRTJSRC=$HOME/repos/cse605/tools/src
-HARDRTJSRC2=$HOME/repos/cse605/tools/rtsjsample/src
+HARDRTJSRC2=/home/mihir/repos/cse605/tools/rtsjsample/src
 
 echo "Compiling Java to Bytecode..."
 #$FIJI_JAVA_COMPILER -Xlint:unchecked -Xlint:deprecated -source 1.5 -target 1.5 -classpath $ECJ_CLASSPATH $HARDRTJSRC -d src/build
@@ -31,7 +32,7 @@ JARS=$FIVM_LIB_DIR/fivmtest.jar
 JARS+=" "
 #JARS+=$FIVM_LIB_DIR/rtsj.jar
 echo "Compiling Bytecode to Native Code..."
-fivmc --jobs 4 --g-scoped-memory -o hello src/build/common/*.class src/build/test1/*.class --no-opt -m test1/FibMain
+fivmc --jobs 4 --g-scoped-memory -o allocatePrimitives src/build/common/*.class src/build/test1/*.class -m test1/FibMain
 echo "Done!"
 
 #Unused....
