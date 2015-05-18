@@ -1,0 +1,14 @@
+FIVMR_DEBUG_LEVEL: 0
+INFO: Size of backing store: 1298304000
+INFO: Starting size 4
+INFO: Starting size 10
+INFO: Starting size 100
+INFO: Starting size 1000
+INFO: Starting size 10000
+INFO: Starting size 100000
+INFO: Array Size: 4 Average Time (ns): 18384
+INFO: Array Size: 10 Average Time (ns): 2027
+INFO: Array Size: 100 Average Time (ns): 8722
+INFO: Array Size: 1000 Average Time (ns): 101780
+INFO: Array Size: 10000 Average Time (ns): 772439
+INFO: Array Size: 100000 Average Time (ns): 7893905
