@@ -12,7 +12,11 @@ Stuff you might find useful:
 
 fivm/ - the directory that has the Fiji VM, with our changes. Build it in the usual way.
 
-tools/ - the directory that has our build scripts, tests, and output. Run tests.sh to build the executables that run our tests, and benchmark.sh to run the tools to run our benchmarks. See our results in output.txt.
+tools/ - the directory that has our build scripts, tests, and output. Run tests.sh to build the executables that run our tests, and benchmark.sh to run the tools to run our benchmarks for matrix multiplication. Run scopedbenchmarks.sh to run our benchmarks that tests the overhead of creating/entering scopes vs. our implemenation, which avoids that.
+
+tools/jvmjava - a Java project that runs the JVM portion of the Matrix Multiplication benchmark. Use this to compare the performance of the Fiji VM with a regular Java VM.
+
+tools/rtsjsample - a Java project which contains our benchmarking source code; the scripts above use this to build their binaries.
 
 NOTE: 
 
