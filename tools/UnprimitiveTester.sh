@@ -1,5 +1,6 @@
 #/bin/bash
 #Specify Fiji Home in your environment variables, please! Or I guess you could here.
+#This test is a benchmark for creating, accessing and deallocating primitives in the scope using malloc() and free()
 FIJI_HOME=/home/mihir/repos/cse605/fivm
 #Specify the Java compiler to use
 FIJI_JAVA_COMPILER=$FIJI_HOME/ecj/ecj
