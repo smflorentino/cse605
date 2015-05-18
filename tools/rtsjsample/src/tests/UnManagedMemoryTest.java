@@ -3,6 +3,8 @@ package tests;
 import com.fiji.fivm.r1.Magic;
 import com.fiji.fivm.r1.MemoryAreas;
 import com.fiji.fivm.r1.Pointer;
+import com.fiji.fivm.r1.unmanaged.UMArray;
+import com.fiji.fivm.r1.unmanaged.UMInteger;
 import common.LOG;
 
 import static common.Assert.assertTrue;
@@ -23,7 +25,9 @@ public class UnManagedMemoryTest
 		testCreateEmptyUnmanaged();
 		testCreateSmallUnmanaged();
 		testCreateLargeUnmanaged();
-
+		testCreateNegativeUnmanaged();
+		testCreateNon64ModuloUnmanaged();
+		testOutofMemoryError();
 	}
 
 	public static void testCreateEmptyUnmanaged()
@@ -89,4 +93,71 @@ public class UnManagedMemoryTest
 		MemoryAreas.free(area);
 		LOG.info("testCreateLargeUnmanaged completed");
 	}
+
+	public static void testCreateNegativeUnmanaged()
+	{
+		boolean thrown = false;
+		LOG.info("testCreateNegativeUnmanaged starting...");
+
+		try
+		{
+			Pointer area = MemoryAreas.alloc(SCOPE_SIZE,false,"scoped", -1);
+		}
+		catch(IllegalArgumentException e)
+		{
+			//Pass..
+			thrown = true;
+		}
+		assertTrue(thrown, "Unmanaged memory size cannot be negative");
+
+		LOG.info("testCreateNegativeUnmanaged completed");
+	}
+
+	public static void testCreateNon64ModuloUnmanaged()
+	{
+		LOG.info("testCreateNon64ModuloUnmanaged starting...");
+		boolean thrown = false;
+
+		try
+		{
+			Pointer area = MemoryAreas.alloc(SCOPE_SIZE,false,"scoped", 65);
+		}
+		catch(IllegalArgumentException e)
+		{
+			//Pass..
+			thrown = true;
+		}
+		assertTrue(thrown, "Unmanaged memory size must be a multiple of 64");
+
+		LOG.info("testCreateNon64ModuloUnmanaged completed");
+	}
+
+	public static void testOutofMemoryError()
+	{
+		LOG.info("testOutofMemoryError starting...");
+
+		Pointer area = MemoryAreas.alloc(SCOPE_SIZE,false,"scoped",64);
+		MemoryAreas.enter(area, new Runnable()
+		{
+			public void run()
+			{
+				boolean thrown = false;
+				try
+				{
+					UMArray.allocate(UMArray.UMArrayType.INT, 128);
+				}
+				catch(OutOfMemoryError e)
+				{
+					thrown = true;
+				}
+				assertTrue(thrown, "OOME should be thrown!");
+			}
+
+		});
+		MemoryAreas.pop(area);
+		MemoryAreas.free(area);
+
+		LOG.info("testOutofMemoryError completed");
+	}
+
 }

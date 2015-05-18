@@ -20,7 +20,7 @@ import static common.Report.reportError;
 public class UnManagedArraysTest
 {
 	private static final int SCOPE_SIZE = 10240;
-	private static final int TEST_COUNT = 1;
+	private static final int TEST_COUNT = 10;
 	//Larger here, because arrays are a thing
 	private static final int LARGE_SCOPE_SIZE = 15 * 1048756;
 	private static final int TOTAL_BACKING = LARGE_SCOPE_SIZE * TEST_COUNT + 1024;
@@ -38,6 +38,7 @@ public class UnManagedArraysTest
 		smallArrayTest();
 		smallArrayTest2();
 		smallArrayTest3();
+		interleavedAllocations();
 	}
 
 	public static void basicInlinedArrayTest()
@@ -78,7 +79,10 @@ public class UnManagedArraysTest
 	{
 		LOG.info("basicArrayTest1 starting...");
 
-		Pointer area = MemoryAreas.alloc(SCOPE_SIZE, false, "scoped", 3072);
+		final int elemCount = 256;
+		final int managedMemorySize = UMArray.calculateManagedMemorySize(8, elemCount, 1);
+		final int consumedScoped = UMArray.calcualteScopedMemoryOverhead(8, elemCount, 1) + managedMemorySize;
+		Pointer area = MemoryAreas.alloc(SCOPE_SIZE, false, "scoped", managedMemorySize);
 
 		MemoryAreas.enter(area, new Runnable()
 		{
@@ -86,9 +90,9 @@ public class UnManagedArraysTest
 			{
 				try
 				{
-					Pointer array = UMArray.allocate(UMArray.UMArrayType.INT,304);
-					assertTrue(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == 3224L, "Scoped Memory usage incorrect!");
-					assertTrue(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 2496L, "Unmanaged Memory usage incorrect!");
+					Pointer array = UMArray.allocate(UMArray.UMArrayType.INT,elemCount);
+					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == consumedScoped, 1); //"Scoped Memory usage incorrect!"
+					reportError(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == managedMemorySize, 2); //"Unmanaged Memory usage incorrect!"
 					for(int i = 0; i< UMArray.length(array); i++)
 					{
 						UMArray.setInt(array, i, 3*i);
@@ -102,8 +106,8 @@ public class UnManagedArraysTest
 					UMArray.free(array);
 
 					//Verify we leaked the correct amount in scoped memory
-					assertTrue(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == 3224L, "Scoped Memory usage incorrect!");
-					assertTrue(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, "Unmanaged Memory was leaked!");
+					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == consumedScoped, 3); //"Scoped Memory usage incorrect!"
+					reportError(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, 4); //"Unmanaged Memory usage incorrect!"
 				}
 				catch(Throwable e)
 				{
@@ -122,7 +126,10 @@ public class UnManagedArraysTest
 	{
 		LOG.info("basicArrayTest2 starting...");
 
-		Pointer area = MemoryAreas.alloc(SCOPE_SIZE, false, "scoped", 3072);
+		final int elemCount = 257;
+		final int managedMemorySize = UMArray.calculateManagedMemorySize(8, elemCount, 1);
+		final int consumedScoped = UMArray.calcualteScopedMemoryOverhead(8, elemCount, 1) + managedMemorySize;
+		Pointer area = MemoryAreas.alloc(SCOPE_SIZE, false, "scoped", managedMemorySize);
 
 		MemoryAreas.enter(area, new Runnable()
 		{
@@ -130,9 +137,9 @@ public class UnManagedArraysTest
 			{
 				try
 				{
-					Pointer array = UMArray.allocate(UMArray.UMArrayType.INT,300);
-					assertTrue(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == 3224L, "Scoped Memory usage incorrect!");
-					assertTrue(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 2496L, "Unmanaged Memory usage incorrect!");
+					Pointer array = UMArray.allocate(UMArray.UMArrayType.INT,elemCount);
+					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == consumedScoped, 1); //"Scoped Memory usage incorrect!"
+					reportError(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == managedMemorySize, 2); //"Unmanaged Memory usage incorrect!"
 					for(int i = 0; i< UMArray.length(array); i++)
 					{
 						UMArray.setInt(array, i, 3*i);
@@ -140,20 +147,19 @@ public class UnManagedArraysTest
 
 					for(int i = 0; i< UMArray.length(array); i++)
 					{
-						int x = UMArray.getInt(array, i);
+						int x = UMArray.getInt(array,i);
 						assert x ==3*i;
 					}
 					UMArray.free(array);
 
 					//Verify we leaked the correct amount in scoped memory
-					assertTrue(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == 3224L, "Scoped Memory usage incorrect!");
-					assertTrue(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, "Unmanaged Memory was leaked!");
+					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == consumedScoped, 3); //"Scoped Memory usage incorrect!"
+					reportError(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, 4); //"Unmanaged Memory usage incorrect!"
 				}
 				catch(Throwable e)
 				{
 					LOG.FAIL(e.getMessage());
 				}
-
 
 			}
 		});
@@ -168,7 +174,7 @@ public class UnManagedArraysTest
 		LOG.info("basicLargeArrayTest1 starting...");
 
 		final int elemCount = 750*750;
-		int scopedSize = UMArray.calculateScopedMemorySize(8, elemCount,  1, 1);
+		int scopedSize = UMArray.calculateScopedMemorySize(8, elemCount, 1, 1);
 		int unManagedSize = UMArray.calculateManagedMemorySize(8, elemCount, 1);
 		Pointer area = MemoryAreas.alloc(scopedSize, false, "scoped", unManagedSize);
 
@@ -266,8 +272,12 @@ public class UnManagedArraysTest
 	public static void smallArrayTest()
 	{
 		LOG.info("smallArrayTest starting...");
-
-		Pointer area = MemoryAreas.alloc(18496, false, "scoped", 16448);
+		final int elemCount =  2048;
+		final int totalArrayCount = 3;
+		final int scopedSize = UMArray.calculateScopedMemorySize(8, elemCount, 3, 1);
+		final int unManagedSize = UMArray.calculateManagedMemorySize(8, elemCount, 1);
+		final int scopedUsage = UMArray.calcualteScopedMemoryOverhead(8, elemCount, 3);
+		Pointer area = MemoryAreas.alloc(scopedSize, false, "scoped", unManagedSize);
 
 		MemoryAreas.enter(area, new Runnable()
 		{
@@ -275,9 +285,9 @@ public class UnManagedArraysTest
 			{
 				try
 				{
-					for(int i =0;i<2;i++)
+					for(int i =0;i<totalArrayCount;i++)
 					{
-						Pointer array = UMArray.allocate(UMArray.UMArrayType.INT, 2048);
+						Pointer array = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
 						for (int j = 0; j < UMArray.length(array); j++)
 						{
 							UMArray.setInt(array, j, j*3*i);
@@ -290,7 +300,7 @@ public class UnManagedArraysTest
 					}
 					//All arrays were freed, make sure no memory was leaked
 					//We use reportError since our scope is FULLY allocated
-					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == 18496L, 1); //"Scoped Memory was leaked!"
+					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == scopedUsage + unManagedSize, 1); //"Scoped Memory was leaked!"
 					reportError(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, 2);// "Unmanaged Memory was leaked!"
 				}
 				catch(Throwable e)
@@ -465,5 +475,110 @@ public class UnManagedArraysTest
 		MemoryAreas.pop(area);
 		MemoryAreas.free(area);
 		LOG.info("smallArrayTest3 completed");
+	}
+
+	/**
+	 * Similar to {@link UnManagedArraysTest#smallArrayTest3()}, but we interleave regular scoped allocation with unmanaged allocations.
+	 */
+	public static void interleavedAllocations()
+	{
+		LOG.info("interleavedAllocations starting...");
+
+		final int elemCount = 7;
+		final int arrayCount = 36;
+		final int activeArrayCount = 6;
+		final int scopeSize = UMArray.calculateScopedMemorySize(8, elemCount, arrayCount, activeArrayCount) + 10240;
+		final int unManagedSize = UMArray.calculateManagedMemorySize(8, elemCount, activeArrayCount);
+
+		Pointer area = MemoryAreas.alloc(scopeSize, false, "scoped", unManagedSize);
+
+		final Random r = new Random();
+
+		//Populate 6 initial arrays of values
+		final int[][] values = new int[activeArrayCount][elemCount];
+		for(int i = 0; i< activeArrayCount; i++)
+		{
+			for(int j = 0; j < elemCount; j++)
+			{
+				values[i][j] = r.nextInt();
+			}
+		}
+
+		//Randomize array allocation/deallocation order
+//		final int[] activeArrays = new int[activeArrayCount];
+//		for(int i = 0; i< activeArrayCount; i++)
+//		{
+//			activeArrays[i] = i;
+//		}
+		final List<Integer> activeArrays = new ArrayList<Integer>(activeArrayCount);
+		for(int i =0; i< activeArrayCount; i++)
+		{
+			activeArrays.add(i);
+		}
+		//Populate array of array pointers
+		final Pointer[] arrayPointers = new Pointer[activeArrayCount];
+
+		MemoryAreas.enter(area, new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					for(int i =0;i<6;i++)
+					{
+						//Perform allocation in random order
+						Collections.shuffle(activeArrays, r);
+						for(int j =0;j<activeArrayCount;j++)
+						{
+							int arrayIndex = activeArrays.get(j);
+							arrayPointers[arrayIndex] = UMArray.allocate(UMArray.UMArrayType.INT, elemCount);
+							Pointer array = arrayPointers[arrayIndex];
+							for(int k=0;k<elemCount;k++)
+							{
+								UMArray.setInt(array, k, values[arrayIndex][k]);
+							}
+						}
+						int[] regularScopedAllocation = new int[127];
+						for(int j=0;j<regularScopedAllocation.length;j++)
+						{
+							regularScopedAllocation[j] = i;
+						}
+						//Perform verification in random order
+						Collections.shuffle(activeArrays, r);
+						for(int j =0;j<activeArrayCount;j++)
+						{
+							int arrayIndex = activeArrays.get(j);
+
+							Pointer array = arrayPointers[arrayIndex];
+							for(int k=0;k<elemCount;k++)
+							{
+								int cur = UMArray.getInt(array, k);
+								reportError(cur ==  values[arrayIndex][k], 3); //Value misplaced!
+							}
+						}
+
+						//Perform deallocation in random order
+						Collections.shuffle(activeArrays, r);
+						for(int k =0;k<activeArrayCount;k++)
+						{
+							int arrayIndex = activeArrays.get(k);
+							UMArray.free(arrayPointers[arrayIndex]);
+						}
+
+					}
+					//All arrays were freed, make sure no memory was leaked
+					//We use reportError since our scope is FULLY allocated
+//					reportError(MemoryAreas.consumed(MemoryAreas.getCurrentArea()) == overhead + unManagedSize , 1); //"Scoped Memory was leaked!"
+					reportError(MemoryAreas.consumedUnmanaged(MemoryAreas.getCurrentArea()) == 0L, 2);// "Unmanaged Memory was leaked!"
+				}
+				catch(Throwable e)
+				{
+					LOG.FAIL(e.getMessage());
+				}
+			}
+		});
+		MemoryAreas.pop(area);
+		MemoryAreas.free(area);
+		LOG.info("interleavedAllocations completed");
 	}
 }
