@@ -12,7 +12,7 @@ public class HeapPrimitivesTest
     public static void testInteger()
     {
         long startTime,endTime,totalTime;
-        int max=1000000;
+        int max=1000;
         int val=0;
         IntegerPointer[] intPointer=new IntegerPointer[max];
         startTime= System.nanoTime();
