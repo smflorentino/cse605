@@ -675,7 +675,7 @@ void fivmr_MemoryArea_storeArrayInt(uintptr_t arrayHeader, int32_t index, int32_
 //Shreyas
 void fivmr_MemoryArea_deallocatePrimitive(uintptr_t fivmrMemoryArea, uintptr_t primitiveLoc)
 {
-    printf("In Deallocation native!\n");
+    //printf("In Deallocation native!\n");
     //Cast the primitiveloc parameter to uintptr_t*
     uintptr_t * primitiveLocation = (uintptr_t *)primitiveLoc;
     //Cast to fivmr_MemoryArea
