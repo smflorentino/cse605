@@ -43,4 +43,43 @@ public class LOG {
         System.out.println("FAIL:" + msg);
     }
 
+    public static void PRINT(int val)
+    {
+        Pointer outer = MemoryAreas.getCurrentArea();
+        MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
+        System.err.println(val);
+        MemoryAreas.setCurrentArea(outer);
+    }
+
+    public static void PRINT(char c)
+    {
+        Pointer outer = MemoryAreas.getCurrentArea();
+        MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
+        System.err.println(c);
+        MemoryAreas.setCurrentArea(outer);
+    }
+
+    public static void PRINT(long l)
+    {
+        Pointer outer = MemoryAreas.getCurrentArea();
+        MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
+        System.err.println(l);
+        MemoryAreas.setCurrentArea(outer);
+    }
+
+    public static void PRINT(byte b)
+    {
+        Pointer outer = MemoryAreas.getCurrentArea();
+        MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
+        System.err.println(b);
+        MemoryAreas.setCurrentArea(outer);
+    }
+
+    public static void PRINT(short s)
+    {
+        Pointer outer = MemoryAreas.getCurrentArea();
+        MemoryAreas.setCurrentArea(MemoryAreas.getHeapArea());
+        System.err.println(s);
+        MemoryAreas.setCurrentArea(outer);
+    }
 }
