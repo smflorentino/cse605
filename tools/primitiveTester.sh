@@ -1,6 +1,7 @@
 #/bin/bash
 #Specify Fiji Home in your environment variables, please! Or I guess you could here.
-FIJI_HOME=/home/mihir/repos/cse605/fivm
+#This test is a benchmark for creating, accessing and deallocating primitives on the heap.
+#FIJI_HOME=/home/mihir/repos/cse605/fivm
 #Specify the Java compiler to use
 FIJI_JAVA_COMPILER=$FIJI_HOME/ecj/ecj
 
@@ -34,6 +35,7 @@ echo "Compiling Bytecode to Native Code..."
 #fivmc --jobs 4 --g-scoped-memory --g-def-max-mem 2707K -o matheapCMR src/build/common/*.class src/build/benchmarks/*.class -m benchmarks/MatMultHeap
 #fivmc --jobs 4 --g-scoped-memory --gc HF --g-def-max-mem 2707K -o matheapHF src/build/common/*.class src/build/benchmarks/*.class -m benchmarks/MatMultHeap
 #fivmc --jobs 4 --g-scoped-memory -o matscope src/build/common/*.class src/build/benchmarks/*.class  -m benchmarks/MatMultScoped
-fivmc --jobs 4 -o heapPrimitivesTest src/build/common/*.class src/build/benchmarks/*.class  -m benchmarks/HeapPrimitivesTest
+fivmc --jobs 4 -o heapPrimitivesTestCMR src/build/common/*.class src/build/benchmarks/*.class  -m benchmarks/HeapPrimitivesTest
+fivmc --jobs 4 --gc HF -o heapPrimitivesTestHF src/build/common/*.class src/build/benchmarks/*.class  -m benchmarks/HeapPrimitivesTest
 echo "Done!"
 
